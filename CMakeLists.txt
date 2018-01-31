@@ -21,6 +21,9 @@ function(create_directory_groups)
     endforeach()
 endfunction()
 
+# Options.
+option(BUILD_SHARED_LIBS "Build libraries as shared." OFF)
+
 # Library.
 add_subdirectory(src)
 
