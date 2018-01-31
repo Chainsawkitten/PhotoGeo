@@ -2,7 +2,7 @@
 #define PHOTOGEO_H
 
 // Functions need to be imported/exported when compiling a shared library (DLL) on Windows.
-#ifdef _WIN32
+#if defined(_WIN32) && defined(BUILD_SHARED)
     #ifdef photogeo_EXPORTS
         #define PHOTOGEO_API __declspec(dllexport)
     #else

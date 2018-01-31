@@ -23,6 +23,9 @@ endfunction()
 
 # Options.
 option(BUILD_SHARED_LIBS "Build libraries as shared." OFF)
+if(BUILD_SHARED_LIBS)
+    add_definitions(-DBUILD_SHARED)
+endif()
 
 # Library.
 add_subdirectory(src)
