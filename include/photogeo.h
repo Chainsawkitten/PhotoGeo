@@ -3,7 +3,7 @@
 
 // Functions need to be imported/exported when compiling a shared library (DLL) on Windows.
 #ifdef _WIN32
-    #ifdef photgeo_EXPORTS
+    #ifdef photogeo_EXPORTS
         #define PHOTOGEO_API __declspec(dllexport)
     #else
         #define PHOTOGEO_API __declspec(dllimport)
@@ -23,7 +23,7 @@ extern "C" {
  * @param y Second number.
  * @return The sum of the numbers.
  */
-int ptg_add(int x, int y);
+PHOTOGEO_API int ptg_add(int x, int y);
 
 #ifdef __cplusplus
 }
