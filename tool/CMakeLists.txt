@@ -13,5 +13,5 @@ set(HEADERS
 # Generate directory groups for IDE.
 create_directory_groups(${SRCS} ${HEADERS})
 
-add_executable(PhotoGeo ${SRCS} ${HEADERS})
-target_link_libraries(PhotoGeo photogeo)
+add_executable(PhotoGeoCmd ${SRCS} ${HEADERS})
+target_link_libraries(PhotoGeoCmd photogeo)
