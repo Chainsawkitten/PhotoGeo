@@ -1,0 +1,8 @@
+language: cpp
+
+os: linux
+dist: trusty
+
+script:
+- cmake .
+- make -j4
