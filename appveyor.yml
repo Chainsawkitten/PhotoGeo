@@ -19,6 +19,6 @@ before_build:
 - cmd: cmake ../ -G "Visual Studio 14 2015 Win64"
 
 build:
-  project: PhotoGeo.sln
+  project: build/PhotoGeo.sln
   parallel: true
   verbosity: minimal
