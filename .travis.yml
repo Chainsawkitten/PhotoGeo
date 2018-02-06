@@ -4,5 +4,7 @@ os: linux
 dist: trusty
 
 script:
-- cmake .
+- mkdir build
+- cd build
+- cmake ..
 - make -j4
