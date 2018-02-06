@@ -23,6 +23,11 @@ endfunction()
 
 # Options.
 option(BUILD_SHARED_LIBS "Build libraries as shared." OFF)
+
+# Dependencies.
+add_subdirectory(externals)
+
+# Handle options.
 if(BUILD_SHARED_LIBS)
     add_definitions(-DBUILD_SHARED)
 endif()
