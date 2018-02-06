@@ -14,7 +14,9 @@ install:
 - cmd: git submodule update --init
 
 before_build:
-- cmd: cmake -G "Visual Studio 14 2015 Win64"
+- cmd: mkdir build
+- cmd: cd build
+- cmd: cmake ../ -G "Visual Studio 14 2015 Win64"
 
 build:
   project: PhotoGeo.sln
