@@ -25,7 +25,7 @@ void WriteSVG(const char* filename, unsigned int layers, ptg_color* colors, unsi
                  << "\" y1=\"" << vertices[layer][vertex].y
                  << "\" x2=\"" << vertices[layer][vertex + 1].x
                  << "\" y2=\"" << vertices[layer][vertex + 1].y
-                 << "\" stroke-width=\"2\" stroke=\"black\" />\n";
+                 << "\" stroke-width=\"2\" stroke=\"rgb(" << (int)colors[layer].r << ", " << (int)colors[layer].g << ", " << (int)colors[layer].b << ")\" />\n";
         }
 
         file << "  </g>\n";
