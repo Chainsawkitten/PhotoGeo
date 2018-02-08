@@ -1,6 +1,7 @@
 #include <photogeo.h>
 #include <iostream>
 #include <cstring>
+#include "svg.hpp"
 
 int main(int argc, const char* argv[]) {
     // Handle commandline arguments.
@@ -67,6 +68,19 @@ int main(int argc, const char* argv[]) {
 
     vertices[0][1].x = 40;
     vertices[0][1].y = 23;
+
+    // Define the colors of the layers.
+    ptg_color* colors = new ptg_color[2];
+    colors[0].r = 0;
+    colors[0].g = 0;
+    colors[0].b = 0;
+
+    colors[1].r = 255;
+    colors[1].g = 0;
+    colors[1].b = 0;
+
+    // Output SVG file.
+    WriteSVG(2, colors, vertexCount, vertices);
 
     // Clean up test data.
     delete[] vertexCount;
