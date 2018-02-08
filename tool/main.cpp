@@ -36,13 +36,43 @@ int main(int argc, const char* argv[]) {
 
     // Results.
     unsigned int* vertexCount;
-    ptg_vec2* vertices;
+    ptg_vec2** vertices;
 
     // Generate collision geometry.
     ptg_generate_collision_geometry(&parameters, &vertexCount, &vertices);
 
     // Free results.
     ptg_free_results(vertexCount, vertices);
+
+
+    // Test SVG output.
+    vertexCount = new unsigned int[2];
+    vertices = new ptg_vec2*[2];
+
+    // Test data.
+    vertexCount[0] = 2;
+    vertices[0] = new ptg_vec2[vertexCount[0]];
+
+    vertices[0][0].x = 0;
+    vertices[0][0].y = 0;
+
+    vertices[0][1].x = 50;
+    vertices[0][1].y = 50;
+
+    vertexCount[1] = 2;
+    vertices[1] = new ptg_vec2[vertexCount[1]];
+
+    vertices[0][0].x = 89;
+    vertices[0][0].y = 20;
+
+    vertices[0][1].x = 40;
+    vertices[0][1].y = 23;
+
+    // Clean up test data.
+    delete[] vertexCount;
+    delete[] vertices[0];
+    delete[] vertices[1];
+    delete[] vertices;
 
     return 0;
 }
