@@ -80,7 +80,7 @@ int main(int argc, const char* argv[]) {
     colors[1].b = 0;
 
     // Output SVG file.
-    WriteSVG(2, colors, vertexCount, vertices);
+    WriteSVG(outputFilename, 2, colors, vertexCount, vertices);
 
     // Clean up test data.
     delete[] vertexCount;
