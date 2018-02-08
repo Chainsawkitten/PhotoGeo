@@ -18,6 +18,16 @@ void WriteSVG(const char* filename, unsigned int layers, ptg_color* colors, unsi
     // Layers.
     for (unsigned int layer = 0; layer < layers; ++layer) {
         file << "  <g id=\"layer" << layer << "\">\n";
+
+        // Vertices.
+        for (unsigned int vertex = 0; vertex < vertexCount[0] - 1; ++vertex) {
+            file << "    <line x1=\"" << vertices[layer][vertex].x
+                 << "\" y1=\"" << vertices[layer][vertex].y
+                 << "\" x2=\"" << vertices[layer][vertex + 1].x
+                 << "\" y2=\"" << vertices[layer][vertex + 1].y
+                 << "\" stroke-width=\"2\" stroke=\"black\" />\n";
+        }
+
         file << "  </g>\n";
     }
 

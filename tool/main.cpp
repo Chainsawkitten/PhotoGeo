@@ -63,11 +63,11 @@ int main(int argc, const char* argv[]) {
     vertexCount[1] = 2;
     vertices[1] = new ptg_vec2[vertexCount[1]];
 
-    vertices[0][0].x = 89;
-    vertices[0][0].y = 20;
+    vertices[1][0].x = 89;
+    vertices[1][0].y = 20;
 
-    vertices[0][1].x = 40;
-    vertices[0][1].y = 23;
+    vertices[1][1].x = 40;
+    vertices[1][1].y = 23;
 
     // Define the colors of the layers.
     ptg_color* colors = new ptg_color[2];
