@@ -72,14 +72,14 @@ struct ptg_source_parameters {
  * @param out_vertices Variable to store resulting vertices.
  * @todo Implement this. Currently does nothing.
  */
-PHOTOGEO_API void ptg_generate_collision_geometry(const ptg_source_parameters* parameters, unsigned int** out_vertex_count, ptg_vec2** out_vertices);
+PHOTOGEO_API void ptg_generate_collision_geometry(const ptg_source_parameters* parameters, unsigned int** out_vertex_count, ptg_vec2*** out_vertices);
 
 /**
  * Deallocate the memory that was allocated to store the results.
  * @param vertex_count Vertex count.
  * @param vertices Vertices.
  */
-PHOTOGEO_API void ptg_free_results(unsigned int* vertex_count, ptg_vec2* vertices);
+PHOTOGEO_API void ptg_free_results(unsigned int* vertex_count, ptg_vec2** vertices);
 
 #ifdef __cplusplus
 }
