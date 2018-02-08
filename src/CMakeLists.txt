@@ -16,3 +16,7 @@ create_directory_groups(${SRCS} ${HEADERS})
 add_library(photogeo ${SRCS} ${HEADERS})
 target_link_libraries(photogeo opencv)
 target_include_directories(photogeo PUBLIC ../include)
+
+# Require C++11.
+set_property(TARGET photogeo PROPERTY CXX_STANDARD 11)
+set_property(TARGET photogeo PROPERTY CXX_STANDARD_REQUIRED ON)
