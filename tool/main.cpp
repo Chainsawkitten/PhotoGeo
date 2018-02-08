@@ -19,8 +19,16 @@ int main(int argc, const char* argv[]) {
         }
     }
 
-    std::cout << "Input: " << inputFilename << std::endl;
-    std::cout << "Output: " << outputFilename << std::endl;
+    // Display help if no valid configuration was given.
+    if (inputFilename[0] == '\0' || outputFilename[0] == '\0') {
+        std::cout << "usage: PhotoGeoCmd -i inputFilename -o outputFilename" << std::endl << std::endl;
+
+        std::cout << "Parameters:" << std::endl;
+        std::cout << "  -i  Specify filename of source image." << std::endl;
+        std::cout << "  -o  Specify filename of result SVG." << std::endl;
+
+        return 0;
+    }
 
     // Source image info.
     ptg_source_parameters parameters;
