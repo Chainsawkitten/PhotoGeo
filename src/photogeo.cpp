@@ -23,7 +23,7 @@ bool** ptg_quantize(const ptg_image_parameters* image_parameters, const ptg_quan
 
     // Allocate color layers.
     bool** layers = new bool*[image_parameters->color_layer_count];
-    for (unsigned int layer = 0; image_parameters->color_layer_count; ++layer)
+    for (unsigned int layer = 0; layer < image_parameters->color_layer_count; ++layer)
         layers[layer] = new bool[image_parameters->width * image_parameters->height];
 
     // Quantize image into layers.

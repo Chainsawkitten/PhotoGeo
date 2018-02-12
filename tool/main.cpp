@@ -74,6 +74,10 @@ int main(int argc, const char* argv[]) {
     ptg_image_parameters imageParameters;
     memset(&imageParameters, 0, sizeof(ptg_image_parameters));
     imageParameters.image = reinterpret_cast<ptg_color*>(data);
+    imageParameters.background_color_count = backgroundColors.size();
+    imageParameters.background_colors = backgroundColors.data();
+    imageParameters.color_layer_count = foregroundColors.size();
+    imageParameters.color_layer_colors = foregroundColors.data();
 
     // Quantization parameters.
     ptg_quantization_parameters quantizationParameters;
