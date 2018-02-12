@@ -2,12 +2,14 @@
 
 # Source files.
 set(SRCS
+    conversion.cpp
     main.cpp
     svg.cpp
 )
 
 # Header files. Specified in order to get them listed in the IDE.
 set(HEADERS
+    conversion.hpp
     svg.hpp
 )
 
