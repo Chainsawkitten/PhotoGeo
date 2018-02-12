@@ -3,6 +3,9 @@
 #include <cstring>
 #include "svg.hpp"
 
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
+
 int main(int argc, const char* argv[]) {
     // Handle commandline arguments.
     const char* inputFilename = "";
@@ -31,6 +34,20 @@ int main(int argc, const char* argv[]) {
         return 0;
     }
 
+    // Load source image.
+    int components, width, height;
+    unsigned char* data = stbi_load(inputFilename, &width, &height, &components, 0);
+
+    if (data == NULL) {
+        std::cerr << "Couldn't load image " << inputFilename << "." << std::endl;
+        return 1;
+    }
+
+    if (components != 3) {
+        std::cerr << "Image has to be RGB (3 channels)." << std::endl;
+        return 1;
+    }
+
     // Source image info.
     ptg_source_parameters parameters;
     memset(&parameters, 0, sizeof(ptg_source_parameters));
@@ -41,6 +58,9 @@ int main(int argc, const char* argv[]) {
 
     // Generate collision geometry.
     ptg_generate_collision_geometry(&parameters, &vertexCount, &vertices);
+
+    // Free image.
+    stbi_image_free(data);
 
     // Free results.
     ptg_free_results(vertexCount, vertices);
