@@ -41,3 +41,8 @@ add_subdirectory(opencv)
 add_library(opencv INTERFACE)
 target_link_libraries(opencv INTERFACE opencv_core)
 target_include_directories(opencv INTERFACE opencv/modules/core/include ${CMAKE_BINARY_DIR})
+
+
+# STB
+add_library(stb INTERFACE)
+target_include_directories(stb INTERFACE stb)
