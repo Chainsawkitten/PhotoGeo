@@ -1,6 +1,8 @@
 #include <photogeo.h>
 #include <iostream>
 #include <cstring>
+#include <vector>
+#include "conversion.hpp"
 #include "svg.hpp"
 
 #define STB_IMAGE_IMPLEMENTATION
@@ -10,6 +12,8 @@ int main(int argc, const char* argv[]) {
     // Handle commandline arguments.
     const char* inputFilename = "";
     const char* outputFilename = "";
+    std::vector<ptg_color> backgroundColors;
+    std::vector<ptg_color> foregroundColors;
     for (int argument = 1; argument < argc; ++argument) {
         // All arguments start with -.
         if (argv[argument][0] == '-') {
@@ -20,6 +24,14 @@ int main(int argc, const char* argv[]) {
             // Output filename.
             if (argv[argument][1] == 'o' && argc > argument + 1)
                 outputFilename = argv[++argument];
+
+            // Background color.
+            if (argv[argument][1] == 'b' && argc > argument + 1)
+                backgroundColors.push_back(TextToColor(argv[++argument]));
+
+            // Foreground color.
+            if (argv[argument][1] == 'f' && argc > argument + 1)
+                foregroundColors.push_back(TextToColor(argv[++argument]));
         }
     }
 
@@ -30,7 +42,17 @@ int main(int argc, const char* argv[]) {
         std::cout << "Parameters:" << std::endl;
         std::cout << "  -i  Specify filename of source image." << std::endl;
         std::cout << "  -o  Specify filename of result SVG." << std::endl;
+        std::cout << "  -b  Specify background color." << std::endl
+                  << "      Format: R:G:B" <<  std::endl;
+        std::cout << "  -f  Specify foreground color." << std::endl
+                  << "      Format: R:G:B" <<  std::endl;
 
+        return 0;
+    }
+
+    // We need at least one color.
+    if (backgroundColors.size() + foregroundColors.size() == 0) {
+        std::cout << "You must specify at least one background or foreground color." << std::endl;
         return 0;
     }
 
