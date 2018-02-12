@@ -98,13 +98,14 @@ PHOTOGEO_API void ptg_free_results(unsigned int* vertex_count, ptg_vec2** vertic
  * @param quantization_parameters Quantization parameters.
  * @return Resulting color layers.
  */
-PHOTOGEO_API ptg_color** ptg_quantize(const ptg_image_parameters* image_parameters, const ptg_quantization_parameters* quantization_parameters);
+PHOTOGEO_API bool** ptg_quantize(const ptg_image_parameters* image_parameters, const ptg_quantization_parameters* quantization_parameters);
 
 /**
  * Free color layers allocated during quantization.
  * @param layers Color layers.
+ * @param layer_count The number of color layers.
  */
-PHOTOGEO_API void ptg_free_quantization_results(ptg_color** layers);
+PHOTOGEO_API void ptg_free_quantization_results(bool** layers, unsigned int layer_count);
 
 #ifdef __cplusplus
 }
