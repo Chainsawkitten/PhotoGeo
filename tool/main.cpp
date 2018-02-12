@@ -102,45 +102,28 @@ int main(int argc, const char* argv[]) {
 
 
     // Test SVG output.
-    vertexCount = new unsigned int[2];
-    vertices = new ptg_vec2*[2];
+    vertexCount = new unsigned int[foregroundColors.size()];
+    vertices = new ptg_vec2*[foregroundColors.size()];
 
     // Test data.
-    vertexCount[0] = 2;
-    vertices[0] = new ptg_vec2[vertexCount[0]];
+    for (unsigned int i=0; i < foregroundColors.size(); ++i) {
+        vertexCount[i] = 2;
+        vertices[i] = new ptg_vec2[vertexCount[i]];
 
-    vertices[0][0].x = 0;
-    vertices[0][0].y = 0;
+        vertices[i][0].x = 0;
+        vertices[i][0].y = i * 50;
 
-    vertices[0][1].x = 50;
-    vertices[0][1].y = 50;
-
-    vertexCount[1] = 2;
-    vertices[1] = new ptg_vec2[vertexCount[1]];
-
-    vertices[1][0].x = 89;
-    vertices[1][0].y = 20;
-
-    vertices[1][1].x = 40;
-    vertices[1][1].y = 23;
-
-    // Define the colors of the layers.
-    ptg_color* colors = new ptg_color[2];
-    colors[0].r = 0;
-    colors[0].g = 0;
-    colors[0].b = 0;
-
-    colors[1].r = 255;
-    colors[1].g = 0;
-    colors[1].b = 0;
+        vertices[i][1].x = 50;
+        vertices[i][1].y = i * 50;
+    }
 
     // Output SVG file.
-    WriteSVG(outputFilename, 2, colors, vertexCount, vertices, true);
+    WriteSVG(outputFilename, foregroundColors.size(), foregroundColors.data(), vertexCount, vertices, true);
 
     // Clean up test data.
     delete[] vertexCount;
-    delete[] vertices[0];
-    delete[] vertices[1];
+    for (unsigned int i=0; i < foregroundColors.size(); ++i)
+        delete[] vertices[i];
     delete[] vertices;
 
     return 0;
