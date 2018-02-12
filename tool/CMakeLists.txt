@@ -15,7 +15,7 @@ set(HEADERS
 create_directory_groups(${SRCS} ${HEADERS})
 
 add_executable(PhotoGeoCmd ${SRCS} ${HEADERS})
-target_link_libraries(PhotoGeoCmd photogeo)
+target_link_libraries(PhotoGeoCmd photogeo stb)
 
 # Require C++11.
 set_property(TARGET PhotoGeoCmd PROPERTY CXX_STANDARD 11)
