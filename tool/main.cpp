@@ -48,17 +48,25 @@ int main(int argc, const char* argv[]) {
         return 1;
     }
 
-    // Source image info.
-    ptg_source_parameters parameters;
-    memset(&parameters, 0, sizeof(ptg_source_parameters));
-    parameters.image = reinterpret_cast<ptg_color*>(data);
+    // Source image parameters.
+    ptg_image_parameters imageParameters;
+    memset(&imageParameters, 0, sizeof(ptg_image_parameters));
+    imageParameters.image = reinterpret_cast<ptg_color*>(data);
+
+    // Quantization parameters.
+    ptg_quantization_parameters quantizationParameters;
+
+    // Generation parameters.
+    ptg_generation_parameters generationParameters;
+    generationParameters.image_parameters = &imageParameters;
+    generationParameters.quantization_parameters = &quantizationParameters;
 
     // Results.
     unsigned int* vertexCount;
     ptg_vec2** vertices;
 
     // Generate collision geometry.
-    ptg_generate_collision_geometry(&parameters, &vertexCount, &vertices);
+    ptg_generate_collision_geometry(&generationParameters, &vertexCount, &vertices);
 
     // Free image.
     stbi_image_free(data);
