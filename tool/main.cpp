@@ -51,6 +51,7 @@ int main(int argc, const char* argv[]) {
     // Source image info.
     ptg_source_parameters parameters;
     memset(&parameters, 0, sizeof(ptg_source_parameters));
+    parameters.image = reinterpret_cast<ptg_color*>(data);
 
     // Results.
     unsigned int* vertexCount;

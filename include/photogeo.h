@@ -41,7 +41,7 @@ struct ptg_color {
 /// Input parameters to ptg_generate_collision_geometry.
 struct ptg_source_parameters {
     /// Source image in 3-channel RGB format.
-    unsigned char* image;
+    ptg_color* image;
 
     /// The width of the source image.
     unsigned int width;
