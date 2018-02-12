@@ -38,10 +38,10 @@ struct ptg_color {
     unsigned char b;
 };
 
-/// Input parameters to ptg_generate_collision_geometry.
-struct ptg_source_parameters {
+/// Source image parameters.
+struct ptg_image_parameters {
     /// Source image in 3-channel RGB format.
-    ptg_color* image;
+    const ptg_color* image;
 
     /// The width of the source image.
     unsigned int width;
@@ -53,16 +53,27 @@ struct ptg_source_parameters {
     unsigned int background_color_count;
 
     /// The background colors.
-    ptg_color* background_colors;
+    const ptg_color* background_colors;
 
     /// The number of color layers.
     unsigned int color_layer_count;
 
     /// The colors of the different color layers.
-    ptg_color* color_layer_colors;
+    const ptg_color* color_layer_colors;
+};
 
-    /// Flags.
-    unsigned int flags;
+/// Parameters regarding the quantization step.
+struct ptg_quantization_parameters {
+    char padding;
+};
+
+/// Parameters for generating collision geometry.
+struct ptg_generation_parameters {
+    /// Source image parameters.
+    const ptg_image_parameters* image_parameters;
+
+    /// Parameters regarding the quantization step.
+    const ptg_quantization_parameters* quantization_parameters;
 };
 
 /**
@@ -72,7 +83,7 @@ struct ptg_source_parameters {
  * @param out_vertices Variable to store resulting vertices.
  * @todo Implement this. Currently does nothing.
  */
-PHOTOGEO_API void ptg_generate_collision_geometry(const ptg_source_parameters* parameters, unsigned int** out_vertex_count, ptg_vec2*** out_vertices);
+PHOTOGEO_API void ptg_generate_collision_geometry(const ptg_generation_parameters* parameters, unsigned int** out_vertex_count, ptg_vec2*** out_vertices);
 
 /**
  * Deallocate the memory that was allocated to store the results.
@@ -80,6 +91,20 @@ PHOTOGEO_API void ptg_generate_collision_geometry(const ptg_source_parameters* p
  * @param vertices Vertices.
  */
 PHOTOGEO_API void ptg_free_results(unsigned int* vertex_count, ptg_vec2** vertices);
+
+/**
+ * Quantize image.
+ * @param image_parameters Source image parameters.
+ * @param quantization_parameters Quantization parameters.
+ * @return Resulting color layers.
+ */
+PHOTOGEO_API ptg_color** ptg_quantize(const ptg_image_parameters* image_parameters, const ptg_quantization_parameters* quantization_parameters);
+
+/**
+ * Free color layers allocated during quantization.
+ * @param layers Color layers.
+ */
+PHOTOGEO_API void ptg_free_quantization_results(ptg_color** layers);
 
 #ifdef __cplusplus
 }
