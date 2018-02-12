@@ -3,11 +3,13 @@
 # Source files.
 set(SRCS
     photogeo.cpp
+    quantization/euclidean.cpp
 )
 
 # Header files. Specified in order to get them listed in the IDE.
 set(HEADERS
     ../include/photogeo.h
+    quantization/euclidean.hpp
 )
 
 # Generate directory groups for IDE.
