@@ -31,4 +31,11 @@ cie_xyz rgb_to_xyz(const ptg_color& color);
  */
 cie_lab xyz_to_lab(const cie_xyz& color);
 
+/**
+ * Convert sRGB component to linear.
+ * @param c Component to convert.
+ * @return Component in linear space.
+ */
+double srgb_to_linear(double c);
+
 #endif
