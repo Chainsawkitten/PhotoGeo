@@ -4,12 +4,14 @@
 set(SRCS
     conversion.cpp
     main.cpp
+    png.cpp
     svg.cpp
 )
 
 # Header files. Specified in order to get them listed in the IDE.
 set(HEADERS
     conversion.hpp
+    png.hpp
     svg.hpp
 )
 

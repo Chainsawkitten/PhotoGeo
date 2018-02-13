@@ -3,6 +3,7 @@
 #include <cstring>
 #include <vector>
 #include "conversion.hpp"
+#include "png.hpp"
 #include "svg.hpp"
 
 #define STB_IMAGE_IMPLEMENTATION
@@ -74,6 +75,8 @@ int main(int argc, const char* argv[]) {
     ptg_image_parameters imageParameters;
     memset(&imageParameters, 0, sizeof(ptg_image_parameters));
     imageParameters.image = reinterpret_cast<ptg_color*>(data);
+    imageParameters.width = width;
+    imageParameters.height = height;
     imageParameters.background_color_count = backgroundColors.size();
     imageParameters.background_colors = backgroundColors.data();
     imageParameters.color_layer_count = foregroundColors.size();
@@ -93,6 +96,13 @@ int main(int argc, const char* argv[]) {
 
     // Generate collision geometry.
     ptg_generate_collision_geometry(&generationParameters, &vertexCount, &vertices);
+
+    {
+        // Test quantization.
+        bool** layers = ptg_quantize(&imageParameters, &quantizationParameters);
+        WriteQuantizedToPNG("quantization.png", layers, width, height, foregroundColors.data(), foregroundColors.size());
+        ptg_free_quantization_results(layers, foregroundColors.size());
+    }
 
     // Free image.
     stbi_image_free(data);
