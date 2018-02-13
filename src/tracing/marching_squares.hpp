@@ -4,7 +4,7 @@
 #include <photogeo.h>
 
 /**
-* Trace image using marching squares.
+ * Trace image using marching squares.
  * @param layers Color layers.
  * @param layer_count The number of color layers.
  * @param image_parameters Source image parameters.
