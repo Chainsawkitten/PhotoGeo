@@ -106,6 +106,9 @@ struct ptg_generation_parameters {
 
     /// Parameters regarding the quantization step.
     const ptg_quantization_parameters* quantization_parameters;
+
+    /// Parameters regarding the tracing step.
+    const ptg_tracing_parameters* tracing_parameters;
 };
 
 /**
@@ -145,6 +148,7 @@ PHOTOGEO_API void ptg_free_quantization_results(ptg_quantization_results* quanti
  * @param tracing_parameters Tracing parameters.
  * @param out_tracing_results Variable to store quantization results.
  */
+PHOTOGEO_API void ptg_trace(const ptg_image_parameters* image_parameters, const ptg_quantization_results* quantization_results, const ptg_tracing_parameters* tracing_parameters, ptg_tracing_results* out_tracing_results);
 
 #ifdef __cplusplus
 }

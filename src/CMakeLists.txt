@@ -4,12 +4,14 @@
 set(SRCS
     photogeo.cpp
     quantization/euclidean.cpp
+    tracing/marching_squares.cpp
 )
 
 # Header files. Specified in order to get them listed in the IDE.
 set(HEADERS
     ../include/photogeo.h
     quantization/euclidean.hpp
+    tracing/marching_squares.hpp
 )
 
 # Generate directory groups for IDE.
