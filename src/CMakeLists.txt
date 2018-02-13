@@ -3,6 +3,7 @@
 # Source files.
 set(SRCS
     photogeo.cpp
+    quantization/color_conversion.cpp
     quantization/quantization.cpp
     tracing/marching_squares.cpp
 )
@@ -10,6 +11,7 @@ set(SRCS
 # Header files. Specified in order to get them listed in the IDE.
 set(HEADERS
     ../include/photogeo.h
+    quantization/color_conversion.hpp
     quantization/quantization.hpp
     tracing/marching_squares.hpp
 )
