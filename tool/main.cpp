@@ -84,6 +84,7 @@ int main(int argc, const char* argv[]) {
 
     // Quantization parameters.
     ptg_quantization_parameters quantizationParameters;
+    quantizationParameters.quantization_method = PTG_EUCLIDEAN;
 
     // Generation parameters.
     ptg_generation_parameters generationParameters;
@@ -101,7 +102,12 @@ int main(int argc, const char* argv[]) {
         // Test quantization.
         ptg_quantization_results quantization_results;
         ptg_quantize(&imageParameters, &quantizationParameters, &quantization_results);
-        WriteQuantizedToPNG("quantization.png", quantization_results.layers, width, height, foregroundColors.data(), foregroundColors.size());
+        WriteQuantizedToPNG("quantizationEuclidean.png", quantization_results.layers, width, height, foregroundColors.data(), foregroundColors.size());
+        ptg_free_quantization_results(&quantization_results);
+
+        quantizationParameters.quantization_method = PTG_CIE76;
+        ptg_quantize(&imageParameters, &quantizationParameters, &quantization_results);
+        WriteQuantizedToPNG("quantizationCIE76.png", quantization_results.layers, width, height, foregroundColors.data(), foregroundColors.size());
         ptg_free_quantization_results(&quantization_results);
     }
 

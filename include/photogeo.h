@@ -71,9 +71,16 @@ struct ptg_image_parameters {
     const ptg_color* color_layer_colors;
 };
 
+/// Method to used to quantize image.
+typedef enum {
+    PTG_EUCLIDEAN, ///< Euclidean distance in RGB space.
+    PTG_CIE76 ///< CIE76.
+} ptg_quantization_method;
+
 /// Parameters regarding the quantization step.
 struct ptg_quantization_parameters {
-    char padding;
+    /// Which method to use to quantize the image.
+    ptg_quantization_method quantization_method;
 };
 
 /// Results from the quantization step.
