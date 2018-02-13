@@ -9,15 +9,15 @@ void WriteQuantizedToPNG(const char* filename, const bool* const* layers, unsign
     unsigned char* data = new unsigned char[width * height * components];
 
     // Make image.
-    for (unsigned int y=0; y < height; ++y) {
-        for (unsigned int x=0; x < width; ++x) {
+    for (unsigned int y = 0; y < height; ++y) {
+        for (unsigned int x = 0; x < width; ++x) {
             // White background.
             data[(y * width + x) * components + 0] = 255;
             data[(y * width + x) * components + 1] = 255;
             data[(y * width + x) * components + 2] = 255;
 
             // Color layers.
-            for (unsigned int layer=0; layer < colorCount; ++layer) {
+            for (unsigned int layer = 0; layer < colorCount; ++layer) {
                 if (layers[layer][y * width + x]) {
                     data[(y * width + x) * components + 0] = colors[layer].r;
                     data[(y * width + x) * components + 1] = colors[layer].g;
