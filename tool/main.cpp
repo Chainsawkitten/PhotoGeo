@@ -91,29 +91,30 @@ int main(int argc, const char* argv[]) {
     generationParameters.quantization_parameters = &quantizationParameters;
 
     // Results.
-    unsigned int* vertexCount;
-    ptg_vec2** vertices;
+    ptg_outline** outlines;
+    unsigned int* outlineCount;
 
     // Generate collision geometry.
-    ptg_generate_collision_geometry(&generationParameters, &vertexCount, &vertices);
+    ptg_generate_collision_geometry(&generationParameters, &outlines, &outlineCount);
 
     {
         // Test quantization.
-        bool** layers = ptg_quantize(&imageParameters, &quantizationParameters);
-        WriteQuantizedToPNG("quantization.png", layers, width, height, foregroundColors.data(), foregroundColors.size());
-        ptg_free_quantization_results(layers, foregroundColors.size());
+        ptg_quantization_results quantization_results;
+        ptg_quantize(&imageParameters, &quantizationParameters, &quantization_results);
+        WriteQuantizedToPNG("quantization.png", quantization_results.layers, width, height, foregroundColors.data(), foregroundColors.size());
+        ptg_free_quantization_results(&quantization_results);
     }
 
     // Free image.
     stbi_image_free(data);
 
     // Free results.
-    ptg_free_results(vertexCount, vertices);
+    ptg_free_results(outlines, outlineCount);
 
 
     // Test SVG output.
-    vertexCount = new unsigned int[foregroundColors.size()];
-    vertices = new ptg_vec2*[foregroundColors.size()];
+    ptg_vec2** vertices = new ptg_vec2*[foregroundColors.size()];
+    unsigned int* vertexCount = new unsigned int[foregroundColors.size()];
 
     // Test data.
     for (unsigned int i = 0; i < foregroundColors.size(); ++i) {
