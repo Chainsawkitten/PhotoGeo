@@ -21,15 +21,21 @@ void ptg_free_results(ptg_outline** outlines, unsigned int* outline_count) {
 }
 
 void ptg_quantize(const ptg_image_parameters* image_parameters, const ptg_quantization_parameters* quantization_parameters, ptg_quantization_results* quantization_results) {
-    std::cerr << "ptg_quantize has not yet been implemented." << std::endl;
-
     // Allocate color layers.
     quantization_results->layers = new bool*[image_parameters->color_layer_count];
     for (unsigned int layer = 0; layer < image_parameters->color_layer_count; ++layer)
         quantization_results->layers[layer] = new bool[image_parameters->width * image_parameters->height];
 
     // Quantize image into layers.
-    quantize(image_parameters, quantization_results->layers, color_distance_euclidean_sqr);
+    switch (quantization_parameters->quantization_method) {
+    case PTG_EUCLIDEAN:
+        quantize(image_parameters, quantization_results->layers, color_distance_euclidean_sqr);
+        break;
+    case PTG_CIE76:
+        quantize(image_parameters, quantization_results->layers, color_distance_cie76);
+        std::cerr << "CIE76 quantization has not yet been implemented." << std::endl;
+        break;
+    }
     quantization_results->layer_count = image_parameters->color_layer_count;
 }
 

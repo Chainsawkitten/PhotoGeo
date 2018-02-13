@@ -48,3 +48,9 @@ unsigned int color_distance_euclidean_sqr(const ptg_color& a, const ptg_color& b
 
     return distance;
 }
+
+unsigned int color_distance_cie76(const ptg_color& a, const ptg_color& b) {
+    // TODO: Implement.
+
+    return (int)a.r - b.r;
+}
