@@ -10,4 +10,12 @@
  */
 void quantize_euclidean(const ptg_image_parameters* parameters, bool** layers);
 
+/**
+ * Calculate the squared distance between two colors.
+ * @param a First color.
+ * @param b Second color.
+ * @return The distance between the colors.
+ */
+unsigned int color_distance_euclidean_sqr(const ptg_color& a, const ptg_color& b);
+
 #endif
