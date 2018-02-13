@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include "quantization/euclidean.hpp"
+#include "tracing/marching_squares.hpp"
 
 void ptg_generate_collision_geometry(const ptg_generation_parameters* parameters, ptg_outline*** out_outlines, unsigned int** out_outline_counts) {
     std::cerr << "ptg_generate_collision_geometry has not yet been implemented." << std::endl;
@@ -38,4 +39,8 @@ void ptg_free_quantization_results(ptg_quantization_results* quantization_result
     delete[] quantization_results->layers;
 }
 
+void ptg_trace(const ptg_image_parameters* image_parameters, const ptg_quantization_results* quantization_results, const ptg_tracing_parameters* tracing_parameters, ptg_tracing_results* out_tracing_results) {
+    std::cerr << "ptg_trace has not yet been implemented." << std::endl;
+
+    trace_marching_squares(image_parameters, quantization_results, out_tracing_results);
 }
