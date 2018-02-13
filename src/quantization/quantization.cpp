@@ -1,6 +1,7 @@
 #include "quantization.hpp"
 
 #include <limits>
+#include "color_conversion.hpp"
 
 void quantize(const ptg_image_parameters* parameters, bool** layers, unsigned int (*distance_function)(const ptg_color&, const ptg_color&)) {
     for (unsigned int y = 0; y < parameters->height; ++y) {
@@ -50,7 +51,11 @@ unsigned int color_distance_euclidean_sqr(const ptg_color& a, const ptg_color& b
 }
 
 unsigned int color_distance_cie76(const ptg_color& a, const ptg_color& b) {
-    // TODO: Implement.
+    // Convert to CIE L*a*b*.
+    cie_lab a_lab = xyz_to_lab(rgb_to_xyz(a));
+    cie_lab b_lab = xyz_to_lab(rgb_to_xyz(b));
+
+    // TODO: Calculate delta-E.
 
     return (int)a.r - b.r;
 }
