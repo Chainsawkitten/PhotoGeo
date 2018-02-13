@@ -26,6 +26,15 @@ struct ptg_vec2 {
     unsigned int y;
 };
 
+/// Vertices representing one continuous edge.
+struct ptg_outline {
+    /// Number of vertices.
+    unsigned int vertex_count;
+
+    /// Vertex data.
+    ptg_vec2* vertices;
+};
+
 /// 3-channel color in RGB-space.
 struct ptg_color {
     /// Red channel.
@@ -67,6 +76,29 @@ struct ptg_quantization_parameters {
     char padding;
 };
 
+/// Results regarding the quantization step.
+struct ptg_quantization_results {
+    /// The color layers.
+    bool** layers;
+
+    /// Number of color layers.
+    unsigned int layer_count;
+};
+
+/// Parameters regarding the tracing step.
+struct ptg_tracing_parameters {
+    char padding;
+};
+
+/// Results regarding the tracing step.
+struct ptg_tracing_results {
+    /// The outlines.
+    ptg_outline outlines;
+
+    /// Number of outlines.
+    unsigned int outline_count;
+};
+
 /// Parameters for generating collision geometry.
 struct ptg_generation_parameters {
     /// Source image parameters.
@@ -79,33 +111,40 @@ struct ptg_generation_parameters {
 /**
  * Generate collision geometry from image.
  * @param parameters Input parameters.
- * @param out_vertex_count Variable to store resulting vertex counts.
- * @param out_vertices Variable to store resulting vertices.
+ * @param out_outlines Variable to store resulting outlines.
+ * @param out_outline_counts Variable to store resulting outline counts.
  * @todo Implement this. Currently does nothing.
  */
-PHOTOGEO_API void ptg_generate_collision_geometry(const ptg_generation_parameters* parameters, unsigned int** out_vertex_count, ptg_vec2*** out_vertices);
+PHOTOGEO_API void ptg_generate_collision_geometry(const ptg_generation_parameters* parameters, ptg_outline*** out_outlines, unsigned int** out_outline_counts);
 
 /**
  * Deallocate the memory that was allocated to store the results.
- * @param vertex_count Vertex count.
- * @param vertices Vertices.
+ * @param outlines The outlines.
+ * @param outline_count Number of outlines.
  */
-PHOTOGEO_API void ptg_free_results(unsigned int* vertex_count, ptg_vec2** vertices);
+PHOTOGEO_API void ptg_free_results(ptg_outline** outlines, unsigned int* outline_count);
 
 /**
  * Quantize image.
  * @param image_parameters Source image parameters.
  * @param quantization_parameters Quantization parameters.
- * @return Resulting color layers.
+ * @param out_quantization_results Variable to store quantization results.
  */
-PHOTOGEO_API bool** ptg_quantize(const ptg_image_parameters* image_parameters, const ptg_quantization_parameters* quantization_parameters);
+PHOTOGEO_API void ptg_quantize(const ptg_image_parameters* image_parameters, const ptg_quantization_parameters* quantization_parameters, ptg_quantization_results* out_quantization_results);
 
 /**
- * Free color layers allocated during quantization.
- * @param layers Color layers.
- * @param layer_count The number of color layers.
+ * Free allocated memory for results during quantization.
+ * @param quantization_results Quantization results to free.
  */
-PHOTOGEO_API void ptg_free_quantization_results(bool** layers, unsigned int layer_count);
+PHOTOGEO_API void ptg_free_quantization_results(ptg_quantization_results* quantization_results);
+
+/**
+ * Trace image.
+ * @param image_parameters Source image parameters.
+ * @param quantization_results Quantization results.
+ * @param tracing_parameters Tracing parameters.
+ * @param out_tracing_results Variable to store quantization results.
+ */
 
 #ifdef __cplusplus
 }
