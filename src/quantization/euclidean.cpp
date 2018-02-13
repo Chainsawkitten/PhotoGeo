@@ -3,14 +3,14 @@
 #include <limits>
 
 void quantize_euclidean(const ptg_image_parameters* parameters, bool** layers) {
-    for (unsigned int y=0; y < parameters->height; ++y) {
-        for (unsigned int x=0; x < parameters->width; ++x) {
+    for (unsigned int y = 0; y < parameters->height; ++y) {
+        for (unsigned int x = 0; x < parameters->width; ++x) {
             ptg_color color = parameters->image[y * parameters->width + x];
 
             // Find closest color.
             unsigned int layer = 0;
             unsigned int shortest = std::numeric_limits<unsigned int>::max();
-            for (unsigned int i=0; i < parameters->background_color_count + parameters->color_layer_count; ++i) {
+            for (unsigned int i = 0; i < parameters->background_color_count + parameters->color_layer_count; ++i) {
                 // Color to compare to.
                 ptg_color comparisonColor;
                 if (i < parameters->background_color_count)
@@ -27,7 +27,7 @@ void quantize_euclidean(const ptg_image_parameters* parameters, bool** layers) {
             }
 
             // Write color layers.
-            for (unsigned int i=0; i < parameters->color_layer_count; ++i)
+            for (unsigned int i = 0; i < parameters->color_layer_count; ++i)
                 layers[i][y * parameters->width + x] = (i == layer - parameters->background_color_count);
         }
     }

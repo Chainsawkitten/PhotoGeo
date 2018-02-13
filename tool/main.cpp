@@ -116,7 +116,7 @@ int main(int argc, const char* argv[]) {
     vertices = new ptg_vec2*[foregroundColors.size()];
 
     // Test data.
-    for (unsigned int i=0; i < foregroundColors.size(); ++i) {
+    for (unsigned int i = 0; i < foregroundColors.size(); ++i) {
         vertexCount[i] = 2;
         vertices[i] = new ptg_vec2[vertexCount[i]];
 
@@ -132,7 +132,7 @@ int main(int argc, const char* argv[]) {
 
     // Clean up test data.
     delete[] vertexCount;
-    for (unsigned int i=0; i < foregroundColors.size(); ++i)
+    for (unsigned int i = 0; i < foregroundColors.size(); ++i)
         delete[] vertices[i];
     delete[] vertices;
 
