@@ -1,7 +1,7 @@
 #include <photogeo.h>
 
 #include <iostream>
-#include "quantization/euclidean.hpp"
+#include "quantization/quantization.hpp"
 #include "tracing/marching_squares.hpp"
 
 void ptg_generate_collision_geometry(const ptg_generation_parameters* parameters, ptg_outline*** out_outlines, unsigned int** out_outline_counts) {
@@ -29,7 +29,7 @@ void ptg_quantize(const ptg_image_parameters* image_parameters, const ptg_quanti
         quantization_results->layers[layer] = new bool[image_parameters->width * image_parameters->height];
 
     // Quantize image into layers.
-    quantize_euclidean(image_parameters, quantization_results->layers);
+    quantize(image_parameters, quantization_results->layers, color_distance_euclidean_sqr);
     quantization_results->layer_count = image_parameters->color_layer_count;
 }
 

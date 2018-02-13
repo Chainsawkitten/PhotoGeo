@@ -1,8 +1,8 @@
-#include "euclidean.hpp"
+#include "quantization.hpp"
 
 #include <limits>
 
-void quantize_euclidean(const ptg_image_parameters* parameters, bool** layers) {
+void quantize(const ptg_image_parameters* parameters, bool** layers, unsigned int (*distance_function)(const ptg_color&, const ptg_color&)) {
     for (unsigned int y = 0; y < parameters->height; ++y) {
         for (unsigned int x = 0; x < parameters->width; ++x) {
             ptg_color color = parameters->image[y * parameters->width + x];
@@ -19,7 +19,7 @@ void quantize_euclidean(const ptg_image_parameters* parameters, bool** layers) {
                     comparisonColor = parameters->color_layer_colors[i - parameters->background_color_count];
 
                 // Calculate distance.
-                unsigned int distance = color_distance_euclidean_sqr(color, comparisonColor);
+                unsigned int distance = distance_function(color, comparisonColor);
                 if (distance < shortest) {
                     shortest = distance;
                     layer = i;
