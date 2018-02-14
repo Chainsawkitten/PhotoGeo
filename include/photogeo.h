@@ -76,7 +76,7 @@ struct ptg_quantization_parameters {
     char padding;
 };
 
-/// Results regarding the quantization step.
+/// Results from the quantization step.
 struct ptg_quantization_results {
     /// The color layers.
     bool** layers;
@@ -90,7 +90,7 @@ struct ptg_tracing_parameters {
     char padding;
 };
 
-/// Results regarding the tracing step.
+/// Results from the tracing step.
 struct ptg_tracing_results {
     /// The outlines.
     ptg_outline outlines;
@@ -123,9 +123,9 @@ PHOTOGEO_API void ptg_generate_collision_geometry(const ptg_generation_parameter
 /**
  * Deallocate the memory that was allocated to store the results.
  * @param outlines The outlines.
- * @param outline_count Number of outlines.
+ * @param outline_counts Number of outlines.
  */
-PHOTOGEO_API void ptg_free_results(ptg_outline** outlines, unsigned int* outline_count);
+PHOTOGEO_API void ptg_free_results(ptg_outline** outlines, unsigned int* outline_counts);
 
 /**
  * Quantize image.
