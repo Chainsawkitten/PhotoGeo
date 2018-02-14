@@ -3,7 +3,7 @@
 
 #include <photogeo.h>
 
-/**
+/*
  * Quantize an image.
  * @param parameters Image input parameters.
  * @param layers Color layers to store results in.
@@ -11,7 +11,7 @@
  */
 void quantize(const ptg_image_parameters* parameters, bool** layers, unsigned int (*distance_function)(const ptg_color&, const ptg_color&));
 
-/**
+/*
  * Calculate the squared euclidean distance between two colors in RGB space.
  * @param a First color.
  * @param b Second color.
@@ -19,7 +19,7 @@ void quantize(const ptg_image_parameters* parameters, bool** layers, unsigned in
  */
 unsigned int color_distance_euclidean_sqr(const ptg_color& a, const ptg_color& b);
 
-/**
+/*
  * Calculate the CIE76 delta-e between two colors.
  * @param a First color.
  * @param b Second color.
