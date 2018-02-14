@@ -32,7 +32,7 @@ void ptg_quantize(const ptg_image_parameters* image_parameters, const ptg_quanti
         quantize(image_parameters, quantization_results->layers, color_distance_euclidean_sqr);
         break;
     case PTG_CIE76:
-        quantize(image_parameters, quantization_results->layers, color_distance_cie76);
+        quantize(image_parameters, quantization_results->layers, color_distance_cie76_sqr);
         std::cerr << "CIE76 quantization has not yet been implemented." << std::endl;
         break;
     }
