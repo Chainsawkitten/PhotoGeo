@@ -85,6 +85,9 @@ int main(int argc, const char* argv[]) {
     // Quantization parameters.
     ptg_quantization_parameters quantizationParameters;
 
+    // Tracing parameters.
+    ptg_tracing_parameters tracingParameters;
+
     // Generation parameters.
     ptg_generation_parameters generationParameters;
     generationParameters.image_parameters = &imageParameters;
@@ -102,6 +105,17 @@ int main(int argc, const char* argv[]) {
         ptg_quantization_results quantization_results;
         ptg_quantize(&imageParameters, &quantizationParameters, &quantization_results);
         WriteQuantizedToPNG("quantization.png", quantization_results.layers, width, height, foregroundColors.data(), foregroundColors.size());
+        ptg_free_quantization_results(&quantization_results);
+    }
+
+    {
+        // Test tracing.
+        ptg_quantization_results quantization_results;
+        ptg_quantize(&imageParameters, &quantizationParameters, &quantization_results);
+        ptg_tracing_results tracing_results;
+        ptg_trace(&imageParameters, &quantization_results, &tracingParameters, &tracing_results);
+        //WriteSVG(outputFilename, foregroundColors.size(), foregroundColors.data(), vertexCount, vertices, true);
+        ptg_free_tracing_results(&tracing_results);
         ptg_free_quantization_results(&quantization_results);
     }
 
