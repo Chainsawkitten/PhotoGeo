@@ -34,8 +34,8 @@ cie_lab xyz_to_lab(const cie_xyz& color);
 
 /*
  * Convert sRGB component to linear RGB.
- * @param component Component to convert.
- * @return Component in linear space.
+ * @param component Component to convert (0-255).
+ * @return Component in linear space (0-1).
  */
 double srgb_to_linear(unsigned char component);
 
