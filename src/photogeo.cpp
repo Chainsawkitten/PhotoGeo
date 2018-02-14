@@ -57,8 +57,11 @@ void ptg_trace(const ptg_image_parameters* image_parameters, const ptg_quantizat
 }
 
 void ptg_free_tracing_results(ptg_tracing_results* tracing_results) {
-    for (unsigned int layer_index = 0; layer_index < tracing_results->layer_count; ++layer_index)
-        delete[] tracing_results->outlines[layer_index]->vertices;
+    for (unsigned int layer_index = 0; layer_index < tracing_results->layer_count; ++layer_index) {
+        for (unsigned int outline_index = 0; outline_index < tracing_results->outline_counts[layer_index]; ++outline_index)
+            delete[] tracing_results->outlines[layer_index][outline_index].vertices;
+        delete[] tracing_results->outlines[layer_index];
+    }
     delete[] tracing_results->outlines;
     delete[] tracing_results->outline_counts;
 }
