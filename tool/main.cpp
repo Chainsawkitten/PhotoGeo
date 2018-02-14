@@ -93,6 +93,7 @@ int main(int argc, const char* argv[]) {
     ptg_generation_parameters generationParameters;
     generationParameters.image_parameters = &imageParameters;
     generationParameters.quantization_parameters = &quantizationParameters;
+    generationParameters.tracing_parameters = &tracingParameters;
 
     // Results.
     ptg_outline** outlines;
@@ -123,7 +124,7 @@ int main(int argc, const char* argv[]) {
         ptg_tracing_results tracing_results;
         ptg_trace(&imageParameters, &quantization_results, &tracingParameters, &tracing_results);
         std::cout << "Writing to tracing.svg" << std::endl;
-        WriteSVG("tracing.svg", foregroundColors.size(), foregroundColors.data(), tracing_results.outlines, tracing_results.outline_counts, true);
+        WriteSVG("tracing.svg", foregroundColors.size(), foregroundColors.data(), tracing_results.outlines, tracing_results.outline_counts, false);
         ptg_free_tracing_results(&tracing_results);
         ptg_free_quantization_results(&quantization_results);
     }
