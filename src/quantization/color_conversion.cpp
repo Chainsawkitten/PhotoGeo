@@ -25,10 +25,27 @@ cie_xyz rgb_to_xyz(const ptg_color& color) {
     return result;
 }
 
+// Helper function for xyz_to_lab.
+static double f(double t) {
+    if (t > 0.008856)
+        return pow(t, 1.0 / 3.0);
+
+    return t * 7.787 + 4.0 / 29.0;
+}
+
 cie_lab xyz_to_lab(const cie_xyz& color) {
     cie_lab result;
 
-    // TODO: Implement.
+    // Convert to L*a*b* using illuminant D65 with normalization Y=100.
+    // https://en.wikipedia.org/wiki/Lab_color_space#CIELAB-CIEXYZ_conversions
+    // Retrieved 2018-02-14
+    const double x_n = 95.047;
+    const double y_n = 100.0;
+    const double z_n = 108.883;
+
+    result.l = 116.0 * f(color.y / y_n) - 16.0;
+    result.a = 500.0 * (f(color.x / x_n) - f(color.y / y_n));
+    result.b = 200.0 * (f(color.y / y_n) - f(color.z / z_n));
 
     return result;
 }
