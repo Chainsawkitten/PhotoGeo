@@ -3,7 +3,7 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include <stb_image_write.h>
 
-void WriteQuantizedToPNG(const char* filename, const bool* const* layers, unsigned int width, unsigned int height, const ptg_color* colors, unsigned int colorCount) {
+void write_quantized_to_png(const char* filename, const bool* const* layers, unsigned int width, unsigned int height, const ptg_color* colors, unsigned int color_count) {
     // Allocate image data.
     const unsigned int components = 3;
     unsigned char* data = new unsigned char[width * height * components];
@@ -17,7 +17,7 @@ void WriteQuantizedToPNG(const char* filename, const bool* const* layers, unsign
             data[(y * width + x) * components + 2] = 255;
 
             // Color layers.
-            for (unsigned int layer = 0; layer < colorCount; ++layer) {
+            for (unsigned int layer = 0; layer < color_count; ++layer) {
                 if (layers[layer][y * width + x]) {
                     data[(y * width + x) * components + 0] = colors[layer].r;
                     data[(y * width + x) * components + 1] = colors[layer].g;

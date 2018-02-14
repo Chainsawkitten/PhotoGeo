@@ -3,7 +3,7 @@
 #include <iostream>
 #include <fstream>
 
-void WriteSVG(const char* filename, unsigned int layers, ptg_color* colors, ptg_outline** outlines, unsigned int* outline_counts, bool markers) {
+void write_svg(const char* filename, unsigned int layers, ptg_color* colors, ptg_outline** outlines, unsigned int* outline_counts, bool markers) {
     // Open output file.
     std::ofstream file(filename);
     if (!file.is_open()) {

@@ -8,6 +8,6 @@
  * @param text The text to convert.
  * @return The color.
  */
-ptg_color TextToColor(const char* text);
+ptg_color text_to_color(const char* text);
 
 #endif

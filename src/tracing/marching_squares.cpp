@@ -19,7 +19,7 @@ struct line {
  * @param out_lines Vector to store resulting lines.
  * @param out_vertices Vector to store resulting vertices.
  */
-static void marching_squares(bool topLeft, bool topRight, bool bottomRight, bool bottomLeft, unsigned int x, unsigned int y, std::vector<line>& out_lines, std::vector<ptg_vec2>& out_vertices) {
+static void marching_kernel(bool topLeft, bool topRight, bool bottomRight, bool bottomLeft, unsigned int x, unsigned int y, std::vector<line>& out_lines, std::vector<ptg_vec2>& out_vertices) {
 
     // Calculate current configuration of marching squares.
     const unsigned int square_configuration = topLeft * 8 + topRight * 4 + bottomRight * 2 + bottomLeft * 1;
@@ -141,7 +141,7 @@ static void marching_squares(bool topLeft, bool topRight, bool bottomRight, bool
     }
 }
 
-void trace_marching_squares(bool* layer, unsigned int layer_width, unsigned int layer_height, ptg_outline*& out_outlines, unsigned int& out_outline_count) {
+void ptgi_trace_marching_squares(bool* layer, unsigned int layer_width, unsigned int layer_height, ptg_outline*& out_outlines, unsigned int& out_outline_count) {
 
     std::vector<line> lines;
     std::vector<ptg_vec2> vertices;
@@ -149,7 +149,7 @@ void trace_marching_squares(bool* layer, unsigned int layer_width, unsigned int 
     // Execute marching squares on layer.
     for (unsigned int it = 0; it < layer_width * (layer_height - 1); ++it)
         if ((it + 1) % layer_width != 0)
-            marching_squares(layer[it], layer[it + 1], layer[it + layer_width], layer[it + layer_width + 1], it % layer_width + 1, it / layer_width + 1, lines, vertices);
+            marching_kernel(layer[it], layer[it + 1], layer[it + layer_width], layer[it + layer_width + 1], it % layer_width + 1, it / layer_width + 1, lines, vertices);
 
     // Create outlines.
     out_outline_count = static_cast<unsigned int>(vertices.size() / 2);

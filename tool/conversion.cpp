@@ -1,6 +1,6 @@
 #include "conversion.hpp"
 
-ptg_color TextToColor(const char* text) {
+ptg_color text_to_color(const char* text) {
     unsigned char values[3] = {0};
     for (int i = 0; *text != '\0'; ++text) {
         if (*text == ':') {
