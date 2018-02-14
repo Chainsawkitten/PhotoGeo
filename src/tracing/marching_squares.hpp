@@ -5,10 +5,12 @@
 
 /**
  * Trace image using marching squares.
- * @param image_parameters Source image parameters.
- * @param quantization_results Quantization parameters.
- * @param out_tracing_results Variable to store tracing results.
+ * @param layer Binary layer.
+ * @param layer_width Width of the layer.
+ * @param layer_height Height of the layer.
+ * @param out_outlines Variable to store resulting outlines.
+ * @param out_outline_count Variable to store number of resulting outlines.
  */
-void trace_marching_squares(const ptg_image_parameters* image_parameters, const ptg_quantization_results* quantization_results, ptg_tracing_results* out_tracing_results);
+void trace_marching_squares(bool* layer, unsigned int layer_width, unsigned int layer_height, ptg_outline*& out_outlines, unsigned int& out_outline_count);
 
 #endif
