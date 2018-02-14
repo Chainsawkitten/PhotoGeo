@@ -5,6 +5,15 @@ project(PhotoGeo)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
+# Compiler-specific configuration.
+if(UNIX OR MINGW)
+    set(CMAKE_CXX_FLAGS "-Wall -Wextra")
+    set(CMAKE_CXX_FLAGS_DEBUG "-g -O1")
+    set(CMAKE_CXX_FLAGS_RELEASE "-O3")
+elseif(MSVC)
+    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+endif()
+
 # This function should be passed a list of all files in a target. It will automatically generate
 # file groups following the directory hierarchy, so that the layout of the files in IDEs matches the
 # one in the filesystem.
