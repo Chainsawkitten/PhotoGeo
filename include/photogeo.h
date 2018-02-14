@@ -73,7 +73,8 @@ struct ptg_image_parameters {
 
 /// Method to use to quantize image.
 typedef enum {
-    PTG_EUCLIDEAN, ///< Euclidean distance in RGB space.
+    PTG_EUCLIDEAN_SRGB, ///< Euclidean distance in sRGB space.
+    PTG_EUCLIDEAN_LINEAR, ///< Euclidean distance in linear RGB space.
     PTG_CIE76 ///< CIE76.
 } ptg_quantization_method;
 

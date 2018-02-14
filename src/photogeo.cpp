@@ -28,12 +28,14 @@ void ptg_quantize(const ptg_image_parameters* image_parameters, const ptg_quanti
 
     // Quantize image into layers.
     switch (quantization_parameters->quantization_method) {
-        case PTG_EUCLIDEAN:
-            quantize(image_parameters, quantization_results->layers, color_distance_euclidean_sqr);
+        case PTG_EUCLIDEAN_SRGB:
+            quantize(image_parameters, quantization_results->layers, color_distance_euclidean_srgb_sqr);
+            break;
+        case PTG_EUCLIDEAN_LINEAR:
+            quantize(image_parameters, quantization_results->layers, color_distance_euclidean_linear_sqr);
             break;
         case PTG_CIE76:
             quantize(image_parameters, quantization_results->layers, color_distance_cie76_sqr);
-            std::cerr << "CIE76 quantization has not yet been implemented." << std::endl;
             break;
     }
     quantization_results->layer_count = image_parameters->color_layer_count;

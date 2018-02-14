@@ -34,20 +34,28 @@ void quantize(const ptg_image_parameters* parameters, bool** layers, double (*di
     }
 }
 
-double color_distance_euclidean_sqr(const ptg_color& a, const ptg_color& b) {
-    // Red.
-    double difference = (double)a.r - b.r;
+// Calculate the distance between two points using the Pythagoran theorem.
+static double distance(double x1, double y1, double z1, double x2, double y2, double z2) {
+    double difference = x2 - x1;
     double distance = difference * difference;
 
-    // Green.
-    difference = (double)a.g - b.g;
+    difference = y2 - y1;
     distance += difference * difference;
 
-    // Blue.
-    difference = (double)a.b - b.b;
+    difference = z2 - z1;
     distance += difference * difference;
 
     return distance;
+}
+
+double color_distance_euclidean_srgb_sqr(const ptg_color& a, const ptg_color& b) {
+    return distance(a.r, a.g, a.b,
+                    b.r, b.g, b.b);
+}
+
+double color_distance_euclidean_linear_sqr(const ptg_color& a, const ptg_color& b) {
+    return distance(srgb_to_linear(a.r), srgb_to_linear(a.g), srgb_to_linear(a.b),
+                    srgb_to_linear(b.r), srgb_to_linear(b.g), srgb_to_linear(b.b));
 }
 
 double color_distance_cie76_sqr(const ptg_color& a, const ptg_color& b) {
@@ -56,18 +64,6 @@ double color_distance_cie76_sqr(const ptg_color& a, const ptg_color& b) {
     cie_lab b_lab = xyz_to_lab(rgb_to_xyz(b));
 
     // Calculate delta-E.
-
-    // L*.
-    double difference = a_lab.l - b_lab.l;
-    double distance = difference * difference;
-
-    // a*.
-    difference = a_lab.a - b_lab.a;
-    distance += difference * difference;
-
-    // b*.
-    difference = a_lab.b - b_lab.b;
-    distance += difference * difference;
-
-    return distance;
+    return distance(a_lab.l, a_lab.a, a_lab.b,
+                    b_lab.l, b_lab.a, b_lab.b);
 }

@@ -12,12 +12,20 @@
 void quantize(const ptg_image_parameters* parameters, bool** layers, double (*distance_function)(const ptg_color&, const ptg_color&));
 
 /*
- * Calculate the squared euclidean distance between two colors in RGB space.
+ * Calculate the squared euclidean distance between two colors in sRGB space.
  * @param a First color.
  * @param b Second color.
  * @return The distance between the colors.
  */
-double color_distance_euclidean_sqr(const ptg_color& a, const ptg_color& b);
+double color_distance_euclidean_srgb_sqr(const ptg_color& a, const ptg_color& b);
+
+/*
+ * Calculate the squared euclidean distance between two colors in linear RGB space.
+ * @param a First color.
+ * @param b Second color.
+ * @return The distance between the colors.
+ */
+double color_distance_euclidean_linear_sqr(const ptg_color& a, const ptg_color& b);
 
 /*
  * Calculate the squared CIE76 delta-e between two colors.
