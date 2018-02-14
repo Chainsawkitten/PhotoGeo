@@ -10,4 +10,8 @@ Procedural collision geometry generation using photos and color labels.
 ## License
 Released under the [MIT license](LICENSE).
 
-Uses OpenCV which is licensed under 3-clause BSD.
+PhotoGeo uses the following libraries with their own licenses:
+| Library  | License |
+| --- | --- |
+| [OpenCV](https://github.com/opencv/opencv) | 3-clause BSD |
+| [stb](https://github.com/nothings/stb) | Public domain |
