@@ -7,6 +7,9 @@ Procedural collision geometry generation using photos and color labels.
 3. Use CMake to generate make/project files for PhotoGeo.
 4. Build PhotoGeo.
 
+## Documentation
+Use [Doxygen](http://www.stack.nl/~dimitri/doxygen/) to generate documentation.
+
 ## License
 Released under the [MIT license](LICENSE).
 
