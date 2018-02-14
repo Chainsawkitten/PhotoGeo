@@ -137,10 +137,12 @@ void trace_marching_squares(bool* layer, unsigned int layer_width, unsigned int 
     // Execute marching squares on layer.
     unsigned int it = 0;
     while (it / (layer_height - 1) < layer_height) {
-        if (it % (layer_width - 1) == 0)
+        if ((it + 1) % layer_width == 0)
             ++it;
 
         marching_squares(layer[it], layer[it + 1], layer[it + layer_width], layer[it + layer_width + 1], it % layer_width + 1, it / layer_height + 1, edges, vertices);
+
+        ++it;
     }
 
     out_outline_count = static_cast<unsigned int>(vertices.size() / 2);
