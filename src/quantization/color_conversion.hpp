@@ -27,6 +27,7 @@ cie_xyz rgb_to_xyz(const ptg_color& color);
 
 /*
  * Convert color from CIE 1931 XYZ space to CIE L*a*b* space.
+ * Uses D65 illuminant.
  * @param color The color to convert.
  * @return The color in CIE L*a*b* space.
  */
