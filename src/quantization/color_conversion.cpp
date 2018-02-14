@@ -24,6 +24,8 @@ cie_lab xyz_to_lab(const cie_xyz& color) {
 }
 
 double srgb_to_linear(unsigned char component) {
+    // https://en.wikipedia.org/wiki/SRGB#The_reverse_transformation
+
     double a = 0.055;
     double cutoff = 0.04045;
 
