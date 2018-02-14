@@ -164,8 +164,8 @@ int main(int argc, const char* argv[]) {
 
     // Clean up test data.
     for (unsigned int layer = 0; layer < foregroundColors.size(); ++layer) {
-        for (unsigned int outline = 0; outline < foregroundColors.size(); ++outline)
-            delete[] outlines_test[outline]->vertices;
+        for (unsigned int outline = 0; outline < outline_counts_test[layer]; ++outline)
+            delete[] outlines_test[layer][outline].vertices;
         delete[] outlines_test[layer];
     }
     delete[] outline_counts_test;
