@@ -10,8 +10,8 @@
  * @param width The width of the image.
  * @param height The height of the image.
  * @param colors The foreground colors.
- * @param colorCount The number of layers.
+ * @param color_count The number of color layers.
  */
-void WriteQuantizedToPNG(const char* filename, const bool* const* layers, unsigned int width, unsigned int height, const ptg_color* colors, unsigned int colorCount);
+void write_quantized_to_png(const char* filename, const bool* const* layers, unsigned int width, unsigned int height, const ptg_color* colors, unsigned int color_count);
 
 #endif

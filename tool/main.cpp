@@ -11,30 +11,31 @@
 
 int main(int argc, const char* argv[]) {
     // Handle commandline arguments.
-    const char* inputFilename = "";
-    const char* outputFilename = "";
-    std::vector<ptg_color> backgroundColors;
-    std::vector<ptg_color> foregroundColors;
+    const char* input_filename = "";
+    const char* output_filename = "";
+    std::vector<ptg_color> background_colors;
+    std::vector<ptg_color> foreground_colors;
     bool test_quantization = false;
     bool test_tracing = false;
+
     for (int argument = 1; argument < argc; ++argument) {
         // All arguments start with -.
         if (argv[argument][0] == '-') {
             // Input filename.
             if (argv[argument][1] == 'i' && argc > argument + 1)
-                inputFilename = argv[++argument];
+                input_filename = argv[++argument];
 
             // Output filename.
             if (argv[argument][1] == 'o' && argc > argument + 1)
-                outputFilename = argv[++argument];
+                output_filename = argv[++argument];
 
             // Background color.
             if (argv[argument][1] == 'b' && argc > argument + 1)
-                backgroundColors.push_back(TextToColor(argv[++argument]));
+                background_colors.push_back(text_to_color(argv[++argument]));
 
             // Foreground color.
             if (argv[argument][1] == 'f' && argc > argument + 1)
-                foregroundColors.push_back(TextToColor(argv[++argument]));
+                foreground_colors.push_back(text_to_color(argv[++argument]));
 
             // Test quantization.
             if (argv[argument][1] == 't' && argv[argument][2] == 'q')
@@ -47,8 +48,8 @@ int main(int argc, const char* argv[]) {
     }
 
     // Display help if no valid configuration was given.
-    if (inputFilename[0] == '\0' || outputFilename[0] == '\0') {
-        std::cout << "usage: PhotoGeoCmd -i inputFilename -o outputFilename" << std::endl << std::endl;
+    if (input_filename[0] == '\0' || output_filename[0] == '\0') {
+        std::cout << "usage: PhotoGeoCmd -i input_filename -o output_filename" << std::endl << std::endl;
 
         std::cout << "Parameters:" << std::endl;
         std::cout << "  -i  Specify filename of source image." << std::endl;
@@ -66,17 +67,17 @@ int main(int argc, const char* argv[]) {
     }
 
     // We need at least one color.
-    if (backgroundColors.size() + foregroundColors.size() == 0) {
+    if (background_colors.size() + foreground_colors.size() == 0) {
         std::cout << "You must specify at least one background or foreground color." << std::endl;
         return 0;
     }
 
     // Load source image.
     int components, width, height;
-    unsigned char* data = stbi_load(inputFilename, &width, &height, &components, 0);
+    unsigned char* data = stbi_load(input_filename, &width, &height, &components, 0);
 
     if (data == NULL) {
-        std::cerr << "Couldn't load image " << inputFilename << "." << std::endl;
+        std::cerr << "Couldn't load image " << input_filename << "." << std::endl;
         return 1;
     }
 
@@ -86,62 +87,62 @@ int main(int argc, const char* argv[]) {
     }
 
     // Source image parameters.
-    ptg_image_parameters imageParameters;
-    memset(&imageParameters, 0, sizeof(ptg_image_parameters));
-    imageParameters.image = reinterpret_cast<ptg_color*>(data);
-    imageParameters.width = width;
-    imageParameters.height = height;
-    imageParameters.background_color_count = backgroundColors.size();
-    imageParameters.background_colors = backgroundColors.data();
-    imageParameters.color_layer_count = foregroundColors.size();
-    imageParameters.color_layer_colors = foregroundColors.data();
+    ptg_image_parameters image_parameters;
+    memset(&image_parameters, 0, sizeof(ptg_image_parameters));
+    image_parameters.image = reinterpret_cast<ptg_color*>(data);
+    image_parameters.width = width;
+    image_parameters.height = height;
+    image_parameters.background_color_count = background_colors.size();
+    image_parameters.background_colors = background_colors.data();
+    image_parameters.color_layer_count = foreground_colors.size();
+    image_parameters.color_layer_colors = foreground_colors.data();
 
     // Quantization parameters.
-    ptg_quantization_parameters quantizationParameters;
-    quantizationParameters.quantization_method = PTG_EUCLIDEAN_SRGB;
+    ptg_quantization_parameters quantization_parameters;
+    quantization_parameters.quantization_method = PTG_EUCLIDEAN_SRGB;
 
     // Tracing parameters.
-    ptg_tracing_parameters tracingParameters;
+    ptg_tracing_parameters tracing_parameters;
 
     // Generation parameters.
-    ptg_generation_parameters generationParameters;
-    generationParameters.image_parameters = &imageParameters;
-    generationParameters.quantization_parameters = &quantizationParameters;
-    generationParameters.tracing_parameters = &tracingParameters;
+    ptg_generation_parameters generation_parameters;
+    generation_parameters.image_parameters = &image_parameters;
+    generation_parameters.quantization_parameters = &quantization_parameters;
+    generation_parameters.tracing_parameters = &tracing_parameters;
 
     // Results.
     ptg_outline** outlines;
     unsigned int* outline_counts;
 
     // Generate collision geometry.
-    ptg_generate_collision_geometry(&generationParameters, &outlines, &outline_counts);
+    ptg_generate_collision_geometry(&generation_parameters, &outlines, &outline_counts);
 
     // Test quantization.
     if (test_quantization) {
         std::cout << "Testing quantization." << std::endl;
         ptg_quantization_results quantization_results;
-        ptg_quantize(&imageParameters, &quantizationParameters, &quantization_results);
-        WriteQuantizedToPNG("quantizationEuclideanSRGB.png", quantization_results.layers, width, height, foregroundColors.data(), foregroundColors.size());
+        ptg_quantize(&image_parameters, &quantization_parameters, &quantization_results);
+        write_quantized_to_png("quantization_euclidean_srgb.png", quantization_results.layers, width, height, foreground_colors.data(), foreground_colors.size());
         ptg_free_quantization_results(&quantization_results);
 
-        quantizationParameters.quantization_method = PTG_EUCLIDEAN_LINEAR;
-        ptg_quantize(&imageParameters, &quantizationParameters, &quantization_results);
-        WriteQuantizedToPNG("quantizationEuclideanLinear.png", quantization_results.layers, width, height, foregroundColors.data(), foregroundColors.size());
+        quantization_parameters.quantization_method = PTG_EUCLIDEAN_LINEAR;
+        ptg_quantize(&image_parameters, &quantization_parameters, &quantization_results);
+        write_quantized_to_png("quantization_euclidean_linear.png", quantization_results.layers, width, height, foreground_colors.data(), foreground_colors.size());
         ptg_free_quantization_results(&quantization_results);
 
-        quantizationParameters.quantization_method = PTG_CIE76;
-        ptg_quantize(&imageParameters, &quantizationParameters, &quantization_results);
-        WriteQuantizedToPNG("quantizationCIE76.png", quantization_results.layers, width, height, foregroundColors.data(), foregroundColors.size());
+        quantization_parameters.quantization_method = PTG_CIE76;
+        ptg_quantize(&image_parameters, &quantization_parameters, &quantization_results);
+        write_quantized_to_png("quantization_CIE76.png", quantization_results.layers, width, height, foreground_colors.data(), foreground_colors.size());
         ptg_free_quantization_results(&quantization_results);
 
-        quantizationParameters.quantization_method = PTG_CIE94;
-        ptg_quantize(&imageParameters, &quantizationParameters, &quantization_results);
-        WriteQuantizedToPNG("quantizationCIE94.png", quantization_results.layers, width, height, foregroundColors.data(), foregroundColors.size());
+        quantization_parameters.quantization_method = PTG_CIE94;
+        ptg_quantize(&image_parameters, &quantization_parameters, &quantization_results);
+        write_quantized_to_png("quantization_CIE94.png", quantization_results.layers, width, height, foreground_colors.data(), foreground_colors.size());
         ptg_free_quantization_results(&quantization_results);
 
-        quantizationParameters.quantization_method = PTG_CIEDE2000;
-        ptg_quantize(&imageParameters, &quantizationParameters, &quantization_results);
-        WriteQuantizedToPNG("quantizationCIEDE2000.png", quantization_results.layers, width, height, foregroundColors.data(), foregroundColors.size());
+        quantization_parameters.quantization_method = PTG_CIEDE2000;
+        ptg_quantize(&image_parameters, &quantization_parameters, &quantization_results);
+        write_quantized_to_png("quantization_CIEDE2000.png", quantization_results.layers, width, height, foreground_colors.data(), foreground_colors.size());
         ptg_free_quantization_results(&quantization_results);
     }
 
@@ -149,11 +150,11 @@ int main(int argc, const char* argv[]) {
     if (test_tracing) {
         std::cout << "Testing tracing." << std::endl;
         ptg_quantization_results quantization_results;
-        ptg_quantize(&imageParameters, &quantizationParameters, &quantization_results);
+        ptg_quantize(&image_parameters, &quantization_parameters, &quantization_results);
         ptg_tracing_results tracing_results;
-        ptg_trace(&imageParameters, &quantization_results, &tracingParameters, &tracing_results);
+        ptg_trace(&image_parameters, &quantization_results, &tracing_parameters, &tracing_results);
         std::cout << "Writing to tracing.svg" << std::endl;
-        WriteSVG("tracing.svg", foregroundColors.size(), foregroundColors.data(), tracing_results.outlines, tracing_results.outline_counts, false);
+        write_svg("tracing.svg", foreground_colors.size(), foreground_colors.data(), tracing_results.outlines, tracing_results.outline_counts, false);
         ptg_free_tracing_results(&tracing_results);
         ptg_free_quantization_results(&quantization_results);
     }
@@ -163,37 +164,6 @@ int main(int argc, const char* argv[]) {
 
     // Free results.
     ptg_free_results(outlines, outline_counts);
-
-
-    // Test SVG output.
-    ptg_outline** outlines_test = new ptg_outline*[foregroundColors.size()];
-    unsigned int* outline_counts_test = new unsigned int[foregroundColors.size()];
-
-    // Test data.
-    for (unsigned int i = 0; i < foregroundColors.size(); ++i) {
-        outline_counts_test[i] = 1;
-        outlines_test[i] = new ptg_outline[outline_counts_test[i]];
-        outlines_test[i]->vertex_count = 2;
-        outlines_test[i]->vertices = new ptg_vec2[outlines_test[i]->vertex_count];
-
-        outlines_test[i]->vertices[0].x = 0;
-        outlines_test[i]->vertices[0].y = i * 50;
-
-        outlines_test[i]->vertices[1].x = 50;
-        outlines_test[i]->vertices[1].y = i * 50;
-    }
-
-    // Output SVG file.
-    WriteSVG(outputFilename, foregroundColors.size(), foregroundColors.data(), outlines_test, outline_counts_test, true);
-
-    // Clean up test data.
-    for (unsigned int layer = 0; layer < foregroundColors.size(); ++layer) {
-        for (unsigned int outline = 0; outline < outline_counts_test[layer]; ++outline)
-            delete[] outlines_test[layer][outline].vertices;
-        delete[] outlines_test[layer];
-    }
-    delete[] outline_counts_test;
-    delete[] outlines_test;
 
     return 0;
 }
