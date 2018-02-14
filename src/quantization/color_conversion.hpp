@@ -19,6 +19,7 @@ struct cie_lab {
 
 /**
  * Convert color from RGB space to CIE 1931 XYZ space.
+ * Uses D65 illuminant.
  * @param color The color to convert.
  * @return The color in CIE 1931 XYZ space.
  */
@@ -32,10 +33,10 @@ cie_xyz rgb_to_xyz(const ptg_color& color);
 cie_lab xyz_to_lab(const cie_xyz& color);
 
 /**
- * Convert sRGB component to linear.
- * @param c Component to convert.
+ * Convert sRGB component to linear RGB.
+ * @param component Component to convert.
  * @return Component in linear space.
  */
-double srgb_to_linear(double c);
+double srgb_to_linear(unsigned char component);
 
 #endif
