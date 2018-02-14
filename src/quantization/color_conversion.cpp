@@ -5,14 +5,10 @@
 cie_xyz rgb_to_xyz(const ptg_color& color) {
     cie_xyz result;
 
-    double r = color.r;
-    double g = color.g;
-    double b = color.b;
-
-    // Convert from sRGB to linear.
-    r = srgb_to_linear(r);
-    g = srgb_to_linear(g);
-    b = srgb_to_linear(b);
+    // Convert from sRGB to linear RGB.
+    double r = srgb_to_linear(color.r);
+    double g = srgb_to_linear(color.g);
+    double b = srgb_to_linear(color.b);
 
     // TODO: Convert to XYZ.
 
@@ -27,9 +23,10 @@ cie_lab xyz_to_lab(const cie_xyz& color) {
     return result;
 }
 
-double srgb_to_linear(double c) {
+double srgb_to_linear(unsigned char component) {
     double a = 0.055;
     double cutoff = 0.04045;
 
+    double c = (double)component / 255.0;
     return c > cutoff ? pow(c + a / (1.0 + a), 2.4) : (c / 12.92);
 }
