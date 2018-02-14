@@ -47,6 +47,4 @@ void ptg_free_quantization_results(ptg_quantization_results* quantization_result
 
 void ptg_trace(const ptg_image_parameters* image_parameters, const ptg_quantization_results* quantization_results, const ptg_tracing_parameters* tracing_parameters, ptg_tracing_results* out_tracing_results) {
     std::cerr << "ptg_trace has not yet been implemented." << std::endl;
-
-    trace_marching_squares(image_parameters, quantization_results, out_tracing_results);
 }
