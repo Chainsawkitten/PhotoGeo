@@ -46,5 +46,22 @@ void ptg_free_quantization_results(ptg_quantization_results* quantization_result
 }
 
 void ptg_trace(const ptg_image_parameters* image_parameters, const ptg_quantization_results* quantization_results, const ptg_tracing_parameters* tracing_parameters, ptg_tracing_results* out_tracing_results) {
-    std::cerr << "ptg_trace has not yet been implemented." << std::endl;
+    // Allocate outlines.
+    out_tracing_results->layer_count = quantization_results->layer_count;
+    out_tracing_results->outline_counts = new unsigned int[out_tracing_results->layer_count];
+    out_tracing_results->outlines = new ptg_outline*[out_tracing_results->layer_count];
+
+    // Trace image using marching squares.
+    for (unsigned int layer_index = 0; layer_index < out_tracing_results->layer_count; ++layer_index)
+        trace_marching_squares(quantization_results->layers[layer_index], image_parameters->width, image_parameters->height, out_tracing_results->outlines[layer_index], out_tracing_results->outline_counts[layer_index]);
+}
+
+void ptg_free_tracing_results(ptg_tracing_results* tracing_results) {
+    for (unsigned int layer = 0; layer < tracing_results->layer_count; ++layer) {
+        for (unsigned int outline = 0; outline < tracing_results->outline_counts[layer]; ++outline)
+            delete[] tracing_results->outlines[outline]->vertices;
+        delete[] tracing_results->outlines[layer];
+    }
+    delete[] tracing_results->outlines;
+    delete[] tracing_results->outline_counts;
 }
