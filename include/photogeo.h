@@ -81,7 +81,7 @@ struct ptg_quantization_results {
     /// The color layers.
     bool** layers;
 
-    /// Number of color layers.
+    /// Number of layers.
     unsigned int layer_count;
 };
 
@@ -93,10 +93,13 @@ struct ptg_tracing_parameters {
 /// Results from the tracing step.
 struct ptg_tracing_results {
     /// The outlines.
-    ptg_outline outlines;
+    ptg_outline** outlines;
 
     /// Number of outlines.
-    unsigned int outline_count;
+    unsigned int* outline_counts;
+
+    /// Number of layers.
+    unsigned int layer_count;
 };
 
 /// Parameters for generating collision geometry.
@@ -149,6 +152,12 @@ PHOTOGEO_API void ptg_free_quantization_results(ptg_quantization_results* quanti
  * @param out_tracing_results Variable to store quantization results.
  */
 PHOTOGEO_API void ptg_trace(const ptg_image_parameters* image_parameters, const ptg_quantization_results* quantization_results, const ptg_tracing_parameters* tracing_parameters, ptg_tracing_results* out_tracing_results);
+
+/**
+ * Free allocated memory for results during tracing.
+ * @param tracing_results Tracing results to free.
+ */
+void ptg_free_tracing_results(ptg_tracing_results* tracing_results);
 
 #ifdef __cplusplus
 }
