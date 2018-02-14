@@ -78,11 +78,11 @@ struct ptg_quantization_parameters {
 
 /// Results from the quantization step.
 struct ptg_quantization_results {
-    /// The color layers.
-    bool** layers;
-
     /// Number of layers.
     unsigned int layer_count;
+
+    /// The color layers.
+    bool** layers;
 };
 
 /// Parameters regarding the tracing step.
@@ -92,14 +92,14 @@ struct ptg_tracing_parameters {
 
 /// Results from the tracing step.
 struct ptg_tracing_results {
-    /// The outlines.
-    ptg_outline** outlines;
-
-    /// Number of outlines.
-    unsigned int* outline_counts;
-
     /// Number of layers.
     unsigned int layer_count;
+
+    /// Number of outlines per layer.
+    unsigned int* outline_counts;
+
+    /// The outlines.
+    ptg_outline** outlines;
 };
 
 /// Parameters for generating collision geometry.
