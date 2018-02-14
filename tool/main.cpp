@@ -95,13 +95,14 @@ int main(int argc, const char* argv[]) {
 
     // Results.
     ptg_outline** outlines;
-    unsigned int* outlineCount;
+    unsigned int* outline_counts;
 
     // Generate collision geometry.
-    ptg_generate_collision_geometry(&generationParameters, &outlines, &outlineCount);
+    ptg_generate_collision_geometry(&generationParameters, &outlines, &outline_counts);
 
     {
         // Test quantization.
+        std::cout << "Testing quantization." << std::endl;
         ptg_quantization_results quantization_results;
         ptg_quantize(&imageParameters, &quantizationParameters, &quantization_results);
         WriteQuantizedToPNG("quantization.png", quantization_results.layers, width, height, foregroundColors.data(), foregroundColors.size());
@@ -110,11 +111,13 @@ int main(int argc, const char* argv[]) {
 
     {
         // Test tracing.
+        std::cout << "Testing tracing." << std::endl;
         ptg_quantization_results quantization_results;
         ptg_quantize(&imageParameters, &quantizationParameters, &quantization_results);
         ptg_tracing_results tracing_results;
         ptg_trace(&imageParameters, &quantization_results, &tracingParameters, &tracing_results);
-        //WriteSVG(outputFilename, foregroundColors.size(), foregroundColors.data(), vertexCount, vertices, true);
+        std::cout << "Writing to tracing.svg" << std::endl;
+        WriteSVG("tracing.svg", foregroundColors.size(), foregroundColors.data(), tracing_results.outlines, tracing_results.outline_counts, true);
         ptg_free_tracing_results(&tracing_results);
         ptg_free_quantization_results(&quantization_results);
     }
@@ -123,33 +126,38 @@ int main(int argc, const char* argv[]) {
     stbi_image_free(data);
 
     // Free results.
-    ptg_free_results(outlines, outlineCount);
+    ptg_free_results(outlines, outline_counts);
 
 
     // Test SVG output.
-    ptg_vec2** vertices = new ptg_vec2*[foregroundColors.size()];
-    unsigned int* vertexCount = new unsigned int[foregroundColors.size()];
+    ptg_outline** outlines_test = new ptg_outline*[foregroundColors.size()];
+    unsigned int* outline_counts_test = new unsigned int[foregroundColors.size()];
 
     // Test data.
     for (unsigned int i = 0; i < foregroundColors.size(); ++i) {
-        vertexCount[i] = 2;
-        vertices[i] = new ptg_vec2[vertexCount[i]];
+        outline_counts_test[i] = 1;
+        outlines_test[i] = new ptg_outline[outline_counts_test[i]];
+        outlines_test[i]->vertex_count = 2;
+        outlines_test[i]->vertices = new ptg_vec2[outlines_test[i]->vertex_count];
 
-        vertices[i][0].x = 0;
-        vertices[i][0].y = i * 50;
+        outlines_test[i]->vertices[0].x = 0;
+        outlines_test[i]->vertices[0].y = i * 50;
 
-        vertices[i][1].x = 50;
-        vertices[i][1].y = i * 50;
+        outlines_test[i]->vertices[1].x = 50;
+        outlines_test[i]->vertices[1].y = i * 50;
     }
 
     // Output SVG file.
-    WriteSVG(outputFilename, foregroundColors.size(), foregroundColors.data(), vertexCount, vertices, true);
+    WriteSVG(outputFilename, foregroundColors.size(), foregroundColors.data(), outlines_test, outline_counts_test, true);
 
     // Clean up test data.
-    delete[] vertexCount;
-    for (unsigned int i = 0; i < foregroundColors.size(); ++i)
-        delete[] vertices[i];
-    delete[] vertices;
+    for (unsigned int layer = 0; layer < foregroundColors.size(); ++layer) {
+        for (unsigned int outline = 0; outline < foregroundColors.size(); ++outline)
+            delete[] outlines_test[outline]->vertices;
+        delete[] outlines_test[layer];
+    }
+    delete[] outline_counts_test;
+    delete[] outlines_test;
 
     return 0;
 }

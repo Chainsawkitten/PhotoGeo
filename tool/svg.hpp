@@ -8,10 +8,10 @@
  * @param filename Name of the file to write to.
  * @param layers The number of layers.
  * @param colors The color of each layer.
- * @param vertexCount The vertex count of each layer.
- * @param vertices The vertices in each layer.
+ * @param outlines The outlines in each layer.
+ * @param outline_counts The vertex count of each layer.
  * @param markers Whether to place markers on the vertices.
  */
-void WriteSVG(const char* filename, unsigned int layers, ptg_color* colors, unsigned int* vertexCount, ptg_vec2** vertices, bool markers = false);
+void WriteSVG(const char* filename, unsigned int layers, ptg_color* colors, ptg_outline** outlines, unsigned int* outline_counts, bool markers = false);
 
 #endif

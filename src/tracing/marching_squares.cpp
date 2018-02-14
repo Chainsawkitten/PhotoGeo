@@ -148,11 +148,11 @@ void trace_marching_squares(bool* layer, unsigned int layer_width, unsigned int 
     out_outline_count = static_cast<unsigned int>(vertices.size() / 2);
     out_outlines = new ptg_outline[out_outline_count];
 
-    for (unsigned int i = 0; i < out_outline_count; ++i) {
-        out_outlines[i].vertex_count = 2;
-        out_outlines->vertices = new ptg_vec2[2];
-        out_outlines->vertices[0] = vertices[i * 2];
-        out_outlines->vertices[1] = vertices[i * 2 + 1];
+    for (unsigned int outline_index = 0; outline_index < out_outline_count; ++outline_index) {
+        out_outlines[outline_index].vertex_count = 2;
+        out_outlines[outline_index].vertices = new ptg_vec2[2];
+        out_outlines[outline_index].vertices[0] = vertices[outline_index * 2];
+        out_outlines[outline_index].vertices[1] = vertices[outline_index * 2 + 1];
     }
     
 }
