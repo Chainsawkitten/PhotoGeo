@@ -84,7 +84,7 @@ int main(int argc, const char* argv[]) {
 
     // Quantization parameters.
     ptg_quantization_parameters quantizationParameters;
-    quantizationParameters.quantization_method = PTG_EUCLIDEAN;
+    quantizationParameters.quantization_method = PTG_EUCLIDEAN_SRGB;
 
     // Tracing parameters.
     ptg_tracing_parameters tracingParameters;
@@ -107,7 +107,12 @@ int main(int argc, const char* argv[]) {
         std::cout << "Testing quantization." << std::endl;
         ptg_quantization_results quantization_results;
         ptg_quantize(&imageParameters, &quantizationParameters, &quantization_results);
-        WriteQuantizedToPNG("quantizationEuclidean.png", quantization_results.layers, width, height, foregroundColors.data(), foregroundColors.size());
+        WriteQuantizedToPNG("quantizationEuclideanSRGB.png", quantization_results.layers, width, height, foregroundColors.data(), foregroundColors.size());
+        ptg_free_quantization_results(&quantization_results);
+
+        quantizationParameters.quantization_method = PTG_EUCLIDEAN_LINEAR;
+        ptg_quantize(&imageParameters, &quantizationParameters, &quantization_results);
+        WriteQuantizedToPNG("quantizationEuclideanLinear.png", quantization_results.layers, width, height, foregroundColors.data(), foregroundColors.size());
         ptg_free_quantization_results(&quantization_results);
 
         quantizationParameters.quantization_method = PTG_CIE76;
