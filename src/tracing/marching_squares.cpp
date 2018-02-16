@@ -52,18 +52,15 @@ static void marching_squares(bool topLeft, bool topRight, bool bottomRight, bool
 
     /* Nodes (A, B, C, D) in marching kernel for 2x2 pixels.
      * x: positive right, y: positive down.
-     * # -- A -- #
-     * |    |    |
-     * D--(x,y)--B
-     * |    |    |
-     * # -- C -- # */
+     * # ------- #
+     * |    A    |
+     * | D(x,y)B |
+     * |    C    |
+     * # ------- # */
     const ptg_vec2 A = { x, y - 1 };
     const ptg_vec2 B = { x + 1, y };
     const ptg_vec2 C = { x, y + 1 };
     const ptg_vec2 D = { x - 1, y };
-
-    std::size_t line_index = out_lines.size();
-    std::size_t vertex_index = out_vertices.size();
 
     switch (square_configuration) {
         // 0 points:    
@@ -159,9 +156,20 @@ void ptgi_trace_marching_squares(bool* layer, unsigned int layer_width, unsigned
     std::vector<vertex> vertices;
 
     // Execute marching squares on layer.
-    for (unsigned int it = 0; it < layer_width * (layer_height - 1); ++it)
-        if ((it + 1) % layer_width != 0)
-            marching_squares(layer[it], layer[it + 1], layer[it + layer_width], layer[it + layer_width + 1], it % layer_width + 1, it / layer_width + 1, lines, vertices);
+    for (unsigned int it = 0; it < layer_width * layer_height; ++it) {
+        bool topEdge = it < layer_width;
+        bool bottomEdge = it >= (layer_width * (layer_height - 1));
+        bool leftEdge = it % layer_width == 0;
+        bool rightEdge = it % layer_width == (layer_width - 1);
+
+        bool topLeft = topEdge || leftEdge ? false : layer[it - layer_width - 1];
+        bool topRight = topEdge || rightEdge ? false : layer[it - layer_width];
+        bool bottomRight = bottomEdge || rightEdge ? false : layer[it];
+        bool bottomLeft = bottomEdge || leftEdge ? false : layer[it - 1];
+
+        marching_squares(topLeft, topRight, bottomRight, bottomLeft, it % layer_width, it / layer_width, lines, vertices);
+    }
+
 
     // Create outlines.
     out_outline_count = static_cast<unsigned int>(vertices.size() / 2);
