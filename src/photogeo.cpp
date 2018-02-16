@@ -37,6 +37,9 @@ void ptg_quantize(const ptg_image_parameters* image_parameters, const ptg_quanti
         case PTG_CIE76:
             quantize(image_parameters, quantization_results->layers, color_distance_cie76_sqr);
             break;
+        case PTG_CIE94:
+            quantize(image_parameters, quantization_results->layers, color_distance_cie94_sqr);
+            break;
     }
     quantization_results->layer_count = image_parameters->color_layer_count;
 }
