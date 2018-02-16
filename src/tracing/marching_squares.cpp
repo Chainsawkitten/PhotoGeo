@@ -3,11 +3,7 @@
 #include <assert.h>
 #include <vector>
 
-// Forward declarations.
-struct line;
-struct vertex;
-
-// Straight line between two vertices.
+// Straight line connecting two vertices.
 struct line {
     // Vertex indices.
     std::size_t vertex_indices[2];
@@ -251,12 +247,4 @@ void trace_marching_squares(bool* layer, unsigned int layer_width, unsigned int 
             out_outline.vertices[(unsigned int)vertex_index] = vertices[contour[vertex_index]].position;
         }
     }
-    //out_outline_count = static_cast<unsigned int>(vertices.size() / 2);
-    //out_outlines = new ptg_outline[out_outline_count];
-    //for (unsigned int outline_index = 0; outline_index < out_outline_count; ++outline_index) {
-    //    out_outlines[outline_index].vertex_count = 2;
-    //    out_outlines[outline_index].vertices = new ptg_vec2[2];
-    //    out_outlines[outline_index].vertices[0] = vertices[outline_index * 2].position;
-    //    out_outlines[outline_index].vertices[1] = vertices[outline_index * 2 + 1].position;
-    //}
 }
