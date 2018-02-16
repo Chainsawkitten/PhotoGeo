@@ -75,7 +75,8 @@ struct ptg_image_parameters {
 typedef enum {
     PTG_EUCLIDEAN_SRGB, ///< Euclidean distance in sRGB space.
     PTG_EUCLIDEAN_LINEAR, ///< Euclidean distance in linear RGB space.
-    PTG_CIE76 ///< CIE76.
+    PTG_CIE76, ///< CIE76.
+    PTG_CIE94 ///< CIE94.
 } ptg_quantization_method;
 
 /// Parameters regarding the quantization step.
@@ -165,7 +166,7 @@ PHOTOGEO_API void ptg_trace(const ptg_image_parameters* image_parameters, const 
  * Free allocated memory for results during tracing.
  * @param tracing_results Tracing results to free.
  */
-void ptg_free_tracing_results(ptg_tracing_results* tracing_results);
+PHOTOGEO_API void ptg_free_tracing_results(ptg_tracing_results* tracing_results);
 
 #ifdef __cplusplus
 }

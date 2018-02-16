@@ -29,10 +29,20 @@ double color_distance_euclidean_linear_sqr(const ptg_color& a, const ptg_color& 
 
 /*
  * Calculate the squared CIE76 delta-e between two colors.
+ * Uses D65 illuminant.
  * @param a First color.
  * @param b Second color.
  * @return The perceptual distance between the colors.
  */
 double color_distance_cie76_sqr(const ptg_color& a, const ptg_color& b);
+
+/*
+ * Calculate the squared CIE94 delta-e between two colors.
+ * Uses D65 illuminant and k-values for graphic art.
+ * @param a First color.
+ * @param b Second color.
+ * @return The perceptual distance between the colors.
+ */
+double color_distance_cie94_sqr(const ptg_color& a, const ptg_color& b);
 
 #endif

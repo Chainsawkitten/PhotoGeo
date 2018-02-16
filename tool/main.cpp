@@ -119,6 +119,11 @@ int main(int argc, const char* argv[]) {
         ptg_quantize(&imageParameters, &quantizationParameters, &quantization_results);
         WriteQuantizedToPNG("quantizationCIE76.png", quantization_results.layers, width, height, foregroundColors.data(), foregroundColors.size());
         ptg_free_quantization_results(&quantization_results);
+
+        quantizationParameters.quantization_method = PTG_CIE94;
+        ptg_quantize(&imageParameters, &quantizationParameters, &quantization_results);
+        WriteQuantizedToPNG("quantizationCIE94.png", quantization_results.layers, width, height, foregroundColors.data(), foregroundColors.size());
+        ptg_free_quantization_results(&quantization_results);
     }
 
     {
