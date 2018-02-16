@@ -49,7 +49,10 @@ static void marching_squares(bool topLeft, bool topRight, bool bottomRight, bool
 
     // Calculate current configuration of marching squares.
     const unsigned int square_configuration = topLeft * 8 + topRight * 4 + bottomRight * 2 + bottomLeft * 1;
-
+    
+    // Convert (x,y) from pixel space to mesh space.
+    x = x * 2;
+    y = y * 2;
     /* Nodes (A, B, C, D) in marching kernel for 2x2 pixels.
      * x: positive right, y: positive down.
      * # ------- #
@@ -157,6 +160,7 @@ void ptgi_trace_marching_squares(bool* layer, unsigned int layer_width, unsigned
 
     // Execute marching squares on layer.
     for (unsigned int it = 0; it < layer_width * layer_height; ++it) {
+    for (unsigned int it = 0; it < (layer_width * layer_height); ++it) {
         bool topEdge = it < layer_width;
         bool bottomEdge = it >= (layer_width * (layer_height - 1));
         bool leftEdge = it % layer_width == 0;
