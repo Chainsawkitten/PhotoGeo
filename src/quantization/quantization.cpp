@@ -14,14 +14,14 @@ void quantize(const ptg_image_parameters* parameters, bool** layers, double (*di
             double shortest = std::numeric_limits<double>::max();
             for (unsigned int i = 0; i < parameters->background_color_count + parameters->color_layer_count; ++i) {
                 // Color to compare to.
-                ptg_color comparisonColor;
+                ptg_color comparison_color;
                 if (i < parameters->background_color_count)
-                    comparisonColor = parameters->background_colors[i];
+                    comparison_color = parameters->background_colors[i];
                 else
-                    comparisonColor = parameters->color_layer_colors[i - parameters->background_color_count];
+                    comparison_color = parameters->color_layer_colors[i - parameters->background_color_count];
 
                 // Calculate distance.
-                double distance = distance_function(comparisonColor, color);
+                double distance = distance_function(comparison_color, color);
                 if (distance < shortest) {
                     shortest = distance;
                     layer = i;
