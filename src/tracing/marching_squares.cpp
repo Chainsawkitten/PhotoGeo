@@ -1,9 +1,8 @@
 #include "marching_squares.hpp"
 
-#include <assert.h>
 #include <vector>
 
-// Straight line connecting two vertices.
+// Straight line connecting two vertices. @todo Optimize marching squares and remove this.
 struct line {
     // Vertex indices.
     std::size_t vertex_indices[2];
@@ -158,6 +157,7 @@ static void marching_squares(bool topLeft, bool topRight, bool bottomRight, bool
  * @param this_index Vertex index of vertex to find other vertex with same position.
  * @param vertices The vertices.
  * @param out_found_index Variable to store vertex index of the found vertex.
+ * @todo Optimize using lookup table.
  */
 static bool find_equal_vertex(const std::size_t this_index, const std::vector<vertex>& vertices, std::size_t& out_found_index) {
     const vertex& this_vertex = vertices[this_index];
@@ -228,10 +228,32 @@ void trace_marching_squares(bool* layer, unsigned int layer_width, unsigned int 
     std::vector<std::vector<std::size_t>> contours;
     for (std::size_t vertex_index = 0; vertex_index < vertices.size(); ++vertex_index) {
         if (!vertices[vertex_index].assigned_contour) {
+
             // Create new contour.
             contours.push_back(std::vector<std::size_t>());
+            std::vector<std::size_t>& contour = contours.back();
+
             // Trace contour (assign connected vertex indices to contour).
-            trace_contour(vertex_index, vertices, lines, contours.back());
+            std::size_t it_vertex_index = vertex_index;
+            do {
+                // Add vertex to contour.
+                contour.push_back(it_vertex_index);
+
+                // Find connected vertex on line.
+                const line& line = lines[vertices[it_vertex_index].line_index];
+                std::size_t connected_vertex_index = line.vertex_indices[0] == it_vertex_index ? line.vertex_indices[1] : line.vertex_indices[0];
+
+                // Set vertices as assigned to contour.
+                vertices[it_vertex_index].assigned_contour = true;
+                vertices[connected_vertex_index].assigned_contour = true;
+
+                // Find other vertex starting at connected vertex.
+                find_equal_vertex(connected_vertex_index, vertices, it_vertex_index);
+
+            } while (!vertices[it_vertex_index].assigned_contour);
+
+            // Finnish contour by connecting tail and root.
+            contour.push_back(contour.front());
         }
     }
 
