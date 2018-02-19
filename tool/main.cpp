@@ -16,6 +16,7 @@ int main(int argc, const char* argv[]) {
     std::vector<ptg_color> backgroundColors;
     std::vector<ptg_color> foregroundColors;
     bool test_quantization = false;
+    bool test_tracing = false;
     for (int argument = 1; argument < argc; ++argument) {
         // All arguments start with -.
         if (argv[argument][0] == '-') {
@@ -38,6 +39,10 @@ int main(int argc, const char* argv[]) {
             // Test quantization.
             if (argv[argument][1] == 't' && argv[argument][2] == 'q')
                 test_quantization = true;
+
+            // Test tracing.
+            if (argv[argument][1] == 't' && argv[argument][2] == 't')
+                test_tracing = true;
         }
     }
 
@@ -54,6 +59,8 @@ int main(int argc, const char* argv[]) {
                   << "      Format: R:G:B" << std::endl;
         std::cout << "  -tq Test quantization." << std::endl
                   << "      Results are outputted to PNG." << std::endl;
+        std::cout << "  -tt Test tracing." << std::endl
+                  << "      Results are outputted to SVG." << std::endl;
 
         return 0;
     }
@@ -133,8 +140,8 @@ int main(int argc, const char* argv[]) {
         ptg_free_quantization_results(&quantization_results);
     }
 
-    {
-        // Test tracing.
+    // Test tracing.
+    if (test_tracing) {
         std::cout << "Testing tracing." << std::endl;
         ptg_quantization_results quantization_results;
         ptg_quantize(&imageParameters, &quantizationParameters, &quantization_results);
