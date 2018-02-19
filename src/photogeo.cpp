@@ -10,6 +10,13 @@ void ptg_generate_collision_geometry(const ptg_generation_parameters* parameters
     // Quantization.
     ptg_quantization_results quantization_results;
     ptg_quantize(parameters->image_parameters, parameters->quantization_parameters, &quantization_results);
+
+    // Tracing.
+    ptg_tracing_results tracing_results;
+    ptg_trace(parameters->image_parameters, &quantization_results, parameters->tracing_parameters, &tracing_results);
+
+    // Free results.
+    ptg_free_tracing_results(&tracing_results);
     ptg_free_quantization_results(&quantization_results);
 
     *out_outlines = nullptr;
