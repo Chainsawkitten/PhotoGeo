@@ -76,7 +76,8 @@ typedef enum {
     PTG_EUCLIDEAN_SRGB, ///< Euclidean distance in sRGB space.
     PTG_EUCLIDEAN_LINEAR, ///< Euclidean distance in linear RGB space.
     PTG_CIE76, ///< CIE76.
-    PTG_CIE94 ///< CIE94.
+    PTG_CIE94, ///< CIE94.
+    PTG_CIEDE2000 ///< CIEDE2000.
 } ptg_quantization_method;
 
 /// Parameters regarding the quantization step.
