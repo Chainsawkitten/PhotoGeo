@@ -104,11 +104,16 @@ int main(int argc, const char* argv[]) {
     // Tracing parameters.
     ptg_tracing_parameters tracing_parameters;
 
+    // Vertex reduction parameters.
+    ptg_vertex_reduction_parameters vertex_reduction_parameters;
+    vertex_reduction_parameters.vertex_reduction_method = PTG_VISVALINGAM_WHYATT;
+
     // Generation parameters.
     ptg_generation_parameters generation_parameters;
     generation_parameters.image_parameters = &image_parameters;
     generation_parameters.quantization_parameters = &quantization_parameters;
     generation_parameters.tracing_parameters = &tracing_parameters;
+    generation_parameters.vertex_reduction_parameters = &vertex_reduction_parameters;
 
     // Results.
     ptg_outline** outlines;

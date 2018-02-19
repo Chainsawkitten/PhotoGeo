@@ -15,6 +15,9 @@ void ptg_generate_collision_geometry(const ptg_generation_parameters* parameters
     ptg_tracing_results tracing_results;
     ptg_trace(parameters->image_parameters, &quantization_results, parameters->tracing_parameters, &tracing_results);
 
+    // Vertex reduction.
+    ptg_reduce(&tracing_results, parameters->vertex_reduction_parameters);
+
     // Free results.
     ptg_free_tracing_results(&tracing_results);
     ptg_free_quantization_results(&quantization_results);
@@ -79,4 +82,8 @@ void ptg_free_tracing_results(ptg_tracing_results* tracing_results) {
     }
     delete[] tracing_results->outlines;
     delete[] tracing_results->outline_counts;
+}
+
+void ptg_reduce(ptg_tracing_results* tracing_results, const ptg_vertex_reduction_parameters* vertex_reduction_parameters) {
+    std::cerr << "ptg_reduce has not yet been implemented." << std::endl;
 }

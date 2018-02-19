@@ -112,6 +112,16 @@ struct ptg_tracing_results {
     ptg_outline** outlines;
 };
 
+/// Method to use to reduce vertex count.
+typedef enum {
+    PTG_VISVALINGAM_WHYATT ///< Visvalingam-Whyatt.
+} ptg_vertex_reduction_method;
+
+/// Parameters regarding the vertex reduction step.
+struct ptg_vertex_reduction_parameters {
+    ptg_vertex_reduction_method vertex_reduction_method;
+};
+
 /// Parameters for generating collision geometry.
 struct ptg_generation_parameters {
     /// Source image parameters.
@@ -122,6 +132,9 @@ struct ptg_generation_parameters {
 
     /// Parameters regarding the tracing step.
     const ptg_tracing_parameters* tracing_parameters;
+
+    /// Parameters regarding the vertex reduction step.
+    const ptg_vertex_reduction_parameters* vertex_reduction_parameters;
 };
 
 /**
@@ -168,6 +181,13 @@ PHOTOGEO_API void ptg_trace(const ptg_image_parameters* image_parameters, const 
  * @param tracing_results Tracing results to free.
  */
 PHOTOGEO_API void ptg_free_tracing_results(ptg_tracing_results* tracing_results);
+
+/**
+ * Reduce vertex count.
+ * @param tracing_results Tracing results.
+ * @param vertex_reduction_parameters Vertex reduction parameters.
+ */
+PHOTOGEO_API void ptg_reduce(ptg_tracing_results* tracing_results, const ptg_vertex_reduction_parameters* vertex_reduction_parameters);
 
 #ifdef __cplusplus
 }
