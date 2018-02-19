@@ -45,4 +45,13 @@ double color_distance_cie76_sqr(const ptg_color& a, const ptg_color& b);
  */
 double color_distance_cie94_sqr(const ptg_color& a, const ptg_color& b);
 
+/*
+ * Calculate the squared CIEDE2000 delta-e between two colors.
+ * Uses D65 illuminant.
+ * @param a First color.
+ * @param b Second color.
+ * @return The perceptual distance between the colors.
+ */
+double color_distance_ciede2000_sqr(const ptg_color& a, const ptg_color& b);
+
 #endif
