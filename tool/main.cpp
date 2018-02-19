@@ -15,6 +15,7 @@ int main(int argc, const char* argv[]) {
     const char* outputFilename = "";
     std::vector<ptg_color> backgroundColors;
     std::vector<ptg_color> foregroundColors;
+    bool test_quantization = false;
     for (int argument = 1; argument < argc; ++argument) {
         // All arguments start with -.
         if (argv[argument][0] == '-') {
@@ -33,6 +34,10 @@ int main(int argc, const char* argv[]) {
             // Foreground color.
             if (argv[argument][1] == 'f' && argc > argument + 1)
                 foregroundColors.push_back(TextToColor(argv[++argument]));
+
+            // Test quantization.
+            if (argv[argument][1] == 't' && argv[argument][2] == 'q')
+                test_quantization = true;
         }
     }
 
@@ -46,7 +51,9 @@ int main(int argc, const char* argv[]) {
         std::cout << "  -b  Specify background color." << std::endl
                   << "      Format: R:G:B" <<  std::endl;
         std::cout << "  -f  Specify foreground color." << std::endl
-                  << "      Format: R:G:B" <<  std::endl;
+                  << "      Format: R:G:B" << std::endl;
+        std::cout << "  -tq Test quantization." << std::endl
+                  << "      Results are outputted to PNG." << std::endl;
 
         return 0;
     }
@@ -102,8 +109,8 @@ int main(int argc, const char* argv[]) {
     // Generate collision geometry.
     ptg_generate_collision_geometry(&generationParameters, &outlines, &outline_counts);
 
-    {
-        // Test quantization.
+    // Test quantization.
+    if (test_quantization) {
         std::cout << "Testing quantization." << std::endl;
         ptg_quantization_results quantization_results;
         ptg_quantize(&imageParameters, &quantizationParameters, &quantization_results);
