@@ -6,6 +6,7 @@ set(SRCS
     quantization/color_conversion.cpp
     quantization/quantization.cpp
     tracing/marching_squares.cpp
+    vertex_reduction/visvalingam_whyatt.cpp
 )
 
 # Header files. Specified in order to get them listed in the IDE.
@@ -14,6 +15,7 @@ set(HEADERS
     quantization/color_conversion.hpp
     quantization/quantization.hpp
     tracing/marching_squares.hpp
+    vertex_reduction/visvalingam_whyatt.hpp
 )
 
 # Generate directory groups for IDE.
