@@ -25,7 +25,7 @@ All non-private members need to be documented using Doxygen-style comments.
 For functions and methods, parameters are documented first and return type next.
 
 ### Example
-```hpp
+```cpp
 /// A little fish.
 struct fish {
     /// Name of the fish.
@@ -42,9 +42,10 @@ struct fish {
  */
 bool is_happy(const fish& fish);
 
-```cpp
 #include "example.hpp"
 
 bool is_happy(const fish& fish) {
     return fish.friend_count > 0;
 }
+
+```
