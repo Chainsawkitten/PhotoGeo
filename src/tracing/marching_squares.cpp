@@ -172,7 +172,7 @@ static bool find_equal_vertex(const std::size_t this_index, const std::vector<ve
     return false;
 }
 
-void trace_marching_squares(bool* layer, unsigned int layer_width, unsigned int layer_height, ptg_outline*& out_outlines, unsigned int& out_outline_count) {
+void ptgi_trace_marching_squares(bool* layer, unsigned int layer_width, unsigned int layer_height, ptg_outline*& out_outlines, unsigned int& out_outline_count) {
 
     std::vector<line> lines;
     std::vector<vertex> vertices;
