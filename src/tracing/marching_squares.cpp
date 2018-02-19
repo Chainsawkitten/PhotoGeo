@@ -157,6 +157,7 @@ static void marching_squares(bool topLeft, bool topRight, bool bottomRight, bool
  * @param this_index Vertex index of vertex to find other vertex with same position.
  * @param vertices The vertices.
  * @param out_found_index Variable to store vertex index of the found vertex.
+ * @return Whether an index was found.
  * @todo Optimize using lookup table.
  */
 static bool find_equal_vertex(const std::size_t this_index, const std::vector<vertex>& vertices, std::size_t& out_found_index) {
@@ -169,39 +170,6 @@ static bool find_equal_vertex(const std::size_t this_index, const std::vector<ve
         }
     }
     return false;
-}
-
-/*
- * Tracing along contour to find all vertices of an outline.
- * @param vertex_index Vertex index of vertex to find other vertex with same position.
- * @param vertices The vertices generated from marching squares.
- * @param lines The lines generated from marching squares.
- * @param out_contour Vector to store vertices.
- */
-static void trace_contour(const std::size_t vertex_index, std::vector<vertex>& vertices, const std::vector<line>& lines, std::vector<std::size_t>& out_contour) {
-    // Add vertex to contour.
-    out_contour.push_back(vertex_index);
-
-    // Find connected vertex on line.
-    const line& line = lines[vertices[vertex_index].line_index];
-    std::size_t connected_vertex_index = line.vertex_indices[0] == vertex_index ? line.vertex_indices[1] : line.vertex_indices[0];
-    
-    // Set vertices as assigned to contour.
-    vertices[vertex_index].assigned_contour = true;
-    vertices[connected_vertex_index].assigned_contour = true;
-
-    // Find other vertex starting at connected vertex.
-    std::size_t found_vertex_index;
-    find_equal_vertex(connected_vertex_index, vertices, found_vertex_index);
-
-    // Check whether found vertex is assigned.
-    if (!vertices[found_vertex_index].assigned_contour) {
-        // Continue to trace contour.
-        trace_contour(found_vertex_index, vertices, lines, out_contour);
-    } else {
-        // Finnish contour by connecting tail and root.
-        out_contour.push_back(out_contour.front());
-    }
 }
 
 void trace_marching_squares(bool* layer, unsigned int layer_width, unsigned int layer_height, ptg_outline*& out_outlines, unsigned int& out_outline_count) {
