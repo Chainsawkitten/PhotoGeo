@@ -17,10 +17,10 @@ struct vertex {
  */
 unsigned int calculate_double_area(vertex* v) {
     // Calculate vectors from v to other points in triangle.
-    const unsigned int ux = v->previous->position.x - v->position.x;
-    const unsigned int uy = v->previous->position.y - v->position.y;
-    const unsigned int vx = v->next->position.x - v->position.x;
-    const unsigned int vy = v->next->position.y - v->position.y;
+    const long ux = (long)v->previous->position.x - v->position.x;
+    const long uy = (long)v->previous->position.y - v->position.y;
+    const long vx = (long)v->next->position.x - v->position.x;
+    const long vy = (long)v->next->position.y - v->position.y;
 
     return std::abs(ux * vy - uy * vx);
 }
