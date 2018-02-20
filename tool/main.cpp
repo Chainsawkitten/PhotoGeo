@@ -17,6 +17,7 @@ int main(int argc, const char* argv[]) {
     std::vector<ptg_color> foreground_colors;
     bool test_quantization = false;
     bool test_tracing = false;
+    bool test_vertex_reduction = false;
 
     for (int argument = 1; argument < argc; ++argument) {
         // All arguments start with -.
@@ -44,6 +45,10 @@ int main(int argc, const char* argv[]) {
             // Test tracing.
             if (argv[argument][1] == 't' && argv[argument][2] == 't')
                 test_tracing = true;
+
+            // Test vertex reduction.
+            if (argv[argument][1] == 't' && argv[argument][2] == 'v')
+                test_vertex_reduction = true;
         }
     }
 
@@ -61,6 +66,8 @@ int main(int argc, const char* argv[]) {
         std::cout << "  -tq Test quantization." << std::endl
                   << "      Results are outputted to PNG." << std::endl;
         std::cout << "  -tt Test tracing." << std::endl
+                  << "      Results are outputted to SVG." << std::endl;
+        std::cout << "  -tv Test vertex reduction." << std::endl
                   << "      Results are outputted to SVG." << std::endl;
 
         return 0;
@@ -155,11 +162,31 @@ int main(int argc, const char* argv[]) {
     if (test_tracing) {
         std::cout << "Testing tracing." << std::endl;
         ptg_quantization_results quantization_results;
+        quantization_parameters.quantization_method = PTG_EUCLIDEAN_LINEAR;
         ptg_quantize(&image_parameters, &quantization_parameters, &quantization_results);
         ptg_tracing_results tracing_results;
         ptg_trace(&image_parameters, &quantization_results, &tracing_parameters, &tracing_results);
         std::cout << "Writing to tracing.svg" << std::endl;
         write_svg("tracing.svg", foreground_colors.size(), foreground_colors.data(), tracing_results.outlines, tracing_results.outline_counts, false);
+        ptg_free_tracing_results(&tracing_results);
+        ptg_free_quantization_results(&quantization_results);
+    }
+
+    // Test vertex reduction.
+    if (test_vertex_reduction) {
+        std::cout << "Testing vertex reduction." << std::endl;
+
+        ptg_quantization_results quantization_results;
+        quantization_parameters.quantization_method = PTG_EUCLIDEAN_LINEAR;
+        ptg_quantize(&image_parameters, &quantization_parameters, &quantization_results);
+
+        ptg_tracing_results tracing_results;
+        ptg_trace(&image_parameters, &quantization_results, &tracing_parameters, &tracing_results);
+        write_svg("before_reduction.svg", foreground_colors.size(), foreground_colors.data(), tracing_results.outlines, tracing_results.outline_counts, false);
+
+        ptg_reduce(&tracing_results, &vertex_reduction_parameters);
+        write_svg("after_reduction.svg", foreground_colors.size(), foreground_colors.data(), tracing_results.outlines, tracing_results.outline_counts, false);
+
         ptg_free_tracing_results(&tracing_results);
         ptg_free_quantization_results(&quantization_results);
     }
