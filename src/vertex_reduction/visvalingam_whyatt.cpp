@@ -62,7 +62,10 @@ void reduce_outline(ptg_outline& outline) {
     // TODO: Recalculate area of neighbor vertices.
     // TODO: Repeat.
 
-    // TODO: Store output vertices.
+    // Store output vertices.
+    outline.vertex_count = 0;
+    for (vertex* node = first; node != nullptr; node = node->next)
+        outline.vertices[outline.vertex_count++] = node->position;
 
     // Cleanup.
     while (first->next != nullptr) {
