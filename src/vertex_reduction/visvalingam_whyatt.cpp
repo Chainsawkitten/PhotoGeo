@@ -58,8 +58,22 @@ void reduce_outline(ptg_outline& outline) {
         }
     }
 
-    // TODO: Remove it if smaller than certain value.
-    // TODO: Recalculate area of neighbor vertices.
+    // Remove it if smaller than certain value.
+    const unsigned int threshold = 4;
+    if (smallest_area < threshold) {
+        smallest_vertex->previous->next = smallest_vertex->next;
+        smallest_vertex->next->previous = smallest_vertex->previous;
+
+        // Recalculate area of neighbor vertices.
+        if (smallest_vertex->previous->previous != nullptr)
+            smallest_vertex->previous->area = calculate_double_area(smallest_vertex->previous);
+
+        if (smallest_vertex->next->next != nullptr)
+            smallest_vertex->next->area = calculate_double_area(smallest_vertex->next);
+
+        delete smallest_vertex;
+    }
+
     // TODO: Repeat.
 
     // Store output vertices.
