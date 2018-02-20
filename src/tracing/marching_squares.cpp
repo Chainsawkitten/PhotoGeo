@@ -220,7 +220,7 @@ void ptgi_trace_marching_squares(bool* layer, unsigned int layer_width, unsigned
 
             } while (!vertices[it_vertex_index].assigned_contour);
 
-            // Finnish contour by connecting tail and root.
+            // Finish contour by connecting tail and root.
             contour.push_back(contour.front());
         }
     }
