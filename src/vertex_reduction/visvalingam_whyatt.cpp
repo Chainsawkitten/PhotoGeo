@@ -1,6 +1,7 @@
 #include "visvalingam_whyatt.hpp"
 
 #include <iostream>
+#include <limits>
 
 struct vertex {
     ptg_vec2 position;
@@ -47,7 +48,16 @@ void reduce_outline(ptg_outline& outline) {
     for (vertex* node = first->next; node->next != nullptr; node = node->next)
         node->area = calculate_double_area(node);
 
-    // TODO: Find smallest area vertex.
+    // Find vertex with smallest area.
+    unsigned int smallest_area = std::numeric_limits<unsigned int>::max();
+    vertex* smallest_vertex = nullptr;
+    for (vertex* node = first->next; node->next != nullptr; node = node->next) {
+        if (node->area < smallest_area) {
+            smallest_area = node->area;
+            smallest_vertex = node;
+        }
+    }
+
     // TODO: Remove it if smaller than certain value.
     // TODO: Recalculate area of neighbor vertices.
     // TODO: Repeat.
