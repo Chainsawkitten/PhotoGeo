@@ -1,6 +1,6 @@
 #include "visvalingam_whyatt.hpp"
 
-#include <iostream>
+#include <cmath>
 #include <limits>
 
 struct vertex {
@@ -22,7 +22,7 @@ unsigned int calculate_double_area(vertex* v) {
     const unsigned int vx = v->next->position.x - v->position.x;
     const unsigned int vy = v->next->position.y - v->position.y;
 
-    return abs(ux * vy - uy * vx);
+    return std::abs(ux * vy - uy * vx);
 }
 
 /*
@@ -92,19 +92,9 @@ void reduce_outline(ptg_outline& outline) {
 }
 
 void ptgi_visvalingam_whyatt(ptg_tracing_results* tracing_results) {
-    std::cerr << "ptg_visvalingam_whyatt has not yet been implemented." << std::endl;
-
-    unsigned int vertex_count_before = 0;
-    unsigned int vertex_count_after = 0;
-
     for (unsigned int layer = 0; layer < tracing_results->layer_count; ++layer) {
         for (unsigned int outline = 0; outline < tracing_results->outline_counts[layer]; ++outline) {
-            vertex_count_before += tracing_results->outlines[layer][outline].vertex_count;
             reduce_outline(tracing_results->outlines[layer][outline]);
-            vertex_count_after += tracing_results->outlines[layer][outline].vertex_count;
         }
     }
-
-    std::cout << "Vertex count (before): " << vertex_count_before << std::endl;
-    std::cout << "Vertex count (after): " << vertex_count_after << std::endl;
 }
