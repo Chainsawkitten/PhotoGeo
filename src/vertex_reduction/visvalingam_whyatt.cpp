@@ -4,19 +4,24 @@
 
 struct vertex {
     ptg_vec2 position;
-    double area;
+    unsigned int area;
     vertex* previous;
     vertex* next;
 };
 
 /*
- * Calculate the area of a vertex.
+ * Calculate the area*2 of a vertex.
  * @param v Vertex to calculate area of.
  * @return The area of the vertex.
  */
-double calculate_area(vertex* v) {
-    // TODO: Implement.
-    return 0.0;
+unsigned int calculate_double_area(vertex* v) {
+    // Calculate vectors from v to other points in triangle.
+    const unsigned int ux = v->previous->position.x - v->position.x;
+    const unsigned int uy = v->previous->position.y - v->position.y;
+    const unsigned int vx = v->next->position.x - v->position.x;
+    const unsigned int vy = v->next->position.y - v->position.y;
+
+    return abs(ux * vy - uy * vx);
 }
 
 /*
@@ -27,17 +32,22 @@ void reduce_outline(ptg_outline& outline) {
     // Initialize vertices.
     vertex* first = nullptr;
     vertex** current = &first;
+    vertex* previous = first;
     for (unsigned int i = 0; i < outline.vertex_count; ++i) {
-        vertex* previous = *current;
         *current = new vertex;
         (*current)->position = outline.vertices[i];
         (*current)->previous = previous;
         (*current)->next = nullptr;
+
+        previous = *current;
         current = &(*current)->next;
     }
 
-    // TODO: Calculate initial areas.
-    // TODO: Find lowest area vertex.
+    // Calculate initial areas (except for first and last vertex).
+    for (vertex* node = first->next; node->next != nullptr; node = node->next)
+        node->area = calculate_double_area(node);
+
+    // TODO: Find smallest area vertex.
     // TODO: Remove it if smaller than certain value.
     // TODO: Recalculate area of neighbor vertices.
     // TODO: Repeat.
