@@ -48,33 +48,35 @@ void reduce_outline(ptg_outline& outline) {
     for (vertex* node = first->next; node->next != nullptr; node = node->next)
         node->area = calculate_double_area(node);
 
-    // Find vertex with smallest area.
-    unsigned int smallest_area = std::numeric_limits<unsigned int>::max();
-    vertex* smallest_vertex = nullptr;
-    for (vertex* node = first->next; node->next != nullptr; node = node->next) {
-        if (node->area < smallest_area) {
-            smallest_area = node->area;
-            smallest_vertex = node;
+    while (true) {
+        // Find vertex with smallest area.
+        unsigned int smallest_area = std::numeric_limits<unsigned int>::max();
+        vertex* smallest_vertex = nullptr;
+        for (vertex* node = first->next; node->next != nullptr; node = node->next) {
+            if (node->area < smallest_area) {
+                smallest_area = node->area;
+                smallest_vertex = node;
+            }
+        }
+
+        // Remove it if smaller than certain value.
+        const unsigned int threshold = 20 * 2;
+        if (smallest_area <= threshold) {
+            smallest_vertex->previous->next = smallest_vertex->next;
+            smallest_vertex->next->previous = smallest_vertex->previous;
+
+            // Recalculate area of neighbor vertices.
+            if (smallest_vertex->previous->previous != nullptr)
+                smallest_vertex->previous->area = calculate_double_area(smallest_vertex->previous);
+
+            if (smallest_vertex->next->next != nullptr)
+                smallest_vertex->next->area = calculate_double_area(smallest_vertex->next);
+
+            delete smallest_vertex;
+        } else {
+            break;
         }
     }
-
-    // Remove it if smaller than certain value.
-    const unsigned int threshold = 4;
-    if (smallest_area < threshold) {
-        smallest_vertex->previous->next = smallest_vertex->next;
-        smallest_vertex->next->previous = smallest_vertex->previous;
-
-        // Recalculate area of neighbor vertices.
-        if (smallest_vertex->previous->previous != nullptr)
-            smallest_vertex->previous->area = calculate_double_area(smallest_vertex->previous);
-
-        if (smallest_vertex->next->next != nullptr)
-            smallest_vertex->next->area = calculate_double_area(smallest_vertex->next);
-
-        delete smallest_vertex;
-    }
-
-    // TODO: Repeat.
 
     // Store output vertices.
     outline.vertex_count = 0;
