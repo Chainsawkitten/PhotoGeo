@@ -148,10 +148,11 @@ PHOTOGEO_API void ptg_generate_collision_geometry(const ptg_generation_parameter
 
 /**
  * Deallocate the memory that was allocated to store the results.
+ * @param layer_count The number of layers.
  * @param outlines The outlines.
  * @param outline_counts Number of outlines.
  */
-PHOTOGEO_API void ptg_free_results(ptg_outline** outlines, unsigned int* outline_counts);
+PHOTOGEO_API void ptg_free_results(unsigned int layer_count, ptg_outline** outlines, unsigned int* outline_counts);
 
 /**
  * Quantize image.

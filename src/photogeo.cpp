@@ -24,8 +24,14 @@ void ptg_generate_collision_geometry(const ptg_generation_parameters* parameters
     *out_outline_counts = tracing_results.outline_counts;
 }
 
-void ptg_free_results(ptg_outline** outlines, unsigned int* outline_count) {
-    std::cerr << "ptg_free_results has not yet been implemented." << std::endl;
+void ptg_free_results(unsigned int layer_count, ptg_outline** outlines, unsigned int* outline_counts) {
+    for (unsigned int layer_index = 0; layer_index < layer_count; ++layer_index) {
+        for (unsigned int outline_index = 0; outline_index < outline_counts[layer_index]; ++outline_index)
+            delete[] outlines[layer_index][outline_index].vertices;
+        delete[] outlines[layer_index];
+    }
+    delete[] outlines;
+    delete[] outline_counts;
 }
 
 void ptg_quantize(const ptg_image_parameters* image_parameters, const ptg_quantization_parameters* quantization_parameters, ptg_quantization_results* quantization_results) {
@@ -73,13 +79,7 @@ void ptg_trace(const ptg_image_parameters* image_parameters, const ptg_quantizat
 }
 
 void ptg_free_tracing_results(ptg_tracing_results* tracing_results) {
-    for (unsigned int layer_index = 0; layer_index < tracing_results->layer_count; ++layer_index) {
-        for (unsigned int outline_index = 0; outline_index < tracing_results->outline_counts[layer_index]; ++outline_index)
-            delete[] tracing_results->outlines[layer_index][outline_index].vertices;
-        delete[] tracing_results->outlines[layer_index];
-    }
-    delete[] tracing_results->outlines;
-    delete[] tracing_results->outline_counts;
+    ptg_free_results(tracing_results->layer_count, tracing_results->outlines, tracing_results->outline_counts);
 }
 
 void ptg_reduce(ptg_tracing_results* tracing_results, const ptg_vertex_reduction_parameters* vertex_reduction_parameters) {

@@ -195,7 +195,7 @@ int main(int argc, const char* argv[]) {
     stbi_image_free(data);
 
     // Free results.
-    ptg_free_results(outlines, outline_counts);
+    ptg_free_results(foreground_colors.size(), outlines, outline_counts);
 
     return 0;
 }
