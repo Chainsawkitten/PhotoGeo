@@ -191,6 +191,9 @@ int main(int argc, const char* argv[]) {
         ptg_free_quantization_results(&quantization_results);
     }
 
+    // Output results to SVG file.
+    write_svg(output_filename, foreground_colors.size(), foreground_colors.data(), outlines, outline_counts, false);
+
     // Free image.
     stbi_image_free(data);
 
