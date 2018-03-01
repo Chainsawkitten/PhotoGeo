@@ -84,6 +84,8 @@ void ptg_free_tracing_results(ptg_tracing_results* tracing_results) {
 
 void ptg_reduce(ptg_tracing_results* tracing_results, const ptg_vertex_reduction_parameters* vertex_reduction_parameters) {
     switch (vertex_reduction_parameters->vertex_reduction_method) {
+        case PTG_NO_VERTEX_REDUCTION:
+            break;
         case PTG_VISVALINGAM_WHYATT:
             ptgi_visvalingam_whyatt(tracing_results);
             break;
