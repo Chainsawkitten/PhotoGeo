@@ -1,6 +1,7 @@
 #include "marching_squares.hpp"
 
 #include <vector>
+#include <assert.h>
 
 // Straight line connecting two vertices. @todo Optimize marching squares and remove this.
 struct line {
@@ -177,18 +178,22 @@ void ptgi_trace_marching_squares(bool* layer, unsigned int layer_width, unsigned
     std::vector<vertex> vertices;
 
     // Execute marching squares on layer.
-    for (unsigned int it = 0; it < (layer_width * layer_height); ++it) {
-        bool topEdge = it < layer_width;
-        bool bottomEdge = it >= (layer_width * (layer_height - 1));
-        bool leftEdge = it % layer_width == 0;
-        bool rightEdge = it % layer_width == (layer_width - 1);
+    for (unsigned int it = 0; it < ((layer_width + 1) * (layer_height + 1)); ++it) {
+        
+        unsigned int it_x = it % (layer_width + 1);
+        unsigned int it_y = it / (layer_width + 1);
 
-        bool topLeft = topEdge || leftEdge ? false : layer[it - layer_width - 1];
-        bool topRight = topEdge || rightEdge ? false : layer[it - layer_width];
-        bool bottomRight = bottomEdge || rightEdge ? false : layer[it];
-        bool bottomLeft = bottomEdge || leftEdge ? false : layer[it - 1];
+        bool topEdge = it_y == 0;
+        bool bottomEdge = it_y == layer_height;
+        bool leftEdge = it_x == 0;
+        bool rightEdge = it_x == layer_width;
 
-        marching_squares(topLeft, topRight, bottomRight, bottomLeft, it % layer_width, it / layer_width, lines, vertices);
+        bool topLeft = topEdge || leftEdge ? false : layer[it_x - 1 + (it_y - 1) * layer_width];
+        bool topRight = topEdge || rightEdge ? false : layer[it_x + (it_y - 1) * layer_width];
+        bool bottomRight = bottomEdge || rightEdge ? false : layer[it_x + it_y * layer_width];
+        bool bottomLeft = bottomEdge || leftEdge ? false : layer[it_x - 1 + it_y * layer_width];
+
+        marching_squares(topLeft, topRight, bottomRight, bottomLeft, it_x, it_y, lines, vertices);
     }
 
     // Create contours.
@@ -209,6 +214,7 @@ void ptgi_trace_marching_squares(bool* layer, unsigned int layer_width, unsigned
                 // Find connected vertex on line.
                 const line& line = lines[vertices[it_vertex_index].line_index];
                 const std::size_t connected_vertex_index = line.vertex_indices[1];
+                assert(connected_vertex_index != it_vertex_index);
 
                 // Set vertices as assigned to contour.
                 vertices[it_vertex_index].assigned_contour = true;
