@@ -112,38 +112,37 @@ static void marching_squares(bool topLeft, bool topRight, bool bottomRight, bool
             break;
 
         // 2 points (diagonal):
-        // B -> C, D -> A
+        // C -> B, A -> D
         case 5:
-            add_line(B, C, out_lines, out_vertices);
-            add_line(D, A, out_lines, out_vertices);
+            add_line(C, B, out_lines, out_vertices);
+            add_line(A, D, out_lines, out_vertices);
             break;
 
-        // A -> B, C -> D
+        // B -> A, D -> C
         case 10:
-            add_line(A, B, out_lines, out_vertices);
-            add_line(C, D, out_lines, out_vertices);
-
+            add_line(B, A, out_lines, out_vertices);
+            add_line(D, C, out_lines, out_vertices);
             break;
 
         // 3 points:
-        // D -> A
+        // A -> D
         case 7:
-            add_line(D, A, out_lines, out_vertices);
+            add_line(A, D, out_lines, out_vertices);
             break;
 
-        // A -> B
+        // B -> A
         case 11:
-            add_line(A, B, out_lines, out_vertices);
+            add_line(B, A, out_lines, out_vertices);
             break;
 
-        // B -> C
+        // C -> B
         case 13:
-            add_line(B, C, out_lines, out_vertices);
+            add_line(C, B, out_lines, out_vertices);
             break;
 
-        // C -> D
+        // D -> C
         case 14:
-            add_line(C, D, out_lines, out_vertices);
+            add_line(D, C, out_lines, out_vertices);
             break;
 
         // 4 points:
@@ -209,7 +208,7 @@ void ptgi_trace_marching_squares(bool* layer, unsigned int layer_width, unsigned
 
                 // Find connected vertex on line.
                 const line& line = lines[vertices[it_vertex_index].line_index];
-                std::size_t connected_vertex_index = line.vertex_indices[0] == it_vertex_index ? line.vertex_indices[1] : line.vertex_indices[0];
+                const std::size_t connected_vertex_index = line.vertex_indices[1];
 
                 // Set vertices as assigned to contour.
                 vertices[it_vertex_index].assigned_contour = true;
