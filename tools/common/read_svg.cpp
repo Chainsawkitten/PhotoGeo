@@ -1,6 +1,5 @@
 #include "read_svg.hpp"
 
-#include <iostream>
 #include <vector>
 #include <tinyxml2.h>
 #include <sstream>
@@ -12,8 +11,6 @@ struct svg_layer {
 };
 
 ptg_tracing_results read_svg(const char* filename) {
-    std::cerr << "read_svg has not yet been implemented." << std::endl;
-
     // Parse SVG file.
     XMLDocument doc;
     doc.LoadFile(filename);
