@@ -46,3 +46,7 @@ target_include_directories(opencv INTERFACE opencv/modules/core/include ${CMAKE_
 # STB
 add_library(stb INTERFACE)
 target_include_directories(stb INTERFACE stb)
+
+
+# TinyXML2
+add_subdirectory(tinyxml2)
