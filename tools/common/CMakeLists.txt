@@ -14,7 +14,7 @@ set(HEADERS
 create_directory_groups(${SRCS} ${HEADERS})
 
 add_library(common ${SRCS} ${HEADERS})
-target_link_libraries(common tinyxml2)
+target_link_libraries(common photogeo tinyxml2)
 target_include_directories(common PUBLIC .)
 
 # Require C++11.
