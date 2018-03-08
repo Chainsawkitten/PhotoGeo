@@ -14,6 +14,7 @@ Use [Doxygen](http://www.stack.nl/~dimitri/doxygen/) to generate documentation.
 Released under the [MIT license](LICENSE).
 
 PhotoGeo uses the following libraries with their own licenses:
+
 | Library  | License |
 | --- | --- |
 | [OpenCV](https://github.com/opencv/opencv) | 3-clause BSD |

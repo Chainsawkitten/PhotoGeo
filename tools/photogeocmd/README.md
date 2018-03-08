@@ -3,6 +3,9 @@
 Commandline tool used to generate contour geometry from a photo of a drawing. Also serves as an example of how to use the library.
 
 ## Options
+
+| Option | Description |
+| --- | --- |
 | -i  | Specify filename of source image. |
 | -o  | Specify filename of result SVG. |
 | -b  | Specify background color. Format: R:G:B |
