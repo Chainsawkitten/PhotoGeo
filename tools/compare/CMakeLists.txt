@@ -14,6 +14,7 @@ set(HEADERS
 create_directory_groups(${SRCS} ${HEADERS})
 
 add_executable(compare ${SRCS} ${HEADERS})
+target_link_libraries(compare common)
 
 # Require C++11.
 set_property(TARGET compare PROPERTY CXX_STANDARD 11)
