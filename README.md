@@ -19,3 +19,4 @@ PhotoGeo uses the following libraries with their own licenses:
 | --- | --- |
 | [OpenCV](https://github.com/opencv/opencv) | 3-clause BSD |
 | [stb](https://github.com/nothings/stb) | Public domain |
+| [TinyXML2](https://github.com/leethomason/tinyxml2) | MIT |
