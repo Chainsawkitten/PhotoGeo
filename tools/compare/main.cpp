@@ -37,7 +37,10 @@ int main(int argc, const char* argv[]) {
     std::cout << "Compare tool not yet implemented." << std::endl;
 
     // TODO: Perform comparison.
-    // TODO: Free tracing results.
+
+    // Free tracing results.
+    ptg_free_tracing_results(&svg1);
+    ptg_free_tracing_results(&svg2);
 
     return 0;
 }

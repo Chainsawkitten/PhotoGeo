@@ -36,7 +36,9 @@ int main(int argc, const char* argv[]) {
     std::cerr << "rasterization tool not yet implemented." << std::endl;
 
     // TODO: Rasterize.
-    // TODO: Free tracing results.
+
+    // Free tracing results.
+    ptg_free_tracing_results(&svg);
 
     return 0;
 }
