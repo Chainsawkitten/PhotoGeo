@@ -44,5 +44,5 @@ endif()
 # Library.
 add_subdirectory(src)
 
-# Commandline tool.
-add_subdirectory(tool)
+# Tools.
+add_subdirectory(tools)
