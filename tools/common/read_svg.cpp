@@ -24,18 +24,30 @@ ptg_tracing_results read_svg(const char* filename) {
     while (group != nullptr) {
         svg_layer layer;
 
-        // TODO Parse contours within the layer.
+        // Parse contours within the layer.
+        const XMLElement* path = group->FirstChildElement("path");
+        while (path != nullptr) {
+            // TODO Parse vertices.
+
+            ptg_outline outline;
+            outline.vertex_count = 0;
+            outline.vertices = nullptr;
+            layer.outlines.push_back(outline);
+
+            path = path->NextSiblingElement("path");
+        }
 
         layers.push_back(layer);
 
         group = group->NextSiblingElement("g");
     }
 
+    // Return results.
     ptg_tracing_results results;
     results.layer_count = layers.size();
     results.outline_counts = new unsigned int[layers.size()];
     for (unsigned int layer = 0; layer < layers.size(); ++layer) {
-        results.outline_counts[layer] = 0;
+        results.outline_counts[layer] = layers[layer].outlines.size();
     }
     results.outlines = nullptr;
 
