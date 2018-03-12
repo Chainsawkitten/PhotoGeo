@@ -1,5 +1,6 @@
 #include <iostream>
 #include <read_svg.hpp>
+#include "rasterize.hpp"
 
 int main(int argc, const char* argv[]) {
     // Handle commandline arguments.
@@ -36,10 +37,22 @@ int main(int argc, const char* argv[]) {
 
     std::cerr << "rasterization tool not yet implemented." << std::endl;
 
-    // TODO: Rasterize.
+    // Allocate image data.
+    // TODO: Allow user to configure size (or read it from SVG file).
+    unsigned int width = 2000;
+    unsigned int height = 1415;
+    ptg_color* image_data = new ptg_color[width * height];
+
+    // Rasterize.
+    rasterize(&svg, width, height, image_data);
 
     // Free tracing results.
     ptg_free_tracing_results(&svg);
+
+    // TODO: Write image to PNG file.
+
+    // Clean up image data.
+    delete[] image_data;
 
     return 0;
 }

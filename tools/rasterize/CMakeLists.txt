@@ -3,11 +3,12 @@
 # Source files.
 set(SRCS
     main.cpp
+    rasterize.cpp
 )
 
 # Header files. Specified in order to get them listed in the IDE.
 set(HEADERS
-    
+    rasterize.hpp
 )
 
 # Generate directory groups for IDE.
