@@ -1,12 +1,17 @@
 #include "marching_squares.hpp"
 
-#include <vector>
 #include <assert.h>
+#include <limits>
+#include <vector>
+
 
 // Straight line connecting two vertices. @todo Optimize marching squares and remove this.
 struct line {
     // Vertex indices.
     std::size_t vertex_indices[2];
+
+    // Whether line is assigned a contour.
+    bool assigned_contour;
 };
 
 // Vertex contaning position and line index.
@@ -16,9 +21,6 @@ struct vertex {
 
     // Line index which this vertex belongs.
     std::size_t line_index;
-
-    // Whether vertex is assigned a contour.
-    bool assigned_contour;
 };
 
 /*
@@ -29,9 +31,9 @@ struct vertex {
  * @param out_vertices Vector to store resulting vertices.
  */
 static void add_line(const ptg_vec2& v1, const ptg_vec2& v2, std::vector<line>& out_lines, std::vector<vertex>& out_vertices) {
-    out_lines.push_back({ out_vertices.size(), out_vertices.size() + 1 });
-    out_vertices.push_back({ v1, out_lines.size() - 1, false });
-    out_vertices.push_back({ v2, out_lines.size() - 1, false });
+    out_lines.push_back({ out_vertices.size(), out_vertices.size() + 1 , false });
+    out_vertices.push_back({ v1, out_lines.size() - 1 });
+    out_vertices.push_back({ v2, out_lines.size() - 1 });
 }
 
 /*
@@ -59,91 +61,91 @@ static void marching_squares(bool topLeft, bool topRight, bool bottomRight, bool
      * |    A    |
      * | D(x,y)B |
      * |    C    |
-     * # ------- # */
+     * # ------- # */  
     const ptg_vec2 A = { x, y - 1 };
     const ptg_vec2 B = { x + 1, y };
     const ptg_vec2 C = { x, y + 1 };
     const ptg_vec2 D = { x - 1, y };
-
+    
     switch (square_configuration) {
         // 0 points:    
         case 0:
             break; 
 
         // 1 points:
-        // C -> D
+        // D -> C
         case 1:
-            add_line(C, D, out_lines, out_vertices);
-            break;
-
-        // B -> C
-        case 2:
-            add_line(B, C, out_lines, out_vertices);
-            break;
-
-        // A -> B
-        case 4:
-            add_line(A, B, out_lines, out_vertices);
-            break;
-
-        // D -> A
-        case 8:
-            add_line(D, A, out_lines, out_vertices);
-            break;
-
-        // 2 points:
-        // B -> D
-        case 3:
-            add_line(B, D, out_lines, out_vertices);
-            break;
-        
-        // A -> C
-        case 6:
-            add_line(A, C, out_lines, out_vertices);
-            break;
-
-        // C -> A
-        case 9:
-            add_line(C, A, out_lines, out_vertices);
-            break;
-
-        // D -> B
-        case 12:
-            add_line(D, B, out_lines, out_vertices);
-            break;
-
-        // 2 points (diagonal):
-        // C -> B, A -> D
-        case 5:
-            add_line(C, B, out_lines, out_vertices);
-            add_line(A, D, out_lines, out_vertices);
-            break;
-
-        // B -> A, D -> C
-        case 10:
-            add_line(B, A, out_lines, out_vertices);
             add_line(D, C, out_lines, out_vertices);
-            break;
-
-        // 3 points:
-        // A -> D
-        case 7:
-            add_line(A, D, out_lines, out_vertices);
-            break;
-
-        // B -> A
-        case 11:
-            add_line(B, A, out_lines, out_vertices);
             break;
 
         // C -> B
-        case 13:
+        case 2:
             add_line(C, B, out_lines, out_vertices);
             break;
 
-        // D -> C
-        case 14:
+        // B -> A
+        case 4:
+            add_line(B, A, out_lines, out_vertices);
+            break;
+
+        // A -> D
+        case 8:
+            add_line(A, D, out_lines, out_vertices);
+            break;
+
+        // 2 points:
+        // D -> B
+        case 3:
+            add_line(D, B, out_lines, out_vertices);
+            break;
+        
+        // C -> A
+        case 6:
+            add_line(C, A, out_lines, out_vertices);
+            break;
+
+        // A -> C
+        case 9:
+            add_line(A, C, out_lines, out_vertices);
+            break;
+
+        // B -> D
+        case 12:
+            add_line(B, D, out_lines, out_vertices);
+            break;
+
+        // 2 points (diagonal):
+        // B -> A, D -> C
+        case 5:
+            add_line(B, A, out_lines, out_vertices);
             add_line(D, C, out_lines, out_vertices);
+            break;
+
+        // A -> D, C -> B
+        case 10:
+            add_line(A, D, out_lines, out_vertices);
+            add_line(C, B, out_lines, out_vertices);
+            break;
+
+        // 3 points:
+        // D -> A
+        case 7:
+            add_line(D, A, out_lines, out_vertices);
+            break;
+
+        // A -> B
+        case 11:
+            add_line(A, B, out_lines, out_vertices);
+            break;
+
+        // B -> C
+        case 13:
+            add_line(B, C, out_lines, out_vertices);
+            break;
+
+        // C -> D
+        case 14:
+            add_line(C, D, out_lines, out_vertices);
             break;
 
         // 4 points:
@@ -156,20 +158,17 @@ static void marching_squares(bool topLeft, bool topRight, bool bottomRight, bool
  * Find other vertex with same position.
  * @param this_index Vertex index of vertex to find other vertex with same position.
  * @param vertices The vertices.
- * @param out_found_index Variable to store vertex index of the found vertex.
- * @return Whether an index was found.
+ * @return The vertex index of the found vertex.
  * @todo Optimize using lookup table.
  */
-static bool find_equal_vertex(const std::size_t this_index, const std::vector<vertex>& vertices, std::size_t& out_found_index) {
+static std::size_t find_equal_vertex(const std::size_t this_index, const std::vector<vertex>& vertices) {
     const vertex& this_vertex = vertices[this_index];
     for (std::size_t vertex_index = 0; vertex_index < vertices.size(); ++vertex_index) {
         const vertex& vertex = vertices[vertex_index];
-        if (this_index != vertex_index && vertex.position.x == this_vertex.position.x && this_vertex.position.y == vertex.position.y) {
-            out_found_index = vertex_index;
-            return true;
-        }
+        if ((this_index != vertex_index) && (vertex.position.x == this_vertex.position.x) && (this_vertex.position.y == vertex.position.y))
+            return vertex_index;
     }
-    return false;
+    return std::numeric_limits<std::size_t>::max();
 }
 
 void ptgi_trace_marching_squares(bool* layer, unsigned int layer_width, unsigned int layer_height, ptg_outline*& out_outlines, unsigned int& out_outline_count) {
@@ -198,32 +197,30 @@ void ptgi_trace_marching_squares(bool* layer, unsigned int layer_width, unsigned
 
     // Create contours.
     std::vector<std::vector<std::size_t>> contours;
-    for (std::size_t vertex_index = 0; vertex_index < vertices.size(); ++vertex_index) {
-        if (!vertices[vertex_index].assigned_contour) {
+    for (std::size_t line_index = 0; line_index < lines.size(); ++line_index) {
+        if (!lines[line_index].assigned_contour) {
 
             // Create new contour.
             contours.push_back(std::vector<std::size_t>());
             std::vector<std::size_t>& contour = contours.back();
 
             // Trace contour (assign connected vertex indices to contour).
-            std::size_t it_vertex_index = vertex_index;
+            line* line = &lines[line_index];
             do {
-                // Add vertex to contour.
-                contour.push_back(it_vertex_index);
+                // Add vertex index to contour.
+                contour.push_back(line->vertex_indices[0]);
 
-                // Find connected vertex on line.
-                const line& line = lines[vertices[it_vertex_index].line_index];
-                const std::size_t connected_vertex_index = line.vertex_indices[1];
-                assert(connected_vertex_index != it_vertex_index);
+                // Set line as assigned to contour.
+                line->assigned_contour = true;
 
-                // Set vertices as assigned to contour.
-                vertices[it_vertex_index].assigned_contour = true;
-                vertices[connected_vertex_index].assigned_contour = true;
+                const vertex& this_vertex = vertices[line->vertex_indices[1]];
+                const vertex& other_vertex = vertices[find_equal_vertex(line->vertex_indices[1], vertices)];
+                assert((other_vertex.position.x == this_vertex.position.x) && (other_vertex.position.y == this_vertex.position.y));
+                assert(this_vertex.line_index != other_vertex.line_index);
 
-                // Find other vertex starting at connected vertex.
-                find_equal_vertex(connected_vertex_index, vertices, it_vertex_index);
-
-            } while (!vertices[it_vertex_index].assigned_contour);
+                // Find connected line.
+                line = &lines[vertices[find_equal_vertex(line->vertex_indices[1], vertices)].line_index];
+            } while (!line->assigned_contour);
 
             // Finish contour by connecting tail and root.
             contour.push_back(contour.front());
