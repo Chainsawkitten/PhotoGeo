@@ -2,6 +2,9 @@
 #include <read_svg.hpp>
 #include "rasterize.hpp"
 
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include <stb_image_write.h>
+
 int main(int argc, const char* argv[]) {
     // Handle commandline arguments.
     const char* input_filename = "";
@@ -49,7 +52,9 @@ int main(int argc, const char* argv[]) {
     // Free tracing results.
     ptg_free_tracing_results(&svg);
 
-    // TODO: Write image to PNG file.
+    // Write image to PNG file.
+    const unsigned int components = 3;
+    stbi_write_png(output_filename, width, height, components, image_data, width * components);
 
     // Clean up image data.
     delete[] image_data;
