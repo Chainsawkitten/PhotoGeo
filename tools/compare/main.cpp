@@ -31,8 +31,9 @@ int main(int argc, const char* argv[]) {
     }
 
     // Load SVG images.
-    ptg_tracing_results svg1 = read_svg(first_filename);
-    ptg_tracing_results svg2 = read_svg(second_filename);
+    ptg_tracing_results svg1, svg2;
+    read_svg(first_filename, &svg1);
+    read_svg(second_filename, &svg2);
 
     std::cout << "Compare tool not yet implemented." << std::endl;
 

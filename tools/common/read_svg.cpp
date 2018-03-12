@@ -9,7 +9,7 @@ struct svg_layer {
     std::vector<ptg_outline> outlines;
 };
 
-ptg_tracing_results read_svg(const char* filename) {
+void read_svg(const char* filename, ptg_tracing_results* results) {
     // Parse SVG file.
     XMLDocument doc;
     doc.LoadFile(filename);
@@ -63,18 +63,15 @@ ptg_tracing_results read_svg(const char* filename) {
         group = group->NextSiblingElement("g");
     }
 
-    // Return results.
-    ptg_tracing_results results;
-    results.layer_count = layers.size();
-    results.outline_counts = new unsigned int[layers.size()];
-    results.outlines = new ptg_outline*[layers.size()];
+    // Write results.
+    results->layer_count = layers.size();
+    results->outline_counts = new unsigned int[layers.size()];
+    results->outlines = new ptg_outline*[layers.size()];
     for (unsigned int layer = 0; layer < layers.size(); ++layer) {
-        results.outline_counts[layer] = layers[layer].outlines.size();
-        results.outlines[layer] = new ptg_outline[results.outline_counts[layer]];
+        results->outline_counts[layer] = layers[layer].outlines.size();
+        results->outlines[layer] = new ptg_outline[results->outline_counts[layer]];
 
-        for (unsigned int outline = 0; outline < results.outline_counts[layer]; ++outline)
-            results.outlines[layer][outline] = layers[layer].outlines[outline];
+        for (unsigned int outline = 0; outline < results->outline_counts[layer]; ++outline)
+            results->outlines[layer][outline] = layers[layer].outlines[outline];
     }
-
-    return results;
 }

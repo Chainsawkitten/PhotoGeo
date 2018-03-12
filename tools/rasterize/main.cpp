@@ -31,7 +31,8 @@ int main(int argc, const char* argv[]) {
     }
 
     // Load SVG image.
-    ptg_tracing_results svg = read_svg(input_filename);
+    ptg_tracing_results svg;
+    read_svg(input_filename, &svg);
 
     std::cerr << "rasterization tool not yet implemented." << std::endl;
 
