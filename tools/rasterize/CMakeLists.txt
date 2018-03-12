@@ -15,7 +15,7 @@ set(HEADERS
 create_directory_groups(${SRCS} ${HEADERS})
 
 add_executable(rasterize ${SRCS} ${HEADERS})
-target_link_libraries(rasterize common)
+target_link_libraries(rasterize common stb)
 
 # Require C++11.
 set_property(TARGET rasterize PROPERTY CXX_STANDARD 11)
