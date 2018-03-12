@@ -18,7 +18,20 @@ void rasterize(const ptg_tracing_results* tracing_results, unsigned int width, u
         for (unsigned int y = 0; y < height; ++y) {
             memset(collision, 0, width);
 
-            // TODO: Perform raytracing.
+            // Loop through all lines.
+            for (unsigned int outline = 0; outline < tracing_results->outline_counts[layer]; ++outline) {
+                for (unsigned int line = 0; line < tracing_results->outlines[layer][outline].vertex_count - 1; ++line) {
+                    // Check if line intersects with the row.
+                    // SVG has double the width/height of PNG.
+                    ptg_vec2 v1 = tracing_results->outlines[layer][outline].vertices[line];
+                    ptg_vec2 v2 = tracing_results->outlines[layer][outline].vertices[line + 1];
+                    if (v1.y == v2.y || (v1.y < y * 2 && v2.y < y * 2) || (v1.y > y * 2 && v2.y > y * 2))
+                        continue;
+
+                    // TODO: Find intersection point.
+                    // TODO: Mark intersection point.
+                }
+            }
 
             // Write pixel values.
             bool inside = false;
