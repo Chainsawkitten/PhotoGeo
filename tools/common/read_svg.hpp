@@ -6,8 +6,8 @@
 /**
  * Read and parse SVG file.
  * @param filename The filename of the file to read.
- * @return The contours in the SVG file.
+ * @param results Where to store the results.
  */
-ptg_tracing_results read_svg(const char* filename);
+void read_svg(const char* filename, ptg_tracing_results* results);
 
 #endif
