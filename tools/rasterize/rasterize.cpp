@@ -25,11 +25,20 @@ void rasterize(const ptg_tracing_results* tracing_results, unsigned int width, u
                     // SVG has double the width/height of PNG.
                     ptg_vec2 v1 = tracing_results->outlines[layer][outline].vertices[line];
                     ptg_vec2 v2 = tracing_results->outlines[layer][outline].vertices[line + 1];
-                    if (v1.y == v2.y || (v1.y < y * 2 && v2.y < y * 2) || (v1.y > y * 2 && v2.y > y * 2))
+                    if ((v2.y > y * 2) == (v1.y > y * 2))
                         continue;
 
-                    // TODO: Find intersection point.
-                    // TODO: Mark intersection point.
+                    // Find intersection point.
+                    const double x1 = v1.x;
+                    const double y1 = v1.y;
+                    const double x2 = v2.x;
+                    const double y2 = v2.y;
+                    const double k = (x2 - x1) / (y2 - y1);
+                    unsigned int intersection = x1 + k * ((double)y * 2.0 - y1);
+                    intersection /= 2;
+
+                    // Mark intersection point.
+                    collision[intersection] = !collision[intersection];
                 }
             }
 
