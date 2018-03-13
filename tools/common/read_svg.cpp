@@ -7,9 +7,10 @@ using namespace tinyxml2;
 
 struct svg_layer {
     std::vector<ptg_outline> outlines;
+    ptg_color color;
 };
 
-void read_svg(const char* filename, ptg_tracing_results* results, unsigned int* width, unsigned int* height) {
+void read_svg(const char* filename, ptg_tracing_results* results, ptg_color** colors, unsigned int* width, unsigned int* height) {
     // Parse SVG file.
     XMLDocument doc;
     doc.LoadFile(filename);
@@ -24,6 +25,7 @@ void read_svg(const char* filename, ptg_tracing_results* results, unsigned int* 
     const XMLElement* group = root->FirstChildElement("g");
     while (group != nullptr) {
         svg_layer layer;
+        layer.color = {0, 0, 0};
 
         // Parse contours within the layer.
         const XMLElement* path = group->FirstChildElement("path");
@@ -71,11 +73,18 @@ void read_svg(const char* filename, ptg_tracing_results* results, unsigned int* 
     results->layer_count = layers.size();
     results->outline_counts = new unsigned int[layers.size()];
     results->outlines = new ptg_outline*[layers.size()];
+    *colors = new ptg_color[layers.size()];
     for (unsigned int layer = 0; layer < layers.size(); ++layer) {
+        (*colors)[layer] = layers[layer].color;
         results->outline_counts[layer] = layers[layer].outlines.size();
         results->outlines[layer] = new ptg_outline[results->outline_counts[layer]];
 
         for (unsigned int outline = 0; outline < results->outline_counts[layer]; ++outline)
             results->outlines[layer][outline] = layers[layer].outlines[outline];
     }
+}
+
+void free_svg_results(ptg_tracing_results *results, ptg_color **colors) {
+    ptg_free_tracing_results(results);
+    delete[] *colors;
 }

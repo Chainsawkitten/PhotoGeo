@@ -32,17 +32,18 @@ int main(int argc, const char* argv[]) {
 
     // Load SVG images.
     ptg_tracing_results svg1, svg2;
+    ptg_color *colors1, *colors2;
     unsigned width1, height1, width2, height2;
-    read_svg(first_filename, &svg1, &width1, &height1);
-    read_svg(second_filename, &svg2, &width2, &height2);
+    read_svg(first_filename, &svg1, &colors1, &width1, &height1);
+    read_svg(second_filename, &svg2, &colors2, &width2, &height2);
 
     std::cout << "Compare tool not yet implemented." << std::endl;
 
     // TODO: Perform comparison.
 
     // Free tracing results.
-    ptg_free_tracing_results(&svg1);
-    ptg_free_tracing_results(&svg2);
+    free_svg_results(&svg1, &colors1);
+    free_svg_results(&svg2, &colors2);
 
     return 0;
 }

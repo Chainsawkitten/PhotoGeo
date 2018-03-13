@@ -37,8 +37,9 @@ int main(int argc, const char* argv[]) {
     // Load SVG image.
     unsigned int width;
     unsigned int height;
+    ptg_color* colors;
     ptg_tracing_results svg;
-    read_svg(input_filename, &svg, &width, &height);
+    read_svg(input_filename, &svg, &colors, &width, &height);
 
     std::cerr << "rasterization tool not yet implemented." << std::endl;
 
@@ -48,10 +49,10 @@ int main(int argc, const char* argv[]) {
     ptg_color* image_data = new ptg_color[width * height];
 
     // Rasterize.
-    rasterize(&svg, width, height, image_data);
+    rasterize(&svg, colors, width, height, image_data);
 
-    // Free tracing results.
-    ptg_free_tracing_results(&svg);
+    // Free SVG results.
+    free_svg_results(&svg, &colors);
 
     // Write image to PNG file.
     const unsigned int components = 3;
