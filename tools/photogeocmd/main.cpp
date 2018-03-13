@@ -167,7 +167,7 @@ int main(int argc, const char* argv[]) {
         ptg_tracing_results tracing_results;
         ptg_trace(&image_parameters, &quantization_results, &tracing_parameters, &tracing_results);
         std::cout << "Writing to tracing.svg" << std::endl;
-        write_svg("tracing.svg", foreground_colors.size(), foreground_colors.data(), tracing_results.outlines, tracing_results.outline_counts, false);
+        write_svg("tracing.svg", &image_parameters, tracing_results.outlines, tracing_results.outline_counts, false);
         ptg_free_tracing_results(&tracing_results);
         ptg_free_quantization_results(&quantization_results);
     }
@@ -182,17 +182,17 @@ int main(int argc, const char* argv[]) {
 
         ptg_tracing_results tracing_results;
         ptg_trace(&image_parameters, &quantization_results, &tracing_parameters, &tracing_results);
-        write_svg("before_reduction.svg", foreground_colors.size(), foreground_colors.data(), tracing_results.outlines, tracing_results.outline_counts, false);
+        write_svg("before_reduction.svg", &image_parameters, tracing_results.outlines, tracing_results.outline_counts, false);
 
         ptg_reduce(&tracing_results, &vertex_reduction_parameters);
-        write_svg("after_reduction.svg", foreground_colors.size(), foreground_colors.data(), tracing_results.outlines, tracing_results.outline_counts, false);
+        write_svg("after_reduction.svg", &image_parameters, tracing_results.outlines, tracing_results.outline_counts, false);
 
         ptg_free_tracing_results(&tracing_results);
         ptg_free_quantization_results(&quantization_results);
     }
 
     // Output results to SVG file.
-    write_svg(output_filename, foreground_colors.size(), foreground_colors.data(), outlines, outline_counts, false);
+    write_svg(output_filename, &image_parameters, outlines, outline_counts, false);
 
     // Free image.
     stbi_image_free(data);
