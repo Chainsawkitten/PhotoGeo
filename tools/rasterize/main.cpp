@@ -35,15 +35,16 @@ int main(int argc, const char* argv[]) {
     }
 
     // Load SVG image.
+    unsigned int width;
+    unsigned int height;
     ptg_tracing_results svg;
-    read_svg(input_filename, &svg);
+    read_svg(input_filename, &svg, &width, &height);
 
     std::cerr << "rasterization tool not yet implemented." << std::endl;
 
     // Allocate image data.
     // TODO: Allow user to configure size (or read it from SVG file).
-    unsigned int width = 2000;
-    unsigned int height = 1415;
+
     ptg_color* image_data = new ptg_color[width * height];
 
     // Rasterize.

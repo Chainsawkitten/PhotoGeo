@@ -9,11 +9,15 @@ struct svg_layer {
     std::vector<ptg_outline> outlines;
 };
 
-void read_svg(const char* filename, ptg_tracing_results* results) {
+void read_svg(const char* filename, ptg_tracing_results* results, unsigned int* width, unsigned int* height) {
     // Parse SVG file.
     XMLDocument doc;
     doc.LoadFile(filename);
     const XMLElement* root = doc.FirstChildElement("svg");
+
+    // Parse dimensions.
+    *width = root->IntAttribute("width") / 2;
+    *height = root->IntAttribute("height") / 2;
 
     // Parse layers.
     std::vector<svg_layer> layers;
