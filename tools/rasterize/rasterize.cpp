@@ -3,7 +3,7 @@
 #include <iostream>
 #include <cstring>
 
-void rasterize(const ptg_tracing_results* tracing_results, unsigned int width, unsigned int height, ptg_color* image) {
+void rasterize(const ptg_tracing_results* tracing_results, const ptg_color* colors, unsigned int width, unsigned int height, ptg_color* image) {
     std::cerr << "rasterize has not yet implemented." << std::endl;
 
     // White background color.
@@ -50,8 +50,7 @@ void rasterize(const ptg_tracing_results* tracing_results, unsigned int width, u
                     inside = !inside;
 
                 if (inside)
-                    // TODO: Use the color of the layer rather than hard-coded black.
-                    image[y * width + x] = {0, 0, 0};
+                    image[y * width + x] = colors[layer];
             }
         }
     }
