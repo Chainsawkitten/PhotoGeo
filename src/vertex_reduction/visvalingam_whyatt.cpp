@@ -96,5 +96,19 @@ void ptgi_visvalingam_whyatt(ptg_tracing_results* tracing_results) {
         for (unsigned int outline = 0; outline < tracing_results->outline_counts[layer]; ++outline) {
             reduce_outline(tracing_results->outlines[layer][outline]);
         }
+
+        // Remove outlines that have been reduced down to a single point.
+        unsigned int outline_count = 0;
+        for (unsigned int outline = 0; outline < tracing_results->outline_counts[layer]; ++outline) {
+            if (tracing_results->outlines[layer][outline].vertex_count > 2) {
+                tracing_results->outlines[layer][outline_count].vertex_count = tracing_results->outlines[layer][outline].vertex_count;
+                tracing_results->outlines[layer][outline_count].vertices = tracing_results->outlines[layer][outline].vertices;
+                ++outline_count;
+            } else {
+                delete[] tracing_results->outlines[layer][outline].vertices;
+            }
+        }
+
+        tracing_results->outline_counts[layer] = outline_count;
     }
 }
