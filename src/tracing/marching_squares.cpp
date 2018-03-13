@@ -1,11 +1,9 @@
 #include "marching_squares.hpp"
 
-#include <assert.h>
 #include <limits>
 #include <vector>
 
-
-// Straight line connecting two vertices. @todo Optimize marching squares and remove this.
+// Straight line connecting two vertices.
 struct line {
     // Vertex indices.
     std::size_t vertex_indices[2];
@@ -38,35 +36,36 @@ static void add_line(const ptg_vec2& v1, const ptg_vec2& v2, std::vector<line>& 
 
 /*
  * Marching squares algorithm.
- * @param topLeft Whether top-left node is active in marching kernel.
- * @param topRight Whether top-right node is active in marching kernel.
- * @param bottomRight Whether bottom-right node is active in marching kernel.
- * @param bottomLeft Whether bottom-left node is active in marching kernel.
+ * @param top_left Whether top-left node is active in marching kernel.
+ * @param top_right Whether top-right node is active in marching kernel.
+ * @param bottom_right Whether bottom-right node is active in marching kernel.
+ * @param bottom_left Whether bottom-left node is active in marching kernel.
  * @param x X-coordinate (right positive) for center of the marching kernel relative to top-left coner of image in pixels.
  * @param y Y-coordinate (down positive) for center of the marching kernel relative to top-left coner of image in pixels.
  * @param out_lines Vector to store resulting lines.
  * @param out_vertices Vector to store resulting vertices.
  */
-static void marching_squares(bool topLeft, bool topRight, bool bottomRight, bool bottomLeft, unsigned int x, unsigned int y, std::vector<line>& out_lines, std::vector<vertex>& out_vertices) {
+static void marching_squares(bool top_left, bool top_right, bool bottom_right, bool bottom_left, unsigned int x, unsigned int y, std::vector<line>& out_lines, std::vector<vertex>& out_vertices) {
 
     // Calculate current configuration of marching squares.
-    const unsigned int square_configuration = topLeft * 8 + topRight * 4 + bottomRight * 2 + bottomLeft * 1;
-    
+    const unsigned int square_configuration = top_left * 8 + top_right * 4 + bottom_right * 2 + bottom_left * 1;
+
     // Convert (x,y) from pixel space to mesh space.
     x = x * 2;
     y = y * 2;
     /* Nodes (A, B, C, D) in marching kernel for 2x2 pixels.
      * x: positive right, y: positive down.
+     * Lines are created in clockwise winding order.
      * # ------- #
      * |    A    |
      * | D(x,y)B |
      * |    C    |
-     * # ------- # */  
+     * # ------- # */
     const ptg_vec2 A = { x, y - 1 };
     const ptg_vec2 B = { x + 1, y };
     const ptg_vec2 C = { x, y + 1 };
     const ptg_vec2 D = { x - 1, y };
-    
+
     switch (square_configuration) {
         // 0 points:    
         case 0:
@@ -182,17 +181,17 @@ void ptgi_trace_marching_squares(bool* layer, unsigned int layer_width, unsigned
         unsigned int it_x = it % (layer_width + 1);
         unsigned int it_y = it / (layer_width + 1);
 
-        bool topEdge = it_y == 0;
-        bool bottomEdge = it_y == layer_height;
-        bool leftEdge = it_x == 0;
-        bool rightEdge = it_x == layer_width;
+        bool top_Edge = it_y == 0;
+        bool bottom_edge = it_y == layer_height;
+        bool left_edge = it_x == 0;
+        bool right_edge = it_x == layer_width;
 
-        bool topLeft = topEdge || leftEdge ? false : layer[it_x - 1 + (it_y - 1) * layer_width];
-        bool topRight = topEdge || rightEdge ? false : layer[it_x + (it_y - 1) * layer_width];
-        bool bottomRight = bottomEdge || rightEdge ? false : layer[it_x + it_y * layer_width];
-        bool bottomLeft = bottomEdge || leftEdge ? false : layer[it_x - 1 + it_y * layer_width];
+        bool top_left = top_Edge || left_edge ? false : layer[it_x - 1 + (it_y - 1) * layer_width];
+        bool top_right = top_Edge || right_edge ? false : layer[it_x + (it_y - 1) * layer_width];
+        bool bottom_right = bottom_edge || right_edge ? false : layer[it_x + it_y * layer_width];
+        bool bottom_left = bottom_edge || left_edge ? false : layer[it_x - 1 + it_y * layer_width];
 
-        marching_squares(topLeft, topRight, bottomRight, bottomLeft, it_x, it_y, lines, vertices);
+        marching_squares(top_left, top_right, bottom_right, bottom_left, it_x, it_y, lines, vertices);
     }
 
     // Create contours.
@@ -212,11 +211,6 @@ void ptgi_trace_marching_squares(bool* layer, unsigned int layer_width, unsigned
 
                 // Set line as assigned to contour.
                 line->assigned_contour = true;
-
-                const vertex& this_vertex = vertices[line->vertex_indices[1]];
-                const vertex& other_vertex = vertices[find_equal_vertex(line->vertex_indices[1], vertices)];
-                assert((other_vertex.position.x == this_vertex.position.x) && (other_vertex.position.y == this_vertex.position.y));
-                assert(this_vertex.line_index != other_vertex.line_index);
 
                 // Find connected line.
                 line = &lines[vertices[find_equal_vertex(line->vertex_indices[1], vertices)].line_index];
