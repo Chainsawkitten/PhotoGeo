@@ -1,11 +1,8 @@
 #include "rasterize.hpp"
 
-#include <iostream>
 #include <cstring>
 
 void rasterize(const ptg_tracing_results* tracing_results, const ptg_color* colors, unsigned int width, unsigned int height, ptg_color* image) {
-    std::cerr << "rasterize has not yet implemented." << std::endl;
-
     // White background color.
     for (unsigned int i = 0; i < width * height; ++i)
         image[i] = {255, 255, 255};
