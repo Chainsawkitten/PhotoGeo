@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <tinyxml2.h>
+#include <string>
 
 using namespace tinyxml2;
 
@@ -26,10 +27,30 @@ void read_svg(const char* filename, ptg_tracing_results* results, ptg_color** co
     while (group != nullptr) {
         svg_layer layer;
         layer.color = {0, 0, 0};
+        bool first = true;
 
         // Parse contours within the layer.
         const XMLElement* path = group->FirstChildElement("path");
         while (path != nullptr) {
+            // Read layer color.
+            if (first) {
+                first = false;
+                std::string style = path->Attribute("style");
+                std::size_t pos = style.find("stroke:rgb(");
+
+                // Red.
+                style = style.substr(pos + 11);
+                layer.color.r = std::stoi(style);
+
+                // Green.
+                style = style.substr(style.find(",") + 1);
+                layer.color.g = std::stoi(style);
+
+                // Blue.
+                style = style.substr(style.find(",") + 1);
+                layer.color.b = std::stoi(style);
+            }
+
             // Parse vertices.
             std::vector<unsigned int> numbers;
             const char* d = path->Attribute("d");
