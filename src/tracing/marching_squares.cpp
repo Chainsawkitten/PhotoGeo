@@ -27,7 +27,7 @@ enum  direction {
  * Calculating the nodes vertices and direction.
  * @param x X-coordinate in pixels (positive right).
  * @param y Y-coordinate in pixels (positive down).
- * @param direction Current direction of the countour.
+ * @param direction Current direction of the contour.
  * @param node The node to decode.
  * @param out_v0 The first vertex.
  * @param out_v1 The second vertex.
