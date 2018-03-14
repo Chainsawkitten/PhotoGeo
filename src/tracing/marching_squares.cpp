@@ -181,13 +181,13 @@ void ptgi_trace_marching_squares(bool* layer, unsigned int layer_width, unsigned
         unsigned int it_x = it % (layer_width + 1);
         unsigned int it_y = it / (layer_width + 1);
 
-        bool top_Edge = it_y == 0;
+        bool top_edge = it_y == 0;
         bool bottom_edge = it_y == layer_height;
         bool left_edge = it_x == 0;
         bool right_edge = it_x == layer_width;
 
-        bool top_left = top_Edge || left_edge ? false : layer[it_x - 1 + (it_y - 1) * layer_width];
-        bool top_right = top_Edge || right_edge ? false : layer[it_x + (it_y - 1) * layer_width];
+        bool top_left = top_edge || left_edge ? false : layer[it_x - 1 + (it_y - 1) * layer_width];
+        bool top_right = top_edge || right_edge ? false : layer[it_x + (it_y - 1) * layer_width];
         bool bottom_right = bottom_edge || right_edge ? false : layer[it_x + it_y * layer_width];
         bool bottom_left = bottom_edge || left_edge ? false : layer[it_x - 1 + it_y * layer_width];
 
