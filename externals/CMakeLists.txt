@@ -13,6 +13,7 @@ set(WITH_OPENCLAMDBLAS OFF CACHE BOOL "" FORCE)
 
 # Enabled modules.
 set(BUILD_opencv_core ON CACHE BOOL "" FORCE)
+set(BUILD_opencv_imgproc ON CACHE BOOL "" FORCE)
 
 # Disabled modules.
 set(BUILD_opencv_calib3d OFF CACHE BOOL "" FORCE)
@@ -21,7 +22,6 @@ set(BUILD_opencv_features2d OFF CACHE BOOL "" FORCE)
 set(BUILD_opencv_flann OFF CACHE BOOL "" FORCE)
 set(BUILD_opencv_highgui OFF CACHE BOOL "" FORCE)
 set(BUILD_opencv_imagecodecs OFF CACHE BOOL "" FORCE)
-set(BUILD_opencv_imgproc OFF CACHE BOOL "" FORCE)
 set(BUILD_opencv_java_bindings_generator OFF CACHE BOOL "" FORCE)
 set(BUILD_opencv_ml OFF CACHE BOOL "" FORCE)
 set(BUILD_opencv_objdetect OFF CACHE BOOL "" FORCE)
@@ -39,8 +39,8 @@ add_subdirectory(opencv)
 
 # Interface library (the one that should be included).
 add_library(opencv INTERFACE)
-target_link_libraries(opencv INTERFACE opencv_core)
-target_include_directories(opencv INTERFACE opencv/modules/core/include ${CMAKE_BINARY_DIR})
+target_link_libraries(opencv INTERFACE opencv_core opencv_imgproc)
+target_include_directories(opencv INTERFACE opencv/modules/core/include opencv/modules/imgproc/include ${CMAKE_BINARY_DIR})
 
 
 # STB
