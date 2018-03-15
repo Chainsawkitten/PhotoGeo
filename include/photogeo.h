@@ -73,13 +73,13 @@ struct ptg_image_parameters {
 
 /// Methods to use during image processing.
 typedef enum {
-    PADDING
-} ptg_image_processing_methods;
+    PTG_GAUSSIAN_BLUR ///< Gaussian blur.
+} ptg_image_processing_method;
 
 /// Parameters regarding the image processing step.
 struct ptg_image_processing_parameters {
-    /// Which methods to use during image processing.
-    ptg_image_processing_methods image_processing_methods;
+    /// Which method to use during image processing.
+    ptg_image_processing_method image_processing_method;
 };
 
 /// Method to use to quantize image.

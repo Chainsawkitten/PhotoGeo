@@ -114,7 +114,7 @@ int main(int argc, const char* argv[]) {
 
     // Image processing parameters.
     ptg_image_processing_parameters image_processing_parameters;
-    image_processing_parameters.image_processing_methods = PADDING;
+    image_processing_parameters.image_processing_method = PTG_GAUSSIAN_BLUR;
 
     // Quantization parameters.
     ptg_quantization_parameters quantization_parameters;
