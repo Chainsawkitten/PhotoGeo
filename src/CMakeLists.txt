@@ -5,6 +5,7 @@ set(SRCS
     photogeo.cpp
     quantization/color_conversion.cpp
     quantization/quantization.cpp
+    image_processing/image_processing.cpp
     tracing/marching_squares.cpp
     vertex_reduction/visvalingam_whyatt.cpp
 )
@@ -14,6 +15,7 @@ set(HEADERS
     ../include/photogeo.h
     quantization/color_conversion.hpp
     quantization/quantization.hpp
+    image_processing/image_processing.hpp
     tracing/marching_squares.hpp
     vertex_reduction/visvalingam_whyatt.hpp
 )

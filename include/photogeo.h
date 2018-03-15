@@ -50,7 +50,7 @@ struct ptg_color {
 /// Source image parameters.
 struct ptg_image_parameters {
     /// Source image in 3-channel RGB format.
-    const ptg_color* image;
+    ptg_color* image;
 
     /// The width of the source image.
     unsigned int width;
@@ -69,6 +69,17 @@ struct ptg_image_parameters {
 
     /// The colors of the different color layers.
     const ptg_color* color_layer_colors;
+};
+
+/// Methods to use during image processing.
+typedef enum {
+    PADDING
+} ptg_image_processing_methods;
+
+/// Parameters regarding the image processing step.
+struct ptg_image_processing_parameters {
+    /// Which methods to use during image processing.
+    ptg_image_processing_methods image_processing_methods;
 };
 
 /// Method to use to quantize image.
@@ -128,6 +139,9 @@ struct ptg_generation_parameters {
     /// Source image parameters.
     const ptg_image_parameters* image_parameters;
 
+    /// Image processing parameters.
+    const ptg_image_processing_parameters* image_processing_parameters;
+
     /// Parameters regarding the quantization step.
     const ptg_quantization_parameters* quantization_parameters;
 
@@ -154,6 +168,13 @@ PHOTOGEO_API void ptg_generate_collision_geometry(const ptg_generation_parameter
  * @param outline_counts Number of outlines.
  */
 PHOTOGEO_API void ptg_free_results(unsigned int layer_count, ptg_outline** outlines, unsigned int* outline_counts);
+
+/**
+ * Process image.
+ * @param image_parameters Source image parameters.
+ * @param image_processing_parameters Image processing parameters.
+ */
+PHOTOGEO_API void ptg_image_process(const ptg_image_parameters* image_parameters, const ptg_image_processing_parameters* image_processing_parameters);
 
 /**
  * Quantize image.
