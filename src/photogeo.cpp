@@ -1,6 +1,7 @@
 #include <photogeo.h>
 
 #include <iostream>
+#include "image_processing/image_processing.hpp"
 #include "quantization/quantization.hpp"
 #include "tracing/marching_squares.hpp"
 #include "vertex_reduction/visvalingam_whyatt.hpp"
@@ -35,6 +36,10 @@ void ptg_free_results(unsigned int layer_count, ptg_outline** outlines, unsigned
     }
     delete[] outlines;
     delete[] outline_counts;
+}
+
+void ptg_image_process(const ptg_image_parameters* image_parameters, const ptg_image_processing_parameters* image_processing_parameters) {
+    ptgi_image_process(image_parameters, image_processing_parameters);
 }
 
 void ptg_quantize(const ptg_image_parameters* image_parameters, const ptg_quantization_parameters* quantization_parameters, ptg_quantization_results* quantization_results) {
