@@ -54,12 +54,22 @@ int main(int argc, const char* argv[]) {
         return 1;
     }
 
-    // TODO: Perform comparison.
-    std::cout << "Compare tool not yet implemented." << std::endl;
+    // Perform comparison.
+    unsigned int total_pixels = width[0] * height[0];
+    unsigned int difference = 0;
+    for (unsigned int i = 0; i < total_pixels; ++i) {
+        if (data[0][i * 3]     != data[1][i * 3]     ||
+            data[0][i * 3 + 1] != data[1][i * 3 + 1] ||
+            data[0][i * 3 + 2] != data[1][i * 3 + 2])
+            ++difference;
+    }
 
     // Free images.
     stbi_image_free(data[0]);
     stbi_image_free(data[1]);
+
+    // Output difference.
+    std::cout << 100.0 - static_cast<double>(difference) / total_pixels * 100.0 << "%" << std::endl;
 
     return 0;
 }
