@@ -1,6 +1,7 @@
 #include <iostream>
-#include <read_svg.hpp>
-#include "rasterize.hpp"
+
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include <stb_image_write.h>
@@ -25,37 +26,37 @@ int main(int argc, const char* argv[]) {
 
     // Display help if no valid configuration was given.
     if (input_filename[0] == '\0' || output_filename[0] == '\0') {
-        std::cout << "usage: rasterize -i input_filename -o output_filename" << std::endl << std::endl;
+        std::cout << "usage: perturb -i input_filename -o output_filename" << std::endl << std::endl;
 
         std::cout << "Parameters:" << std::endl;
-        std::cout << "  -i  Specify filename of source SVG." << std::endl;
-        std::cout << "  -o  Specify filename of result PNG." << std::endl;
+        std::cout << "  -i  Specify filename of source image." << std::endl;
+        std::cout << "  -o  Specify filename of output image." << std::endl;
 
         return 0;
     }
 
-    // Load SVG image.
-    unsigned int width;
-    unsigned int height;
-    ptg_color* colors;
-    ptg_tracing_results svg;
-    read_svg(input_filename, &svg, &colors, &width, &height);
+    // Load source image.
+    int components, width, height;
+    unsigned char* data = stbi_load(input_filename, &width, &height, &components, 0);
 
-    // Allocate image data.
-    ptg_color* image_data = new ptg_color[width * height];
+    if (data == NULL) {
+        std::cerr << "Couldn't load image " << input_filename << "." << std::endl;
+        return 1;
+    }
 
-    // Rasterize.
-    rasterize(&svg, colors, width, height, image_data);
+    if (components != 3) {
+        std::cerr << "Image has to be RGB (3 channels)." << std::endl;
+        return 1;
+    }
 
-    // Free SVG results.
-    free_svg_results(&svg, &colors);
+    // TODO: Perform various filters.
+    std::cerr << "perturb tool has not yet been implemented." << std::endl;
 
     // Write image to PNG file.
-    const unsigned int components = 3;
-    stbi_write_png(output_filename, width, height, components, image_data, width * components);
+    stbi_write_png(output_filename, width, height, components, data, width * components);
 
     // Clean up image data.
-    delete[] image_data;
+    stbi_image_free(data);
 
     return 0;
 }
