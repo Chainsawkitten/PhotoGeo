@@ -1,6 +1,7 @@
 #include "marching_squares.hpp"
 
 #include <assert.h>
+#include <cstring>
 #include <limits>
 #include <vector>
 
