@@ -6,6 +6,7 @@
 #include "png.hpp"
 #include "svg.hpp"
 
+#include <stb_image_write.h>
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
@@ -15,6 +16,7 @@ int main(int argc, const char* argv[]) {
     const char* output_filename = "";
     std::vector<ptg_color> background_colors;
     std::vector<ptg_color> foreground_colors;
+    bool test_image_processing = false;
     bool test_quantization = false;
     bool test_tracing = false;
     bool test_vertex_reduction = false;
@@ -37,6 +39,10 @@ int main(int argc, const char* argv[]) {
             // Foreground color.
             if (argv[argument][1] == 'f' && argc > argument + 1)
                 foreground_colors.push_back(text_to_color(argv[++argument]));
+
+            // Test image processing.
+            if (argv[argument][1] == 't' && argv[argument][2] == 'p')
+                test_image_processing = true;
 
             // Test quantization.
             if (argv[argument][1] == 't' && argv[argument][2] == 'q')
@@ -63,6 +69,8 @@ int main(int argc, const char* argv[]) {
                   << "      Format: R:G:B" <<  std::endl;
         std::cout << "  -f  Specify foreground color." << std::endl
                   << "      Format: R:G:B" << std::endl;
+        std::cout << "  -tp Test image processing." << std::endl
+                  << "      Results are outputted to PNG." << std::endl;
         std::cout << "  -tq Test quantization." << std::endl
                   << "      Results are outputted to PNG." << std::endl;
         std::cout << "  -tt Test tracing." << std::endl
@@ -104,6 +112,10 @@ int main(int argc, const char* argv[]) {
     image_parameters.color_layer_count = foreground_colors.size();
     image_parameters.color_layer_colors = foreground_colors.data();
 
+    // Image processing parameters.
+    ptg_image_processing_parameters image_processing_parameters;
+    image_processing_parameters.image_processing_methods = PADDING;
+
     // Quantization parameters.
     ptg_quantization_parameters quantization_parameters;
     quantization_parameters.quantization_method = PTG_EUCLIDEAN_SRGB;
@@ -118,6 +130,7 @@ int main(int argc, const char* argv[]) {
     // Generation parameters.
     ptg_generation_parameters generation_parameters;
     generation_parameters.image_parameters = &image_parameters;
+    generation_parameters.image_processing_parameters = &image_processing_parameters;
     generation_parameters.quantization_parameters = &quantization_parameters;
     generation_parameters.tracing_parameters = &tracing_parameters;
     generation_parameters.vertex_reduction_parameters = &vertex_reduction_parameters;
@@ -128,6 +141,14 @@ int main(int argc, const char* argv[]) {
 
     // Generate collision geometry.
     ptg_generate_collision_geometry(&generation_parameters, &outlines, &outline_counts);
+    
+    // Test image processing.
+    if (test_image_processing) {
+        std::cout << "Testing image processing." << std::endl;
+        ptg_image_process(&image_parameters, &image_processing_parameters);
+        if (!stbi_write_png("image_processing.png", width, height, components, image_parameters.image, width * components))
+            std::cout << "Couldn't write image." << std::endl;
+    }
 
     // Test quantization.
     if (test_quantization) {
