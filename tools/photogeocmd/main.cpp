@@ -113,8 +113,12 @@ int main(int argc, const char* argv[]) {
     image_parameters.color_layer_colors = foreground_colors.data();
 
     // Image processing parameters.
+    std::vector<ptg_image_processing_method> methods;
+    methods.push_back(PTG_GAUSSIAN_BLUR);
+
     ptg_image_processing_parameters image_processing_parameters;
-    image_processing_parameters.image_processing_method = PTG_GAUSSIAN_BLUR;
+    image_processing_parameters.method_count = methods.size();
+    image_processing_parameters.methods = methods.data();
 
     // Quantization parameters.
     ptg_quantization_parameters quantization_parameters;

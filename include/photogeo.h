@@ -78,8 +78,11 @@ typedef enum {
 
 /// Parameters regarding the image processing step.
 struct ptg_image_processing_parameters {
-    /// Which method to use during image processing.
-    ptg_image_processing_method image_processing_method;
+    /// The number of image processing methods to use.
+    unsigned int method_count;
+
+    /// Which methods to use during image processing.
+    ptg_image_processing_method* methods;
 };
 
 /// Method to use to quantize image.
