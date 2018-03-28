@@ -60,6 +60,7 @@ static void reduce_outline(ptg_outline& outline) {
         }
 
         // Remove it if smaller than certain value.
+        // TODO: Make threshold configurable.
         const unsigned int threshold = 20 * 2;
         if (smallest_area <= threshold) {
             smallest_vertex->previous->next = smallest_vertex->next;
