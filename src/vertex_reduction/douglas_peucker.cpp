@@ -4,6 +4,17 @@
 #include <cstring>
 
 /*
+ * Recursively reduce the vertex count in a line using Douglas-Peucker.
+ * @param outline The outline to reduce.
+ * @param first_point The index of the first point in the line to reduce.
+ * @param last_point The index of the last point in the line to reduce.
+ * @param keep The array defining whether points should be kept.
+ */
+static void reduce_line(const ptg_outline& outline, unsigned int first_point, unsigned int last_point, bool* keep) {
+    // TODO: Implement Douglas-Peucker.
+}
+
+/*
  * Reduce vertex count in outline using Douglas-Peucker.
  * @param outline The outline to reduce.
  */
@@ -31,7 +42,10 @@ static void reduce_outline(ptg_outline& outline) {
     bool* keep = new bool[outline.vertex_count];
     memset(keep, 1, outline.vertex_count);
 
-    // TODO: Apply Douglas-Peucker recursively on both lines.
+    // Apply Douglas-Peucker on both lines.
+    reduce_line(outline, max_first_point, max_last_point, keep);
+    reduce_line(outline, max_last_point, max_first_point, keep);
+
     // TODO: Generate final outline.
 
     delete[] keep;
