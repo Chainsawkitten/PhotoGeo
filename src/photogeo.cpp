@@ -4,6 +4,7 @@
 #include "image_processing/image_processing.hpp"
 #include "quantization/quantization.hpp"
 #include "tracing/marching_squares.hpp"
+#include "vertex_reduction/douglas_peucker.hpp"
 #include "vertex_reduction/visvalingam_whyatt.hpp"
 
 void ptg_generate_collision_geometry(const ptg_generation_parameters* parameters, ptg_outline*** out_outlines, unsigned int** out_outline_counts) {
@@ -93,6 +94,9 @@ void ptg_free_tracing_results(ptg_tracing_results* tracing_results) {
 void ptg_reduce(ptg_tracing_results* tracing_results, const ptg_vertex_reduction_parameters* vertex_reduction_parameters) {
     switch (vertex_reduction_parameters->vertex_reduction_method) {
         case PTG_NO_VERTEX_REDUCTION:
+            break;
+        case PTG_DOUGLAS_PEUCKER:
+            ptgi_douglas_peucker(tracing_results);
             break;
         case PTG_VISVALINGAM_WHYATT:
             ptgi_visvalingam_whyatt(tracing_results);

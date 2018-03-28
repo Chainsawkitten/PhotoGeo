@@ -129,7 +129,7 @@ int main(int argc, const char* argv[]) {
 
     // Vertex reduction parameters.
     ptg_vertex_reduction_parameters vertex_reduction_parameters;
-    vertex_reduction_parameters.vertex_reduction_method = PTG_VISVALINGAM_WHYATT;
+    vertex_reduction_parameters.vertex_reduction_method = PTG_DOUGLAS_PEUCKER;
 
     // Generation parameters.
     ptg_generation_parameters generation_parameters;
