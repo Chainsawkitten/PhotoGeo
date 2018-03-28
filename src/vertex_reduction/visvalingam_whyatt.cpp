@@ -15,7 +15,7 @@ struct vertex {
  * @param v Vertex to calculate area of.
  * @return The area of the vertex.
  */
-unsigned int calculate_double_area(vertex* v) {
+static unsigned int calculate_double_area(vertex* v) {
     // Calculate vectors from v to other points in triangle.
     const long ux = (long)v->previous->position.x - v->position.x;
     const long uy = (long)v->previous->position.y - v->position.y;
@@ -29,7 +29,7 @@ unsigned int calculate_double_area(vertex* v) {
  * Reduce vertex count in outline using Visvalingam-Whyatt.
  * @param outline The outline to reduce.
  */
-void reduce_outline(ptg_outline& outline) {
+static void reduce_outline(ptg_outline& outline) {
     // Initialize vertices.
     vertex* first = nullptr;
     vertex** current = &first;
