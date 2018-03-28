@@ -23,8 +23,8 @@ static void reduce_outline(ptg_outline& outline) {
     unsigned int max_first_point = 0;
     unsigned int max_last_point = 0;
     double max_distance = 0.0;
-    for (unsigned int first_point = 0; first_point < outline.vertex_count - 1; ++first_point) {
-        for (unsigned int last_point = first_point + 1; last_point < outline.vertex_count; ++last_point) {
+    for (unsigned int first_point = 0; first_point < outline.vertex_count - 2; ++first_point) {
+        for (unsigned int last_point = first_point + 1; last_point < outline.vertex_count - 1; ++last_point) {
             const ptg_vec2 p1 = outline.vertices[first_point];
             const ptg_vec2 p2 = outline.vertices[last_point];
             const double delta_x = p2.x - p1.x;
@@ -39,14 +39,21 @@ static void reduce_outline(ptg_outline& outline) {
     }
 
     // Allocate buffer for whether points should be kept.
-    bool* keep = new bool[outline.vertex_count];
-    memset(keep, 1, outline.vertex_count);
+    bool* keep = new bool[outline.vertex_count - 1];
+    memset(keep, 1, outline.vertex_count - 1);
 
     // Apply Douglas-Peucker on both lines.
     reduce_line(outline, max_first_point, max_last_point, keep);
     reduce_line(outline, max_last_point, max_first_point, keep);
 
-    // TODO: Generate final outline.
+    // Generate final outline.
+    unsigned int vertex_index = 0;
+    for (unsigned int i = 0; i < outline.vertex_count - 1; ++i) {
+        if (keep[i])
+            outline.vertices[vertex_index++] = outline.vertices[i];
+    }
+    outline.vertices[vertex_index++] = outline.vertices[0];
+    outline.vertex_count = vertex_index;
 
     delete[] keep;
 }
