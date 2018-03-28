@@ -1,6 +1,7 @@
 #include "douglas_peucker.hpp"
 
 #include <iostream>
+#include <cstring>
 
 /*
  * Reduce vertex count in outline using Douglas-Peucker.
@@ -26,9 +27,14 @@ static void reduce_outline(ptg_outline& outline) {
         }
     }
 
-    // TODO: Allocate buffer for whether points should be kept.
+    // Allocate buffer for whether points should be kept.
+    bool* keep = new bool[outline.vertex_count];
+    memset(keep, 1, outline.vertex_count);
+
     // TODO: Apply Douglas-Peucker recursively on both lines.
     // TODO: Generate final outline.
+
+    delete[] keep;
 }
 
 void ptgi_douglas_peucker(ptg_tracing_results* tracing_results) {
