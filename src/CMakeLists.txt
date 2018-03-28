@@ -7,6 +7,7 @@ set(SRCS
     quantization/quantization.cpp
     image_processing/image_processing.cpp
     tracing/marching_squares.cpp
+    vertex_reduction/douglas_peucker.cpp
     vertex_reduction/visvalingam_whyatt.cpp
 )
 
@@ -17,6 +18,7 @@ set(HEADERS
     quantization/quantization.hpp
     image_processing/image_processing.hpp
     tracing/marching_squares.hpp
+    vertex_reduction/douglas_peucker.hpp
     vertex_reduction/visvalingam_whyatt.hpp
 )
 

@@ -130,6 +130,7 @@ struct ptg_tracing_results {
 /// Method to use to reduce vertex count.
 typedef enum {
     PTG_NO_VERTEX_REDUCTION, ///< Don't perform any vertex reduction.
+    PTG_DOUGLAS_PEUCKER, ///< Douglas-Peucker.
     PTG_VISVALINGAM_WHYATT ///< Visvalingam-Whyatt.
 } ptg_vertex_reduction_method;
 
