@@ -82,9 +82,13 @@ void ptg_trace(const ptg_image_parameters* image_parameters, const ptg_quantizat
     out_tracing_results->outline_counts = new unsigned int[out_tracing_results->layer_count];
     out_tracing_results->outlines = new ptg_outline*[out_tracing_results->layer_count];
 
-    // Trace image using marching squares.
-    for (unsigned int layer_index = 0; layer_index < out_tracing_results->layer_count; ++layer_index)
-        ptgi_trace_marching_squares(quantization_results->layers[layer_index], image_parameters->width, image_parameters->height, out_tracing_results->outlines[layer_index], out_tracing_results->outline_counts[layer_index]);
+    switch (tracing_parameters->tracing_method) {
+        case PTG_MARCHING_SQUARES:
+            // Trace image using marching squares.
+            for (unsigned int layer_index = 0; layer_index < out_tracing_results->layer_count; ++layer_index)
+                ptgi_trace_marching_squares(quantization_results->layers[layer_index], image_parameters->width, image_parameters->height, out_tracing_results->outlines[layer_index], out_tracing_results->outline_counts[layer_index]);
+            break;
+    }
 }
 
 void ptg_free_tracing_results(ptg_tracing_results* tracing_results) {

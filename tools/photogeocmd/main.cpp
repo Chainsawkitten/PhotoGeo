@@ -126,6 +126,7 @@ int main(int argc, const char* argv[]) {
 
     // Tracing parameters.
     ptg_tracing_parameters tracing_parameters;
+    tracing_parameters.tracing_method = PTG_MARCHING_SQUARES;
 
     // Vertex reduction parameters.
     ptg_vertex_reduction_parameters vertex_reduction_parameters;
