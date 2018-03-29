@@ -4,21 +4,65 @@
 #include <cstring>
 #include <stack>
 #include <cmath>
+#include <algorithm>
+
+// Helper class for linear algebra.
+struct vec2 {
+    float x;
+    float y;
+
+    vec2(float x, float y) {
+        this->x = x;
+        this->y = y;
+    }
+
+    vec2(const ptg_vec2& a) {
+        x = a.x;
+        y = a.y;
+    }
+
+    vec2 operator+(const vec2& other) const {
+        return vec2(x + other.x, y + other.y);
+    }
+
+    vec2 operator-(const vec2& other) const {
+        return vec2(x - other.x, y - other.y);
+    }
+
+    vec2 operator*(float t) const {
+        return vec2(x * t, y * t);
+    }
+};
+
+// Get the dot product between two points.
+static float dot(const vec2& a, const vec2& b) {
+    return a.x * b.x + a.y * b.y;
+}
+
+// Get the squared distance between two points.
+static float distance_sqr(const vec2& a, const vec2& b) {
+    const float x_diff = a.x - b.x;
+    const float y_diff = a.y - b.y;
+    return x_diff * x_diff + y_diff * y_diff;
+}
 
 /*
- * Calculate the perpendicular distance between a line and a point.
+ * Calculate the squared shortest distance between a line segment and a point.
  * @param p The point to calculate the distance for.
- * @param v1 The first point in the line.
- * @param v2 The second point in the line.
+ * @param v1 The first point in the line segment.
+ * @param v2 The second point in the line segment.
  */
-double perpendicular_distance(const ptg_vec2& p, const ptg_vec2& v1, const ptg_vec2& v2) {
-    if (v1.x == v2.x) {
-        return fabs((double)p.x - v1.x);
-    } else {
-        double slope = ((double)v2.y - v1.y) / ((double)v2.x - v1.x);
-        double intercept = (double)v1.y - (slope * v1.x);
-        return fabs(slope * p.x - p.y + intercept) / sqrt(slope * slope + 1.0);
-    }
+static float shortest_distance_sqr(const vec2& p, const vec2& v1, const vec2& v2) {
+    // v1 must be not be same as v2.
+    const float l2 = distance_sqr(v1, v2);
+
+    // Project p onto line v1-v2.
+    // Clamp between [0,1] to handle cases where point is outside line segment.
+    const float t = std::max(0.0f, std::min(1.0f, dot(p - v1, v2 - v1) / l2));
+    const vec2 projection = v1 + (v2 - v1) * t;
+
+    // Get distance between projected point and point.
+    return distance_sqr(p, projection);
 }
 
 struct line {
@@ -33,16 +77,20 @@ struct line {
  * @param keep The array defining whether points should be kept.
  */
 static void reduce_line(const ptg_outline& outline, std::stack<line>& lines, bool* keep) {
+    // TODO: Make threshold configurable.
+    const float threshold = 5.0f;
+    const float threshold_sqr = threshold * threshold;
+
     while (!lines.empty()) {
         line l = lines.top();
         lines.pop();
 
         // Find point with maximum perpendicular distance.
-        double max_distance = 0.0;
+        float max_distance = 0.0f;
         unsigned int index = (l.first_point + 1) % (outline.vertex_count - 1);
         unsigned int max_index = index;
         while (index != l.last_point) {
-            const double distance = perpendicular_distance(outline.vertices[index], outline.vertices[l.first_point], outline.vertices[l.last_point]);
+            const float distance = shortest_distance_sqr(outline.vertices[index], outline.vertices[l.first_point], outline.vertices[l.last_point]);
             if (distance > max_distance) {
                 max_distance = distance;
                 max_index = index;
@@ -51,9 +99,8 @@ static void reduce_line(const ptg_outline& outline, std::stack<line>& lines, boo
             index = (index + 1) % (outline.vertex_count - 1);
         }
 
-        // TODO: Make threshold configurable.
-        const double threshold = 5.0;
-        if (max_distance > threshold) {
+        // Check whether distance exceeds the threshold.
+        if (max_distance > threshold_sqr) {
             // Keep point and call recursively.
             lines.push({l.first_point, max_index});
             lines.push({max_index, l.last_point});
@@ -76,14 +123,14 @@ static void reduce_outline(ptg_outline& outline) {
     // Find the two points farthest from each other.
     unsigned int max_first_point = 0;
     unsigned int max_last_point = 0;
-    double max_distance = 0.0;
+    float max_distance = 0.0;
     for (unsigned int first_point = 0; first_point < outline.vertex_count - 2; ++first_point) {
         for (unsigned int last_point = first_point + 1; last_point < outline.vertex_count - 1; ++last_point) {
             const ptg_vec2 p1 = outline.vertices[first_point];
             const ptg_vec2 p2 = outline.vertices[last_point];
-            const double delta_x = p2.x - p1.x;
-            const double delta_y = p2.y - p1.y;
-            const double distance = delta_x * delta_x + delta_y * delta_y;
+            const float delta_x = (float)p2.x - p1.x;
+            const float delta_y = (float)p2.y - p1.y;
+            const float distance = delta_x * delta_x + delta_y * delta_y;
             if (distance > max_distance) {
                 max_distance = distance;
                 max_first_point = first_point;
