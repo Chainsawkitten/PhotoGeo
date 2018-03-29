@@ -159,6 +159,7 @@ int main(int argc, const char* argv[]) {
     if (test_quantization) {
         std::cout << "Testing quantization." << std::endl;
         ptg_quantization_results quantization_results;
+        quantization_parameters.quantization_method = PTG_EUCLIDEAN_SRGB;
         ptg_quantize(&image_parameters, &quantization_parameters, &quantization_results);
         write_quantized_to_png("quantization_euclidean_srgb.png", quantization_results.layers, width, height, foreground_colors.data(), foreground_colors.size());
         ptg_free_quantization_results(&quantization_results);
