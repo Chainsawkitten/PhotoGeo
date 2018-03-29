@@ -114,6 +114,7 @@ int main(int argc, const char* argv[]) {
 
     // Image processing parameters.
     std::vector<ptg_image_processing_method> methods;
+    methods.push_back(PTG_MEDIAN_FILTER);
     methods.push_back(PTG_BILATERAL_FILTER);
 
     ptg_image_processing_parameters image_processing_parameters;
