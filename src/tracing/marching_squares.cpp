@@ -193,8 +193,8 @@ void ptgi_trace_marching_squares(bool* layer, unsigned int layer_width, unsigned
 
         // Calculate current configuration of marching squares.
         nodes[it] = { configuration, false };
-        // Add root if configuration is 2 or 10
-        if ((configuration == 2) || (configuration == 10))
+        // Add root if configuration is 2, 7 or 10
+        if ((configuration == 2) || (configuration == 7) || (configuration == 10))
             root_indices.push_back(it);
     }
 
@@ -211,7 +211,7 @@ void ptgi_trace_marching_squares(bool* layer, unsigned int layer_width, unsigned
             unsigned int it = root_index;
             unsigned int x = it % (layer_width + 1);
             unsigned int y = it / (layer_width + 1);
-            direction direction = node_root->configuration == 10 ? UP : RIGHT;
+            direction direction = (node_root->configuration == 10) ? UP : RIGHT;
             node* node_it = node_root;
             ptg_vec2 v0, v1;
 
