@@ -16,6 +16,10 @@ void ptgi_image_process(const ptg_image_parameters* image_parameters, const ptg_
                 cv::bilateralFilter(src, dst, -1, 50, 5, cv::BORDER_DEFAULT);
                 memcpy(image_parameters->image, dst.data, image_parameters->width * image_parameters->height * sizeof(ptg_color));
                 break;
+            case PTG_MEDIAN_FILTER:
+                cv::medianBlur(src, dst, 3);
+                memcpy(image_parameters->image, dst.data, image_parameters->width * image_parameters->height * sizeof(ptg_color));
+                break;
         }
     }
 }
