@@ -3,6 +3,7 @@
 #include <iostream>
 #include <cstring>
 #include <stack>
+#include <cmath>
 
 /*
  * Calculate the perpendicular distance between a line and a point.
@@ -11,8 +12,13 @@
  * @param v2 The second point in the line.
  */
 double perpendicular_distance(const ptg_vec2& p, const ptg_vec2& v1, const ptg_vec2& v2) {
-    // TODO: Implement.
-    return 100.0;
+    if (v1.x == v2.x) {
+        return fabs((double)p.x - v1.x);
+    } else {
+        double slope = ((double)v2.y - v1.y) / ((double)v2.x - v1.x);
+        double intercept = (double)v1.y - (slope * v1.x);
+        return fabs(slope * p.x - p.y + intercept) / sqrt(slope * slope + 1.0);
+    }
 }
 
 struct line {
@@ -46,7 +52,7 @@ static void reduce_line(const ptg_outline& outline, std::stack<line>& lines, boo
         }
 
         // TODO: Make threshold configurable.
-        const double threshold = 10.0;
+        const double threshold = 5.0;
         if (max_distance > threshold) {
             // Keep point and call recursively.
             lines.push({l.first_point, max_index});
