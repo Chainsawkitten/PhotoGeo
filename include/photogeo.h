@@ -110,9 +110,15 @@ struct ptg_quantization_results {
     bool** layers;
 };
 
+/// Method to use to trace image.
+typedef enum {
+    PTG_MARCHING_SQUARES ///<Marching squares.
+} ptg_tracing_method;
+
 /// Parameters regarding the tracing step.
 struct ptg_tracing_parameters {
-    char padding;
+    /// Which method to use to trace the image.
+    ptg_tracing_method tracing_method;
 };
 
 /// Results from the tracing step.
