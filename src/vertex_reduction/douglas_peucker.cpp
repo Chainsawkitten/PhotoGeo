@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <cstring>
+#include <stack>
 
 /*
  * Calculate the perpendicular distance between a line and a point.
@@ -14,43 +15,49 @@ double perpendicular_distance(const ptg_vec2& p, const ptg_vec2& v1, const ptg_v
     return 100.0;
 }
 
+struct line {
+    unsigned int first_point;
+    unsigned int last_point;
+};
+
 /*
  * Recursively reduce the vertex count in a line using Douglas-Peucker.
  * @param outline The outline to reduce.
- * @param first_point The index of the first point in the line to reduce.
- * @param last_point The index of the last point in the line to reduce.
+ * @param lines The lines to reduce.
  * @param keep The array defining whether points should be kept.
  */
-static void reduce_line(const ptg_outline& outline, unsigned int first_point, unsigned int last_point, bool* keep) {
-    // Find point with maximum perpendicular distance.
-    double max_distance = 0.0;
-    unsigned int max_index = 0;
-    unsigned int index = (first_point + 1) % (outline.vertex_count - 1);
-    while (first_point != last_point) {
-        const double distance = perpendicular_distance(outline.vertices[index], outline.vertices[first_point], outline.vertices[last_point]);
-        if (distance > max_distance) {
-            max_distance = distance;
-            max_index = index;
+static void reduce_line(const ptg_outline& outline, std::stack<line>& lines, bool* keep) {
+    while (!lines.empty()) {
+        line l = lines.top();
+        lines.pop();
+
+        // Find point with maximum perpendicular distance.
+        double max_distance = 0.0;
+        unsigned int index = (l.first_point + 1) % (outline.vertex_count - 1);
+        unsigned int max_index = index;
+        while (index != l.last_point) {
+            const double distance = perpendicular_distance(outline.vertices[index], outline.vertices[l.first_point], outline.vertices[l.last_point]);
+            if (distance > max_distance) {
+                max_distance = distance;
+                max_index = index;
+            }
+
+            index = (index + 1) % (outline.vertex_count - 1);
         }
 
-        first_point = (first_point + 1) % (outline.vertex_count - 1);
-    }
-
-    // TODO: Make threshold configurable.
-    const double threshold = 10.0;
-    if (max_distance > threshold) {
-        // Keep point and call recursively.
-        if (max_index != first_point)
-            reduce_line(outline, first_point, max_index, keep);
-
-        if (max_index != last_point)
-            reduce_line(outline, max_index, last_point, keep);
-    } else {
-        // Remove points.
-        unsigned int index = (first_point + 1) % (outline.vertex_count - 1);
-        while (first_point != last_point) {
-            keep[index] = false;
-            first_point = (first_point + 1) % (outline.vertex_count - 1);
+        // TODO: Make threshold configurable.
+        const double threshold = 10.0;
+        if (max_distance > threshold) {
+            // Keep point and call recursively.
+            lines.push({l.first_point, max_index});
+            lines.push({max_index, l.last_point});
+        } else {
+            // Remove points.
+            unsigned int index = (l.first_point + 1) % (outline.vertex_count - 1);
+            while (index != l.last_point) {
+                keep[index] = false;
+                index = (index + 1) % (outline.vertex_count - 1);
+            }
         }
     }
 }
@@ -84,8 +91,10 @@ static void reduce_outline(ptg_outline& outline) {
     memset(keep, 1, outline.vertex_count - 1);
 
     // Apply Douglas-Peucker on both lines.
-    reduce_line(outline, max_first_point, max_last_point, keep);
-    reduce_line(outline, max_last_point, max_first_point, keep);
+    std::stack<line> lines;
+    lines.push({max_first_point, max_last_point});
+    lines.push({max_last_point, max_first_point});
+    reduce_line(outline, lines, keep);
 
     // Generate final outline.
     unsigned int vertex_index = 0;
