@@ -73,7 +73,8 @@ struct ptg_image_parameters {
 
 /// Methods to use during image processing.
 typedef enum {
-    PTG_GAUSSIAN_BLUR ///< Gaussian blur.
+    PTG_GAUSSIAN_BLUR, ///< Gaussian blur.
+    PTG_BILATERAL_FILTER ///< Bilateral filter.
 } ptg_image_processing_method;
 
 /// Parameters regarding the image processing step.

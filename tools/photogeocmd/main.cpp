@@ -114,7 +114,7 @@ int main(int argc, const char* argv[]) {
 
     // Image processing parameters.
     std::vector<ptg_image_processing_method> methods;
-    methods.push_back(PTG_GAUSSIAN_BLUR);
+    methods.push_back(PTG_BILATERAL_FILTER);
 
     ptg_image_processing_parameters image_processing_parameters;
     image_processing_parameters.method_count = methods.size();
@@ -150,6 +150,7 @@ int main(int argc, const char* argv[]) {
     if (test_image_processing) {
         std::cout << "Testing image processing." << std::endl;
         ptg_image_process(&image_parameters, &image_processing_parameters);
+        std::cout << "Writing to image_processing.png" << std::endl;
         if (!stbi_write_png("image_processing.png", width, height, components, image_parameters.image, width * components))
             std::cout << "Couldn't write image." << std::endl;
     }
