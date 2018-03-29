@@ -1,6 +1,5 @@
 #include "douglas_peucker.hpp"
 
-#include <iostream>
 #include <cstring>
 #include <stack>
 #include <cmath>
@@ -162,11 +161,23 @@ static void reduce_outline(ptg_outline& outline) {
 }
 
 void ptgi_douglas_peucker(ptg_tracing_results* tracing_results) {
-    std::cout << "ptgi_douglas_peucker has not yet been implemented." << std::endl;
-
     for (unsigned int layer = 0; layer < tracing_results->layer_count; ++layer) {
         for (unsigned int outline = 0; outline < tracing_results->outline_counts[layer]; ++outline) {
             reduce_outline(tracing_results->outlines[layer][outline]);
         }
+
+        // Remove outlines that have been reduced down to a single line.
+        unsigned int outline_count = 0;
+        for (unsigned int outline = 0; outline < tracing_results->outline_counts[layer]; ++outline) {
+            if (tracing_results->outlines[layer][outline].vertex_count > 3) {
+                tracing_results->outlines[layer][outline_count].vertex_count = tracing_results->outlines[layer][outline].vertex_count;
+                tracing_results->outlines[layer][outline_count].vertices = tracing_results->outlines[layer][outline].vertices;
+                ++outline_count;
+            } else {
+                delete[] tracing_results->outlines[layer][outline].vertices;
+            }
+        }
+
+        tracing_results->outline_counts[layer] = outline_count;
     }
 }
