@@ -1,7 +1,7 @@
 #include "image_processing.hpp"
 
 #include <cstring>
-#include <opencv2/imgproc.hpp>
+#include "kuwahara.hpp"
 
 void ptgi_image_process(const ptg_image_parameters* image_parameters, const ptg_image_processing_parameters* image_processing_parameters) {
     cv::Mat src = cv::Mat(image_parameters->height, image_parameters->width, CV_8UC3, image_parameters->image);
@@ -18,6 +18,10 @@ void ptgi_image_process(const ptg_image_parameters* image_parameters, const ptg_
                 break;
             case PTG_MEDIAN_FILTER:
                 cv::medianBlur(src, dst, 3);
+                memcpy(image_parameters->image, dst.data, image_parameters->width * image_parameters->height * sizeof(ptg_color));
+                break;
+            case PTG_KUWAHARA_FILTER:
+                kuwahara_filter(src, dst, 2);
                 memcpy(image_parameters->image, dst.data, image_parameters->width * image_parameters->height * sizeof(ptg_color));
                 break;
         }

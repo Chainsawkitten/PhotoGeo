@@ -75,7 +75,8 @@ struct ptg_image_parameters {
 typedef enum {
     PTG_GAUSSIAN_BLUR, ///< Gaussian blur.
     PTG_BILATERAL_FILTER, ///< Bilateral filter.
-    PTG_MEDIAN_FILTER ///< Median filter.
+    PTG_MEDIAN_FILTER, ///< Median filter.
+    PTG_KUWAHARA_FILTER ///< Kuwahara filter.
 } ptg_image_processing_method;
 
 /// Parameters regarding the image processing step.
