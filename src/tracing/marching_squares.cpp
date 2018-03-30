@@ -36,8 +36,8 @@ enum  direction {
 static direction calculate_node(unsigned int x, unsigned int y, direction direction, const node& node, ptg_vec2& out_v0, ptg_vec2& out_v1) {
 
     // Convert (x,y) from pixel space to mesh space.
-    x = x * 2 + 1;
-    y = y * 2 + 1;
+    x = x * 2;
+    y = y * 2;
     /* Nodes (A, B, C, D) in marching kernel for 2x2 pixels.
      * x: positive right, y: positive down.
      * Lines are created in clockwise winding order.
