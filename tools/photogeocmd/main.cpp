@@ -123,7 +123,7 @@ int main(int argc, const char* argv[]) {
 
     // Quantization parameters.
     ptg_quantization_parameters quantization_parameters;
-    quantization_parameters.quantization_method = PTG_EUCLIDEAN_SRGB;
+    quantization_parameters.quantization_method = PTG_EUCLIDEAN_LINEAR;
 
     // Tracing parameters.
     ptg_tracing_parameters tracing_parameters;
@@ -131,7 +131,7 @@ int main(int argc, const char* argv[]) {
 
     // Vertex reduction parameters.
     ptg_vertex_reduction_parameters vertex_reduction_parameters;
-    vertex_reduction_parameters.vertex_reduction_method = PTG_DOUGLAS_PEUCKER;
+    vertex_reduction_parameters.vertex_reduction_method = PTG_VISVALINGAM_WHYATT;
 
     // Generation parameters.
     ptg_generation_parameters generation_parameters;
