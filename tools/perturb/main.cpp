@@ -1,5 +1,7 @@
 #include <iostream>
 
+#include "perturb.hpp"
+
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
@@ -49,8 +51,8 @@ int main(int argc, const char* argv[]) {
         return 1;
     }
 
-    // TODO: Perform various filters.
-    std::cerr << "perturb tool has not yet been implemented." << std::endl;
+    // Perform various filters.
+    perturb(data, width, height);
 
     // Write image to PNG file.
     stbi_write_png(output_filename, width, height, components, data, width * components);
