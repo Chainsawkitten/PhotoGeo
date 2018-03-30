@@ -3,11 +3,12 @@
 # Source files.
 set(SRCS
     main.cpp
+    perturb.cpp
 )
 
 # Header files. Specified in order to get them listed in the IDE.
 set(HEADERS
-    
+    perturb.hpp
 )
 
 # Generate directory groups for IDE.
