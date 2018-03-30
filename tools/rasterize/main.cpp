@@ -1,6 +1,8 @@
 #include <iostream>
 #include <read_svg.hpp>
 #include "rasterize.hpp"
+#include "scale.hpp"
+#include <string>
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include <stb_image_write.h>
@@ -9,6 +11,7 @@ int main(int argc, const char* argv[]) {
     // Handle commandline arguments.
     const char* input_filename = "";
     const char* output_filename = "";
+    unsigned int scale = 1;
 
     for (int argument = 1; argument < argc; ++argument) {
         // All arguments start with -.
@@ -20,6 +23,10 @@ int main(int argc, const char* argv[]) {
             // Output filename.
             if (argv[argument][1] == 'o' && argc > argument + 1)
                 output_filename = argv[++argument];
+
+            // Scale.
+            if (argv[argument][1] == 's' && argc > argument + 1)
+                scale = std::stoi(argv[++argument]);
         }
     }
 
@@ -30,6 +37,8 @@ int main(int argc, const char* argv[]) {
         std::cout << "Parameters:" << std::endl;
         std::cout << "  -i  Specify filename of source SVG." << std::endl;
         std::cout << "  -o  Specify filename of result PNG." << std::endl;
+        std::cout << "  -s  Specify how the image should be scaled." << std::endl
+                  << "      Integer values only." << std::endl;
 
         return 0;
     }
@@ -40,6 +49,11 @@ int main(int argc, const char* argv[]) {
     ptg_color* colors;
     ptg_tracing_results svg;
     read_svg(input_filename, &svg, &colors, &width, &height);
+
+    // Scale image.
+    width *= scale;
+    height *= scale;
+    scale_svg(&svg, scale);
 
     // Allocate image data.
     ptg_color* image_data = new ptg_color[width * height];
