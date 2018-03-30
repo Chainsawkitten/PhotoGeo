@@ -4,11 +4,13 @@
 set(SRCS
     main.cpp
     rasterize.cpp
+    scale.cpp
 )
 
 # Header files. Specified in order to get them listed in the IDE.
 set(HEADERS
     rasterize.hpp
+    scale.hpp
 )
 
 # Generate directory groups for IDE.
