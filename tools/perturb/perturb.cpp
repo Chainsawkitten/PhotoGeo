@@ -6,14 +6,18 @@
 
 // Helper functions.
 static void extract_alpha_channel(cv::Mat& alpha_channel, const unsigned char* data);
+static void replace_background(cv::Mat& color_channels);
 
 void perturb(unsigned char* data, unsigned int width, unsigned int height) {
     std::cout << "perturb has not yet been implemented." << std::endl;
 
-    // TODO: Replace background color with black.
     // Make alpha channel (background = transparent, foreground = opaque).
     cv::Mat alpha_channel(height, width, CV_8UC1);
     extract_alpha_channel(alpha_channel, data);
+
+    // Replace background color with black.
+    cv::Mat color_channels(height, width, CV_8UC3, data);
+    replace_background(color_channels);
 
     // TODO: Gaussian blur.
     // TODO: Downscale.
@@ -44,4 +48,19 @@ static void extract_alpha_channel(cv::Mat& alpha_channel, const unsigned char* d
         }
     }
 }
+
+/*
+ * Replace background with black.
+ * @param color_channels Image to replace background in.
+ * @param width Width of the image.
+ * @param height Height of the image.
+ */
+static void replace_background(cv::Mat& color_channels) {
+    for (int y = 0; y < color_channels.rows; ++y) {
+        for (int x = 0; x < color_channels.cols; ++x) {
+            cv::Vec3b color = color_channels.at<cv::Vec3b>(y, x);
+            if (color[0] == 255 && color[1] == 255 && color[2] == 255)
+                color_channels.at<cv::Vec3b>(y, x) = cv::Vec3b(0, 0, 0);
+        }
+    }
 }
