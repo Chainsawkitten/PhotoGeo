@@ -1,5 +1,6 @@
 #include "read_svg.hpp"
 
+#include <cstring>
 #include <vector>
 #include <tinyxml2.h>
 #include <string>
@@ -10,6 +11,37 @@ struct svg_layer {
     std::vector<ptg_outline> outlines;
     ptg_color color;
 };
+
+// TODO
+static long parse_number(const char*& c) {
+    // Check sign.
+    int sign = 1;
+    if (*c == '-') {
+        sign = -1;
+        ++c;
+    }
+    
+    // Numbers.
+    double n = 0.0;
+    for (; *c >= '0' && *c <= '9'; ++c) {
+        n *= 10;
+        n += *c - '0';
+    }
+
+    // Discard dot.
+    if (*c == '.')
+        ++c;
+
+    // Decimals.
+    double d = 1.0;
+    for (; (*c >= '0' && *c <= '9'); ++c) {
+        d *= 10;
+        n += (*c - '0') / d;
+    }
+    
+    // Return rounded value.
+    return static_cast<long>(sign * round(n));
+}
 
 void read_svg(const char* filename, ptg_tracing_results* results, ptg_color** colors, unsigned int* width, unsigned int* height) {
     // Parse SVG file.
@@ -37,48 +69,104 @@ void read_svg(const char* filename, ptg_tracing_results* results, ptg_color** co
                 first = false;
                 std::string style = path->Attribute("style");
                 std::size_t pos = style.find("stroke:rgb(");
+                if (pos != std::string::npos) {
+                    // Red.
+                    style = style.substr(pos + 11);
+                    layer.color.r = std::stoi(style);
 
-                // Red.
-                style = style.substr(pos + 11);
-                layer.color.r = std::stoi(style);
+                    // Green.
+                    style = style.substr(style.find(",") + 1);
+                    layer.color.g = std::stoi(style);
 
-                // Green.
-                style = style.substr(style.find(",") + 1);
-                layer.color.g = std::stoi(style);
+                    // Blue.
+                    style = style.substr(style.find(",") + 1);
+                    layer.color.b = std::stoi(style);
+                } else {
+                    const char* d = &style[style.find("stroke:#") + 8];
+                    // Red.
+                    layer.color.r = ((d[0] >= '0' && d[0] <= '9') ? d[0] - '0' : d[0] - 87) * ((d[1] >= '0' && d[1] <= '9') ? d[1] - '0' : d[1] - 87);
+                    d += 2;
 
-                // Blue.
-                style = style.substr(style.find(",") + 1);
-                layer.color.b = std::stoi(style);
+                    // Green.
+                    layer.color.g = ((d[0] >= '0' && d[0] <= '9') ? d[0] - '0' : d[0] - 87) * ((d[1] >= '0' && d[1] <= '9') ? d[1] - '0' : d[1] - 87);
+                    d += 2;
+
+                    // Blue.
+                    layer.color.b = ((d[0] >= '0' && d[0] <= '9') ? d[0] - '0' : d[0] - 87) * ((d[1] >= '0' && d[1] <= '9') ? d[1] - '0' : d[1] - 87);
+                    d += 2;
+                }
             }
 
             // Parse vertices.
-            std::vector<unsigned int> numbers;
+            std::vector<ptg_vec2> vertices;
             const char* d = path->Attribute("d");
-
+            unsigned int x = 0;
+            unsigned int y = 0;
+            char state;
             // Get all numbers in the string.
-            while (*d != '\0') {
-                // Get next number in the string.
-                for (; !(*d >= '0' && *d <= '9') && *d != '\0'; ++d);
-
-                // Parse number.
-                unsigned int n = 0;
-                for (; *d >= '0' && *d <= '9'; ++d) {
-                    n *= 10;
-                    n += *d - '0';
+            for (; *d != '\0'; ++d) {
+                // Discard spaces.
+                while (*d == ' ')
+                    ++d;
+ 
+                // Update state if not a number.
+                if (!((*d >= '0' && *d <= '9') || *d == '-'))
+                    state = *d;
+                else {
+                    switch (state) {
+                        case 'M':
+                            // Parse absolute number pair.
+                            x = parse_number(d);
+                            ++d;
+                            y = parse_number(d);
+                            break;
+                        case 'm':
+                            // Parse relative number pair.
+                            x = x + parse_number(d);
+                            ++d;
+                            y = y + parse_number(d);
+                            break;
+                        case 'H':
+                            // Parse absolute horizontal number.
+                            x = parse_number(d);
+                            break;
+                        case 'h':
+                            // Parse relative horizontal number.
+                            x = x + parse_number(d);
+                            break;
+                        case 'V':
+                            // Parse absolute vertical number.
+                            y = parse_number(d);
+                            break;
+                        case 'v':
+                            // Parse relative vertical number.
+                            y = y + parse_number(d);
+                            break;
+                        case 'L':
+                            // Parse absolute number pair.
+                            x = parse_number(d);
+                            ++d;
+                            y = parse_number(d);
+                            break;
+                        case 'l':
+                            // Parse relative number pair.
+                            x = x + parse_number(d);
+                            ++d;
+                            y = y + parse_number(d);
+                            break;
+                    }
+                    vertices.push_back({ x , y });
                 }
-                numbers.push_back(n);
-
-                // Discard decimals.
-                for (; (*d >= '0' && *d <= '9') || *d == '.'; ++d);
             }
+
+            // Loop.
+            if (state == 'Z' || state == 'z')
+                vertices.push_back(vertices[0]);
 
             ptg_outline outline;
-            outline.vertex_count = numbers.size() / 2;
-            outline.vertices = new ptg_vec2[numbers.size() / 2];
-            for (std::size_t i = 0; i < numbers.size() / 2; ++i) {
-                outline.vertices[i].x = numbers[i * 2];
-                outline.vertices[i].y = numbers[i * 2 + 1];
-            }
+            outline.vertex_count = vertices.size();
+            outline.vertices = new ptg_vec2[vertices.size()];
+            memcpy(outline.vertices, vertices.data(), vertices.size() * sizeof(ptg_vec2));
 
             layer.outlines.push_back(outline);
 
