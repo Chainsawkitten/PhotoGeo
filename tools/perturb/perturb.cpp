@@ -19,7 +19,11 @@ void perturb(unsigned char* data, unsigned int width, unsigned int height) {
     cv::Mat color_channels(height, width, CV_8UC3, data);
     replace_background(color_channels);
 
-    // TODO: Gaussian blur.
+    // Gaussian blur.
+    const double sigma = 1.3;
+    cv::GaussianBlur(alpha_channel, alpha_channel, cv::Size(0, 0), sigma);
+    cv::GaussianBlur(color_channels, color_channels, cv::Size(0, 0), sigma);
+
     // TODO: Downscale.
     // TODO: Divide color channels with alpha channel.
     // TODO: Load marker texture and tile.
@@ -37,8 +41,8 @@ void perturb(unsigned char* data, unsigned int width, unsigned int height) {
  * @param data Source image.
  */
 static void extract_alpha_channel(cv::Mat& alpha_channel, const unsigned char* data) {
-    for (unsigned int y = 0; y < alpha_channel.rows; ++y) {
-        for (unsigned int x = 0; x < alpha_channel.cols; ++x) {
+    for (int y = 0; y < alpha_channel.rows; ++y) {
+        for (int x = 0; x < alpha_channel.cols; ++x) {
             unsigned int pos = (y * alpha_channel.cols + x) * 3;
             bool is_white = data[pos + 0] == 255 &&
                             data[pos + 1] == 255 &&
