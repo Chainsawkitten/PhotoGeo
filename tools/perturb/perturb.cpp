@@ -20,11 +20,20 @@ void perturb(unsigned char* data, unsigned int width, unsigned int height) {
     replace_background(color_channels);
 
     // Gaussian blur.
-    const double sigma = 1.3;
+    const double sigma = 1.5;
     cv::GaussianBlur(alpha_channel, alpha_channel, cv::Size(0, 0), sigma);
     cv::GaussianBlur(color_channels, color_channels, cv::Size(0, 0), sigma);
 
-    // TODO: Downscale.
+    // Downscale.
+    width /= 2;
+    height /= 2;
+
+    cv::Mat alpha_channel_small(height, width, CV_8UC1);
+    cv::resize(alpha_channel, alpha_channel_small, cv::Size(width, height));
+
+    cv::Mat color_channels_small(height, width, CV_8UC3);
+    cv::resize(color_channels, color_channels_small, cv::Size(width, height));
+
     // TODO: Divide color channels with alpha channel.
     // TODO: Load marker texture and tile.
     // TODO: Multiply alpha channel and marker texture.
@@ -32,7 +41,7 @@ void perturb(unsigned char* data, unsigned int width, unsigned int height) {
     // TODO: Blend image with paper texture according to alpha channel.
 
     // Temp: Write back results.
-    memcpy(data, color_channels.data, width * height * 3);
+    memcpy(data, color_channels_small.data, width * height * 3);
 }
 
 /*
