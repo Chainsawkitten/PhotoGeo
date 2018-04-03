@@ -1,6 +1,7 @@
 #include "read_svg.hpp"
 
 #include <cstring>
+#include <math.h>
 #include <vector>
 #include <tinyxml2.h>
 #include <string>
