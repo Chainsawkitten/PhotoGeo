@@ -12,7 +12,11 @@ struct svg_layer {
     ptg_color color;
 };
 
-// TODO
+/*
+ * Parse number from string.
+ * @param c The string to parse.
+ * @return Rounded value.
+ */
 static long parse_number(const char*& c) {
     // Check sign.
     int sign = 1;
