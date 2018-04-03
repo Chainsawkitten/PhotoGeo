@@ -55,6 +55,8 @@ int main(int argc, const char* argv[]) {
     perturb(data, width, height);
 
     // Write image to PNG file.
+    width /= 2;
+    height /= 2;
     stbi_write_png(output_filename, width, height, components, data, width * components);
 
     // Clean up image data.
