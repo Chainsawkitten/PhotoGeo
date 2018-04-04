@@ -48,7 +48,13 @@ void perturb(unsigned char* data, unsigned int width, unsigned int height) {
     // Divide color channels with alpha channel.
     divide_channels(color_channels_small, alpha_channel_small);
 
-    // TODO: Load marker texture and tile.
+    // Load marker texture and tile.
+    cv::Mat marker_texture;
+    load_texture(marker_texture, "perturb_data/marker.png");
+    // TODO: Tiling.
+
+    stbi_image_free(marker_texture.data);
+
     // TODO: Multiply alpha channel and marker texture.
 
     // Decide which paper texture to use.
