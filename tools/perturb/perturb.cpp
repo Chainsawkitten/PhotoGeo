@@ -14,12 +14,10 @@ static void divide_channels(cv::Mat& color_channels, const cv::Mat& alpha_channe
 static void blend(cv::Mat& results, const cv::Mat& color_channels, const cv::Mat& alpha_channel);
 static void load_texture(cv::Mat& output, const char* filename);
 static void mirror(cv::Mat& image, int flip_code);
-static void tile(const cv::Mat& image, cv::Mat& result);
+static void tile(const cv::Mat& image, cv::Mat& result, int xoffset, int yoffset);
 static void multiply_channels(cv::Mat& alpha_channel, const cv::Mat& marker);
 
 void perturb(unsigned char* data, unsigned int width, unsigned int height) {
-    std::cout << "perturb has not yet been implemented." << std::endl;
-
     // Set up random number generator.
     unsigned int seed = std::chrono::system_clock::now().time_since_epoch().count();
     std::mt19937 engine(seed);
@@ -54,8 +52,10 @@ void perturb(unsigned char* data, unsigned int width, unsigned int height) {
     cv::Mat marker_texture;
     load_texture(marker_texture, "perturb_data/marker.png");
 
+    std::uniform_int_distribution<int> xoffset_distribution(0, width - 1);
+    std::uniform_int_distribution<int> yoffset_distribution(0, height - 1);
     cv::Mat marker_tiled(height, width, CV_8UC3);
-    tile(marker_texture, marker_tiled);
+    tile(marker_texture, marker_tiled, xoffset_distribution(engine), yoffset_distribution(engine));
 
     stbi_image_free(marker_texture.data);
 
@@ -200,10 +200,10 @@ static void mirror(cv::Mat& image, int flip_code) {
  * @param image The image to tile.
  * @param result Where to store the resulting image.
  */
-static void tile(const cv::Mat& image, cv::Mat& result) {
+static void tile(const cv::Mat& image, cv::Mat& result, int xoffset, int yoffset) {
     for (int y = 0; y < result.rows; ++y) {
         for (int x = 0; x < result.cols; ++x) {
-            result.at<cv::Vec3b>(y, x) = image.at<cv::Vec3b>(y % image.rows, x % image.cols);
+            result.at<cv::Vec3b>(y, x) = image.at<cv::Vec3b>((y + yoffset) % image.rows, (x + xoffset) % image.cols);
         }
     }
 }
