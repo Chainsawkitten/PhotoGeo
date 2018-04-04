@@ -88,16 +88,18 @@ void read_svg(const char* filename, ptg_tracing_results* results, ptg_color** co
                     layer.color.b = std::stoi(style);
                 } else {
                     const char* d = &style[style.find("stroke:#") + 8];
+                    const int A = 'a' + 10;
+
                     // Red.
-                    layer.color.r = ((d[0] >= '0' && d[0] <= '9') ? d[0] - '0' : d[0] - 87) * ((d[1] >= '0' && d[1] <= '9') ? d[1] - '0' : d[1] - 87);
+                    layer.color.r = ((d[0] >= '0' && d[0] <= '9') ? d[0] - '0' : d[0] - A) * 16 + ((d[1] >= '0' && d[1] <= '9') ? d[1] - '0' : d[1] - A);
                     d += 2;
 
                     // Green.
-                    layer.color.g = ((d[0] >= '0' && d[0] <= '9') ? d[0] - '0' : d[0] - 87) * ((d[1] >= '0' && d[1] <= '9') ? d[1] - '0' : d[1] - 87);
+                    layer.color.g = ((d[0] >= '0' && d[0] <= '9') ? d[0] - '0' : d[0] - A) * 16 + ((d[1] >= '0' && d[1] <= '9') ? d[1] - '0' : d[1] - A);
                     d += 2;
 
                     // Blue.
-                    layer.color.b = ((d[0] >= '0' && d[0] <= '9') ? d[0] - '0' : d[0] - 87) * ((d[1] >= '0' && d[1] <= '9') ? d[1] - '0' : d[1] - 87);
+                    layer.color.b = ((d[0] >= '0' && d[0] <= '9') ? d[0] - '0' : d[0] - A) * 16 + ((d[1] >= '0' && d[1] <= '9') ? d[1] - '0' : d[1] - A);
                     d += 2;
                 }
             }
