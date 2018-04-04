@@ -1,5 +1,6 @@
 #include <photogeo.h>
 #include <iostream>
+#include <cmath>
 #include <cstring>
 #include <string>
 #include <vector>
@@ -231,6 +232,9 @@ int main(int argc, const char* argv[]) {
             }
         }
 
+        // Free image.
+        stbi_image_free(data);
+
         // Tracing.
         ptg_tracing_results tracing_results;
         {
@@ -250,9 +254,6 @@ int main(int argc, const char* argv[]) {
         // Free quantization results.
         ptg_free_quantization_results(&quantization_results);
         
-        // Free image.
-        stbi_image_free(data);
-
         // Vertex reduction.
         {
             // Profile vertex reduction.
@@ -286,24 +287,46 @@ int main(int argc, const char* argv[]) {
     }
 
     // Calculate mean of test results.
-    double mean[STAGE_COUNT];
+    double mean_time[STAGE_COUNT];
+    double mean_memory_init[STAGE_COUNT];
+    double mean_memory_max[STAGE_COUNT];
     for (unsigned int stage_it = 0; stage_it < STAGE_COUNT; ++stage_it) {
-        mean[stage_it] = 0.0;
+        mean_time[stage_it] = 0.0;
+        mean_memory_init[stage_it] = 0.0;
+        mean_memory_max[stage_it] = 0.0;
         for (unsigned int test_it = 0; test_it < iteration_count; ++test_it) {
-            mean[stage_it] += profiling_results[test_it * STAGE_COUNT + stage_it].time;
+            mean_time[stage_it] += profiling_results[test_it * STAGE_COUNT + stage_it].time;
+            mean_memory_init[stage_it] += profiling_results[test_it * STAGE_COUNT + stage_it].memory_init;
+            mean_memory_max[stage_it] += profiling_results[test_it * STAGE_COUNT + stage_it].memory_max;
         }
-        mean[stage_it] /= iteration_count;
+        mean_time[stage_it] /= iteration_count;
+        mean_memory_init[stage_it] /= iteration_count;
+        mean_memory_max[stage_it] /= iteration_count;
     }
 
     // Calculate standard deviation of test results.
-    double deviation[STAGE_COUNT];
+    double deviation_time[STAGE_COUNT];
+    double deviation_memory_init[STAGE_COUNT];
+    double deviation_memory_max[STAGE_COUNT];
     for (unsigned int stage_it = 0; stage_it < STAGE_COUNT; ++stage_it) {
-        deviation[stage_it] = 0.0;
-        for (unsigned int test_it = 0; test_it < iteration_count; ++test_it) {
-            double value = profiling_results[test_it * STAGE_COUNT + stage_it].time - mean[stage_it];
-            deviation[stage_it] += value * value;
+        deviation_time[stage_it] = 0.0;
+        deviation_memory_init[stage_it] = 0.0;
+        deviation_memory_max[stage_it] = 0.0;
+        if (iteration_count > 1) {
+            for (unsigned int test_it = 0; test_it < iteration_count; ++test_it) {
+                double value = profiling_results[test_it * STAGE_COUNT + stage_it].time - mean_time[stage_it];
+                deviation_time[stage_it] += value * value;
+
+                value = profiling_results[test_it * STAGE_COUNT + stage_it].memory_init - mean_memory_init[stage_it];
+                deviation_memory_init[stage_it] += value * value;
+
+                value = profiling_results[test_it * STAGE_COUNT + stage_it].memory_max - mean_memory_max[stage_it];
+                deviation_memory_max[stage_it] += value * value;
+            }
+            deviation_time[stage_it] = sqrt(deviation_time[stage_it] / (iteration_count - 1));
+            deviation_memory_init[stage_it] = sqrt(deviation_memory_init[stage_it] / (iteration_count - 1));
+            deviation_memory_max[stage_it] = sqrt(deviation_memory_max[stage_it] / (iteration_count - 1));
         }
-        deviation[stage_it] /= iteration_count;
     }
 
     // Output test results to log.
@@ -313,7 +336,9 @@ int main(int argc, const char* argv[]) {
             log << "Iteration count: " << iteration_count << std::endl;
             for (unsigned int stage_it = 0; stage_it < STAGE_COUNT; ++stage_it) {
                 log << "Stage ID: " << stage_it << std::endl
-                    << "Mean(ms): " << mean[stage_it] << "; Standard deviation: " << deviation[stage_it] << ";" << std::endl;
+                    << "Time(milliseconds):\n\t\t\tMean: " << mean_time[stage_it] << "\n\t\t\tStandard deviation: " << deviation_time[stage_it] << std::endl
+                    << "Memory initial(megabyte):\n\t\t\tMean: " << mean_memory_init[stage_it] << "\n\t\t\tStandard deviation: " << deviation_memory_init[stage_it] << std::endl
+                    << "Memory max(megabyte):\n\t\t\tMean: " << mean_memory_max[stage_it] << "\n\t\t\tStandard deviation: " << deviation_memory_max[stage_it] << std::endl << std::endl;
             }
             log.close();
         } else
