@@ -5,6 +5,7 @@ set(SRCS
     conversion.cpp
     main.cpp
     png.cpp
+    profiling.cpp
     svg.cpp
 )
 
@@ -12,6 +13,7 @@ set(SRCS
 set(HEADERS
     conversion.hpp
     png.hpp
+    profiling.hpp
     svg.hpp
 )
 
