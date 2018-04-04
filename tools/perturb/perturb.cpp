@@ -13,6 +13,7 @@ static void replace_background(cv::Mat& color_channels);
 static void divide_channels(cv::Mat& color_channels, const cv::Mat& alpha_channel);
 static void blend(cv::Mat& results, const cv::Mat& color_channels, const cv::Mat& alpha_channel);
 static void load_texture(cv::Mat& output, const char* filename);
+static void mirror(cv::Mat& image, int flip_code);
 
 void perturb(unsigned char* data, unsigned int width, unsigned int height) {
     std::cout << "perturb has not yet been implemented." << std::endl;
@@ -62,6 +63,14 @@ void perturb(unsigned char* data, unsigned int width, unsigned int height) {
     cv::resize(paper_texture, results, cv::Size(width, height));
 
     stbi_image_free(paper_texture.data);
+
+    // Randomly mirror paper.
+    std::uniform_int_distribution<int> bool_distribution(0, 1);
+    if (bool_distribution(engine))
+        mirror(results, 0);
+
+    if (bool_distribution(engine))
+        mirror(results, 1);
 
     // Blend image with paper texture according to alpha channel.
     blend(results, color_channels_small, alpha_channel_small);
@@ -162,4 +171,15 @@ static void load_texture(cv::Mat& output, const char* filename) {
 
     // Create OpenCV texture.
     output = cv::Mat(height, width, CV_8UC3, data);
+}
+
+/*
+ * Mirror image.
+ * @param image Image to mirror.
+ * @param flip_code OpenCV flip code. See cv::flip.
+ */
+static void mirror(cv::Mat& image, int flip_code) {
+    cv::Mat temp(image.rows, image.cols, image.type());
+    cv::flip(image, temp, flip_code);
+    image = temp;
 }
