@@ -120,12 +120,14 @@ void read_svg(const char* filename, ptg_tracing_results* results, ptg_color** co
                 else {
                     switch (state) {
                         case 'M':
+                        case 'L':
                             // Parse absolute number pair.
                             x = parse_number(d);
                             ++d;
                             y = parse_number(d);
                             break;
                         case 'm':
+                        case 'l':
                             // Parse relative number pair.
                             x = x + parse_number(d);
                             ++d;
@@ -145,18 +147,6 @@ void read_svg(const char* filename, ptg_tracing_results* results, ptg_color** co
                             break;
                         case 'v':
                             // Parse relative vertical number.
-                            y = y + parse_number(d);
-                            break;
-                        case 'L':
-                            // Parse absolute number pair.
-                            x = parse_number(d);
-                            ++d;
-                            y = parse_number(d);
-                            break;
-                        case 'l':
-                            // Parse relative number pair.
-                            x = x + parse_number(d);
-                            ++d;
                             y = y + parse_number(d);
                             break;
                     }
