@@ -88,7 +88,7 @@ void read_svg(const char* filename, ptg_tracing_results* results, ptg_color** co
                     layer.color.b = std::stoi(style);
                 } else {
                     const char* d = &style[style.find("stroke:#") + 8];
-                    const int A = 'a' + 10;
+                    const int A = 'a' - 10;
 
                     // Red.
                     layer.color.r = ((d[0] >= '0' && d[0] <= '9') ? d[0] - '0' : d[0] - A) * 16 + ((d[1] >= '0' && d[1] <= '9') ? d[1] - '0' : d[1] - A);
