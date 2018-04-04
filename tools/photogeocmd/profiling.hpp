@@ -1,8 +1,8 @@
 #ifndef PROFILING_HPP
 #define PROFILING_HPP
 
+#include <set>
 #include <thread>
-#include <map>
 #include <mutex>
 
 /// Run profiling.
@@ -13,9 +13,11 @@ class profiling {
             /// Execution time (milliseconds).
             double time;
 
-            /// Memory usage (megabytes).
-            /// @todo Profile memory.
-            double memory;
+            /// Initial memory usage (megabytes).
+            double memory_init;
+
+            /// Max memory usage (megabytes).
+            double memory_max;
         };
 
         /// Start profiling.
@@ -44,7 +46,7 @@ class profiling {
         static bool thread_running;
         static std::thread thread;
         static std::mutex mutex;
-        static std::map<profiling*, profiling*> profilers;
+        static std::set<profiling*> profilers;
 };
 
 #define PROFILE(result, time, memory) profiling __profile_instance(result, time, memory)
