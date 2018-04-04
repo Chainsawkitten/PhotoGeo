@@ -34,6 +34,8 @@ int main(int argc, const char* argv[]) {
     bool output_quantization = false;
     bool output_tracing = false;
     bool output_vertex_reduction = false;
+    bool profile_time = false;
+    bool profile_memory = false;
 
     for (int argument = 1; argument < argc; ++argument) {
         // All arguments start with -.
@@ -77,6 +79,14 @@ int main(int argc, const char* argv[]) {
             // Output vertex reduction.
             if (argv[argument][1] == 't' && argv[argument][2] == 'v')
                 output_vertex_reduction = true;
+
+            // Profile time.
+            if (argv[argument][1] == 'p' && argv[argument][2] == 't')
+                profile_time = true;
+
+            // Profile memory.
+            if (argv[argument][1] == 'p' && argv[argument][2] == 'm')
+                profile_memory = true;
         }
     }
 
@@ -102,6 +112,8 @@ int main(int argc, const char* argv[]) {
                   << "      Results are outputted to SVG." << std::endl;
         std::cout << "  -tv Test vertex reduction." << std::endl
                   << "      Results are outputted to SVG." << std::endl;
+        std::cout << "  -pt Profile time." << std::endl;
+        std::cout << "  -pm Profile memory." << std::endl;
 
         return 0;
     }
@@ -114,6 +126,17 @@ int main(int argc, const char* argv[]) {
 
     // Allocate profiling results.
     profiling::result* profiling_results = new profiling::result[iteration_count * STAGE_COUNT];
+
+    // Profiling.
+    if (profile_time)
+        std::cout << "Profiling time." << std::endl;
+    if (profile_memory) {
+        std::cout << "Profiling memory." << std::endl;
+        // Start up profiling if memory is to be measured.
+        profiling::start_up();
+    }
+    if (iteration_count > 1)
+        std::cout << "Iteration count: " << iteration_count << std::endl;
 
     // Generate collision geometry.
     for (unsigned int iteration = 0; iteration < iteration_count; ++iteration) {
@@ -179,7 +202,7 @@ int main(int argc, const char* argv[]) {
         // Image processing.
         {
             // Profile image processing.
-            PROFILE(&profiling_results[iteration * STAGE_COUNT + IMAGE_PROCESSING]);
+            PROFILE(&profiling_results[iteration * STAGE_COUNT + IMAGE_PROCESSING], profile_time, profile_memory);
 
             // Perform image processing.
             ptg_image_process(generation_parameters.image_parameters, generation_parameters.image_processing_parameters);
@@ -196,7 +219,7 @@ int main(int argc, const char* argv[]) {
         ptg_quantization_results quantization_results;
         {
             // Profile quantization.
-            PROFILE(&profiling_results[iteration * STAGE_COUNT + QUANTIZATION]);
+            PROFILE(&profiling_results[iteration * STAGE_COUNT + QUANTIZATION], profile_time, profile_memory);
 
             // Perform quantization.
             ptg_quantize(generation_parameters.image_parameters, generation_parameters.quantization_parameters, &quantization_results);
@@ -212,7 +235,7 @@ int main(int argc, const char* argv[]) {
         ptg_tracing_results tracing_results;
         {
             // Profile tracing.
-            PROFILE(&profiling_results[iteration * STAGE_COUNT + TRACING]);
+            PROFILE(&profiling_results[iteration * STAGE_COUNT + TRACING], profile_time, profile_memory);
             
             // Perform tracing.
             ptg_trace(generation_parameters.image_parameters, &quantization_results, generation_parameters.tracing_parameters, &tracing_results);
@@ -233,7 +256,7 @@ int main(int argc, const char* argv[]) {
         // Vertex reduction.
         {
             // Profile vertex reduction.
-            PROFILE(&profiling_results[iteration * STAGE_COUNT + VERTEX_REDUCTION]);
+            PROFILE(&profiling_results[iteration * STAGE_COUNT + VERTEX_REDUCTION], profile_time, profile_memory);
 
             // Output before vertex reduction.
             if (output_vertex_reduction) {
@@ -299,6 +322,10 @@ int main(int argc, const char* argv[]) {
 
     // Free test results.
     delete[] profiling_results;
+
+    // Shutdown profiling if memory was measured.
+    if (profile_memory)
+        profiling::shutdown();
 
     return 0;
 }
