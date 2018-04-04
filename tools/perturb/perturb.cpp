@@ -14,6 +14,7 @@ static void divide_channels(cv::Mat& color_channels, const cv::Mat& alpha_channe
 static void blend(cv::Mat& results, const cv::Mat& color_channels, const cv::Mat& alpha_channel);
 static void load_texture(cv::Mat& output, const char* filename);
 static void mirror(cv::Mat& image, int flip_code);
+static void tile(const cv::Mat& image, cv::Mat& result);
 
 void perturb(unsigned char* data, unsigned int width, unsigned int height) {
     std::cout << "perturb has not yet been implemented." << std::endl;
@@ -51,7 +52,9 @@ void perturb(unsigned char* data, unsigned int width, unsigned int height) {
     // Load marker texture and tile.
     cv::Mat marker_texture;
     load_texture(marker_texture, "perturb_data/marker.png");
-    // TODO: Tiling.
+
+    cv::Mat marker_tiled(height, width, CV_8UC3);
+    tile(marker_texture, marker_tiled);
 
     stbi_image_free(marker_texture.data);
 
@@ -188,4 +191,17 @@ static void mirror(cv::Mat& image, int flip_code) {
     cv::Mat temp(image.rows, image.cols, image.type());
     cv::flip(image, temp, flip_code);
     image = temp;
+}
+
+/*
+ * Repeat an image to fill another image.
+ * @param image The image to tile.
+ * @param result Where to store the resulting image.
+ */
+static void tile(const cv::Mat& image, cv::Mat& result) {
+    for (int y = 0; y < result.rows; ++y) {
+        for (int x = 0; x < result.cols; ++x) {
+            result.at<cv::Vec3b>(y, x) = image.at<cv::Vec3b>(y % image.rows, x % image.cols);
+        }
+    }
 }
