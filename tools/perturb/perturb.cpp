@@ -3,12 +3,14 @@
 #include <iostream>
 #include <opencv2/imgproc.hpp>
 #include <cstring>
+#include <stb_image.h>
 
 // Helper functions.
 static void extract_alpha_channel(cv::Mat& alpha_channel, const unsigned char* data);
 static void replace_background(cv::Mat& color_channels);
 static void divide_channels(cv::Mat& color_channels, const cv::Mat& alpha_channel);
 static void blend(cv::Mat& results, const cv::Mat& color_channels, const cv::Mat& alpha_channel);
+static void load_texture(cv::Mat& output, const char* filename);
 
 void perturb(unsigned char* data, unsigned int width, unsigned int height) {
     std::cout << "perturb has not yet been implemented." << std::endl;
@@ -41,15 +43,15 @@ void perturb(unsigned char* data, unsigned int width, unsigned int height) {
 
     // TODO: Load marker texture and tile.
     // TODO: Multiply alpha channel and marker texture.
-    // TODO: Load paper texture and scale.
 
-    // Temp: White background instead of paper texture.
+    // Load paper texture and scale.
+    cv::Mat paper_texture;
+    load_texture(paper_texture, "perturb_data/paper_texture.png");
+
     cv::Mat results(height, width, CV_8UC3);
-    for (int y = 0; y < results.rows; ++y) {
-        for (int x = 0; x < results.cols; ++x) {
-            results.at<cv::Vec3b>(y, x) = cv::Vec3b(255, 255, 255);
-        }
-    }
+    cv::resize(paper_texture, results, cv::Size(width, height));
+
+    stbi_image_free(paper_texture.data);
 
     // Blend image with paper texture according to alpha channel.
     blend(results, color_channels_small, alpha_channel_small);
@@ -132,4 +134,22 @@ static void blend(cv::Mat& results, const cv::Mat& color_channels, const cv::Mat
             results.at<cv::Vec3b>(y, x) = result;
         }
     }
+}
+
+/*
+ * Load an OpenCV texture from a file.
+ * The matrix data needs to be deallocated with stbi_image_free.
+ * @param output Matrix to store the texture in.
+ * @param filename Filename of the texture to load.
+ */
+static void load_texture(cv::Mat& output, const char* filename) {
+    // Load image.
+    int components, width, height;
+    unsigned char* data = stbi_load(filename, &width, &height, &components, 0);
+
+    if (data == NULL)
+        std::cerr << "Couldn't load image " << filename << "." << std::endl;
+
+    // Create OpenCV texture.
+    output = cv::Mat(height, width, CV_8UC3, data);
 }

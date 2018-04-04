@@ -11,6 +11,15 @@ set(HEADERS
     perturb.hpp
 )
 
+# Copy data.
+add_custom_target(PerturbData ALL)
+add_custom_command(
+    TARGET PerturbData
+    COMMAND ${CMAKE_COMMAND} -E copy_directory data ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/perturb_data
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    COMMENT "Copying perturb data."
+)
+
 # Generate directory groups for IDE.
 create_directory_groups(${SRCS} ${HEADERS})
 
