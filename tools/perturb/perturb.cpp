@@ -4,6 +4,8 @@
 #include <opencv2/imgproc.hpp>
 #include <cstring>
 #include <stb_image.h>
+#include <random>
+#include <chrono>
 
 // Helper functions.
 static void extract_alpha_channel(cv::Mat& alpha_channel, const unsigned char* data);
@@ -14,6 +16,10 @@ static void load_texture(cv::Mat& output, const char* filename);
 
 void perturb(unsigned char* data, unsigned int width, unsigned int height) {
     std::cout << "perturb has not yet been implemented." << std::endl;
+
+    // Set up random number generator.
+    unsigned int seed = std::chrono::system_clock::now().time_since_epoch().count();
+    std::mt19937 engine(seed);
 
     // Make alpha channel (background = transparent, foreground = opaque).
     cv::Mat alpha_channel(height, width, CV_8UC1);
@@ -44,9 +50,13 @@ void perturb(unsigned char* data, unsigned int width, unsigned int height) {
     // TODO: Load marker texture and tile.
     // TODO: Multiply alpha channel and marker texture.
 
+    // Decide which paper texture to use.
+    std::uniform_int_distribution<int> paper_distribution(0, 4);
+    std::string paper_filename = "perturb_data/paper" + std::to_string(paper_distribution(engine)) + ".jpg";
+
     // Load paper texture and scale.
     cv::Mat paper_texture;
-    load_texture(paper_texture, "perturb_data/paper_texture.png");
+    load_texture(paper_texture, paper_filename.c_str());
 
     cv::Mat results(height, width, CV_8UC3);
     cv::resize(paper_texture, results, cv::Size(width, height));
