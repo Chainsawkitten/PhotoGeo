@@ -15,6 +15,7 @@ static void blend(cv::Mat& results, const cv::Mat& color_channels, const cv::Mat
 static void load_texture(cv::Mat& output, const char* filename);
 static void mirror(cv::Mat& image, int flip_code);
 static void tile(const cv::Mat& image, cv::Mat& result);
+static void multiply_channels(cv::Mat& alpha_channel, const cv::Mat& marker);
 
 void perturb(unsigned char* data, unsigned int width, unsigned int height) {
     std::cout << "perturb has not yet been implemented." << std::endl;
@@ -58,7 +59,8 @@ void perturb(unsigned char* data, unsigned int width, unsigned int height) {
 
     stbi_image_free(marker_texture.data);
 
-    // TODO: Multiply alpha channel and marker texture.
+    // Multiply alpha channel and marker texture.
+    multiply_channels(alpha_channel_small, marker_tiled);
 
     // Decide which paper texture to use.
     std::uniform_int_distribution<int> paper_distribution(0, 4);
@@ -202,6 +204,21 @@ static void tile(const cv::Mat& image, cv::Mat& result) {
     for (int y = 0; y < result.rows; ++y) {
         for (int x = 0; x < result.cols; ++x) {
             result.at<cv::Vec3b>(y, x) = image.at<cv::Vec3b>(y % image.rows, x % image.cols);
+        }
+    }
+}
+
+/*
+ * Multiple the alpha channel with the marker texture.
+ * @param alpha_channel The alpha channel.
+ * @param marker The tiled marker
+ */
+static void multiply_channels(cv::Mat& alpha_channel, const cv::Mat& marker) {
+    for (int y = 0; y < alpha_channel.rows; ++y) {
+        for (int x = 0; x < alpha_channel.cols; ++x) {
+            const double alpha1 = alpha_channel.at<unsigned char>(y, x) / 255.0;
+            const double alpha2 = marker.at<cv::Vec3b>(y, x)[0] / 255.0;
+            alpha_channel.at<unsigned char>(y, x) = alpha1 * alpha2 * 255.0 + 0.5;
         }
     }
 }
