@@ -45,7 +45,7 @@ static long parse_number(const char*& c) {
     }
     
     // Return rounded value.
-    return static_cast<long>(sign * round(n));
+    return lrint(sign * n);
 }
 
 void read_svg(const char* filename, ptg_tracing_results* results, ptg_color** colors, unsigned int* width, unsigned int* height) {
