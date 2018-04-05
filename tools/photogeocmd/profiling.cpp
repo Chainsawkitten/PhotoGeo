@@ -67,8 +67,8 @@ void profiling::shutdown() {
 }
 
 void profiling::thread_function() {
+    std::unique_lock<std::mutex> lock(mutex, std::defer_lock);
     while (thread_running) {
-        std::unique_lock<std::mutex> lock(mutex, std::defer_lock);
         lock.lock();
         for (profiling* profiler : profilers) {
             #ifdef _WIN32
