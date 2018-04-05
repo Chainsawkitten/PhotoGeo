@@ -8,8 +8,8 @@ void ptgi_image_process(const ptg_image_parameters* image_parameters, const ptg_
     cv::Mat dst = cv::Mat(image_parameters->height, image_parameters->width, CV_8UC3);
     for (unsigned int i = 0; i < image_processing_parameters->method_count; ++i) {
         switch (image_processing_parameters->methods[i]) {
-            case PTG_GAUSSIAN_BLUR:        
-                cv::filter2D(src, src, -1, cv::getGaussianKernel(3, 0.5), cv::Point(-1, -1), 0, cv::BORDER_DEFAULT);
+            case PTG_GAUSSIAN_BLUR:
+                cv::GaussianBlur(src, src, cv::Size(0, 0), 1.5);
                 break;
             case PTG_BILATERAL_FILTER:
                 cv::bilateralFilter(src, dst, -1, 50, 5, cv::BORDER_DEFAULT);
