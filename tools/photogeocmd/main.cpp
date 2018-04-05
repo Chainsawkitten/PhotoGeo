@@ -335,10 +335,12 @@ int main(int argc, const char* argv[]) {
         if (log.is_open()) {
             log << "Iteration count: " << iteration_count << std::endl;
             for (unsigned int stage_it = 0; stage_it < STAGE_COUNT; ++stage_it) {
-                log << "Stage ID: " << stage_it << std::endl
-                    << "Time(milliseconds):\n\t\t\tMean: " << mean_time[stage_it] << "\n\t\t\tStandard deviation: " << deviation_time[stage_it] << std::endl
-                    << "Memory initial(megabyte):\n\t\t\tMean: " << mean_memory_init[stage_it] << "\n\t\t\tStandard deviation: " << deviation_memory_init[stage_it] << std::endl
-                    << "Memory max(megabyte):\n\t\t\tMean: " << mean_memory_max[stage_it] << "\n\t\t\tStandard deviation: " << deviation_memory_max[stage_it] << std::endl << std::endl;
+                log << "Stage ID: " << stage_it << std::endl;
+                if (profile_time)
+                    log << "Time(milliseconds):\n\t\t\tMean: " << mean_time[stage_it] << "\n\t\t\tStandard deviation: " << deviation_time[stage_it] << std::endl;
+                if (profile_memory)
+                    log << "Memory initial(megabyte):\n\t\t\tMean: " << mean_memory_init[stage_it] << "\n\t\t\tStandard deviation: " << deviation_memory_init[stage_it] << std::endl
+                        << "Memory max(megabyte):\n\t\t\tMean: " << mean_memory_max[stage_it] << "\n\t\t\tStandard deviation: " << deviation_memory_max[stage_it] << std::endl << std::endl;
             }
             log.close();
         } else
