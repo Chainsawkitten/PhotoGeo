@@ -46,47 +46,47 @@ int main(int argc, const char* argv[]) {
                 input_filename = argv[++argument];
 
             // Output filename.
-            if (argv[argument][1] == 'o' && argc > argument + 1)
+            else if (argv[argument][1] == 'o' && argc > argument + 1)
                 output_filename = argv[++argument];
 
             // Background color.
-            if (argv[argument][1] == 'b' && argc > argument + 1)
+            else if (argv[argument][1] == 'b' && argc > argument + 1)
                 background_colors.push_back(text_to_color(argv[++argument]));
 
             // Foreground color.
-            if (argv[argument][1] == 'f' && argc > argument + 1)
+            else if (argv[argument][1] == 'f' && argc > argument + 1)
                 foreground_colors.push_back(text_to_color(argv[++argument]));
 
             // Log filename.
-            if (argv[argument][1] == 'l' && argv[argument][2] == 'o' && argc > argument + 1)
+            else if (argv[argument][1] == 'l' && argv[argument][2] == 'o' && argc > argument + 1)
                 log_filename = argv[++argument];
 
             // Iteration count.
-            if (argv[argument][1] == 'l' && argv[argument][2] == 'i' && argc > argument + 1)
+            else if (argv[argument][1] == 'l' && argv[argument][2] == 'i' && argc > argument + 1)
                 iteration_count = std::stoi(argv[++argument]);
 
             // Output image processing.
-            if (argv[argument][1] == 't' && argv[argument][2] == 'p')
+            else if (argv[argument][1] == 't' && argv[argument][2] == 'p')
                 output_image_processing = true;
 
             // Output quantization.
-            if (argv[argument][1] == 't' && argv[argument][2] == 'q')
+            else if (argv[argument][1] == 't' && argv[argument][2] == 'q')
                 output_quantization = true;
 
             // Output tracing.
-            if (argv[argument][1] == 't' && argv[argument][2] == 't')
+            else if (argv[argument][1] == 't' && argv[argument][2] == 't')
                 output_tracing = true;
 
             // Output vertex reduction.
-            if (argv[argument][1] == 't' && argv[argument][2] == 'v')
+            else if (argv[argument][1] == 't' && argv[argument][2] == 'v')
                 output_vertex_reduction = true;
 
             // Profile time.
-            if (argv[argument][1] == 'p' && argv[argument][2] == 't')
+            else if (argv[argument][1] == 'p' && argv[argument][2] == 't')
                 profile_time = true;
 
             // Profile memory.
-            if (argv[argument][1] == 'p' && argv[argument][2] == 'm')
+            else if (argv[argument][1] == 'p' && argv[argument][2] == 'm')
                 profile_memory = true;
         }
     }
