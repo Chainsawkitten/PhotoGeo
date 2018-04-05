@@ -21,11 +21,11 @@ int main(int argc, const char* argv[]) {
                 input_filename = argv[++argument];
 
             // Output filename.
-            if (argv[argument][1] == 'o' && argc > argument + 1)
+            else if (argv[argument][1] == 'o' && argc > argument + 1)
                 output_filename = argv[++argument];
 
             // Scale.
-            if (argv[argument][1] == 's' && argc > argument + 1)
+            else if (argv[argument][1] == 's' && argc > argument + 1)
                 scale = std::stoi(argv[++argument]);
         }
     }
