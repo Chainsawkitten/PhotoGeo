@@ -1,3 +1,4 @@
+#include <fstream>
 #include <iostream>
 
 #define STB_IMAGE_IMPLEMENTATION
@@ -6,6 +7,7 @@
 int main(int argc, const char* argv[]) {
     // Handle commandline arguments.
     const char* filename[2] = { "", "" };
+    const char* log_filename = "";
 
     for (int argument = 1; argument < argc; ++argument) {
         // All arguments start with -.
@@ -15,8 +17,12 @@ int main(int argc, const char* argv[]) {
                 filename[0] = argv[++argument];
 
             // Output filename.
-            if (argv[argument][1] == '2' && argc > argument + 1)
+            else if (argv[argument][1] == '2' && argc > argument + 1)
                 filename[1] = argv[++argument];
+
+            // Log filename.
+            else if (argv[argument][1] == 'l' && argc > argument + 1)
+                log_filename = argv[++argument];
         }
     }
 
@@ -27,6 +33,7 @@ int main(int argc, const char* argv[]) {
         std::cout << "Parameters:" << std::endl;
         std::cout << "  -1  Specify filename of first image." << std::endl;
         std::cout << "  -2  Specify filename of second image." << std::endl;
+        std::cout << "  -l  Specify filename of log file." << std::endl;
 
         return 0;
     }
@@ -58,7 +65,7 @@ int main(int argc, const char* argv[]) {
     unsigned int total_pixels = width[0] * height[0];
     unsigned int difference = 0;
     for (unsigned int i = 0; i < total_pixels; ++i) {
-        if (data[0][i * 3]     != data[1][i * 3]     ||
+        if (data[0][i * 3] != data[1][i * 3] ||
             data[0][i * 3 + 1] != data[1][i * 3 + 1] ||
             data[0][i * 3 + 2] != data[1][i * 3 + 2])
             ++difference;
@@ -69,7 +76,17 @@ int main(int argc, const char* argv[]) {
     stbi_image_free(data[1]);
 
     // Output difference.
-    std::cout << 100.0 - static_cast<double>(difference) / total_pixels * 100.0 << "%" << std::endl;
+    difference = 100.0 - static_cast<double>(difference) / total_pixels * 100.0;
+    std::cout << difference << "%" << std::endl;
+    if (log_filename != "") {
+        std::ofstream log(log_filename);
+        if (log.is_open()) {
+            log << "[" << filename[0] << " - " << filename[1] << "] : " << difference << "%" << std::endl;
+            log.close();
+        }
+        else
+            std::cout << "Unable to open log file: " << log_filename << std::endl;
+    }
 
     return 0;
 }
