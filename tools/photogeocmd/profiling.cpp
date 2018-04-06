@@ -2,7 +2,7 @@
 
 #include <chrono>
 
-#ifdef _WIN32
+#ifdef _MSC_VER
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <psapi.h>
@@ -25,7 +25,7 @@ profiling::profiling(profiling::result* result, bool time, bool memory) {
     if (measure_time) {
         result_ptr->time = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
     } else if (measure_memory) {
-        #ifdef _WIN32
+        #ifdef _MSC_VER
         PROCESS_MEMORY_COUNTERS_EX memory_counters;
         GetProcessMemoryInfo(GetCurrentProcess(), reinterpret_cast<PROCESS_MEMORY_COUNTERS*>(&memory_counters), sizeof(memory_counters));
         result_ptr->memory_init = memory_counters.PrivateUsage / 1024.0 / 1024.0;
@@ -70,13 +70,13 @@ void profiling::thread_function() {
     std::unique_lock<std::mutex> lock(mutex, std::defer_lock);
     while (thread_running) {
         lock.lock();
+        #ifdef _MSC_VER
         for (profiling* profiler : profilers) {
-            #ifdef _WIN32
             PROCESS_MEMORY_COUNTERS_EX memory_counters;
             GetProcessMemoryInfo(GetCurrentProcess(), reinterpret_cast<PROCESS_MEMORY_COUNTERS*>(&memory_counters), sizeof(memory_counters));
             profiler->result_ptr->memory_max = max(profiler->result_ptr->memory_max, memory_counters.PrivateUsage / 1024.0 / 1024.0);
-            #endif
         }
+        #endif
         lock.unlock();
     }
 }
