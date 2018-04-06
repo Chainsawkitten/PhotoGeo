@@ -78,13 +78,12 @@ int main(int argc, const char* argv[]) {
     // Output difference.
     difference = 100.0 - static_cast<double>(difference) / total_pixels * 100.0;
     std::cout << difference << "%" << std::endl;
-    if (log_filename != "") {
+    if (log_filename[0] != '\0') {
         std::ofstream log(log_filename);
         if (log.is_open()) {
             log << "[" << filename[0] << " - " << filename[1] << "] : " << difference << "%" << std::endl;
             log.close();
-        }
-        else
+        } else
             std::cout << "Unable to open log file: " << log_filename << std::endl;
     }
 
