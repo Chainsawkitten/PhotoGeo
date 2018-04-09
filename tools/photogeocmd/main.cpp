@@ -57,14 +57,6 @@ int main(int argc, const char* argv[]) {
             else if (argv[argument][1] == 'f' && argc > argument + 1)
                 foreground_colors.push_back(text_to_color(argv[++argument]));
 
-            // Log filename.
-            else if (argv[argument][1] == 'l' && argv[argument][2] == 'o' && argc > argument + 1)
-                log_filename = argv[++argument];
-
-            // Iteration count.
-            else if (argv[argument][1] == 'l' && argv[argument][2] == 'i' && argc > argument + 1)
-                iteration_count = std::stoi(argv[++argument]);
-
             // Output image processing.
             else if (argv[argument][1] == 't' && argv[argument][2] == 'p')
                 output_image_processing = true;
@@ -80,6 +72,14 @@ int main(int argc, const char* argv[]) {
             // Output vertex reduction.
             else if (argv[argument][1] == 't' && argv[argument][2] == 'v')
                 output_vertex_reduction = true;
+
+            // Log filename.
+            else if (argv[argument][1] == 'l' && argv[argument][2] == 'o' && argc > argument + 1)
+                log_filename = argv[++argument];
+
+            // Iteration count.
+            else if (argv[argument][1] == 'l' && argv[argument][2] == 'i' && argc > argument + 1)
+                iteration_count = std::stoi(argv[++argument]);
 
             // Profile time.
             else if (argv[argument][1] == 'p' && argv[argument][2] == 't')
@@ -102,9 +102,6 @@ int main(int argc, const char* argv[]) {
                   << "      Format: R:G:B" <<  std::endl;
         std::cout << "  -f  Specify foreground color." << std::endl
                   << "      Format: R:G:B" << std::endl;
-        std::cout << "  -lo Specify filename of log file." << std::endl;
-        std::cout << "  -li Specify how many times to iterate test." << std::endl
-                  << "      Integer values only." << std::endl;
         std::cout << "  -tp Test image processing." << std::endl
                   << "      Results are outputted to PNG." << std::endl;
         std::cout << "  -tq Test quantization." << std::endl
@@ -115,6 +112,9 @@ int main(int argc, const char* argv[]) {
                   << "      Results are outputted to SVG." << std::endl;
         std::cout << "  -pt Profile time." << std::endl;
         std::cout << "  -pm Profile memory." << std::endl;
+        std::cout << "  -lo Specify filename of log file." << std::endl;
+        std::cout << "  -li Specify how many times to iterate test." << std::endl
+                  << "      Integer values only." << std::endl;
 
         return 0;
     }
