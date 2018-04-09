@@ -76,12 +76,12 @@ int main(int argc, const char* argv[]) {
     stbi_image_free(data[1]);
 
     // Output difference.
-    difference = 100.0 - static_cast<double>(difference) / total_pixels * 100.0;
-    std::cout << difference << "%" << std::endl;
+    double percentage = 100.0 - static_cast<double>(difference) / total_pixels * 100.0;
+    std::cout << percentage << "%" << std::endl;
     if (log_filename[0] != '\0') {
         std::ofstream log(log_filename);
         if (log.is_open()) {
-            log << "[" << filename[0] << " - " << filename[1] << "] : " << difference << "%" << std::endl;
+            log << "[" << filename[0] << " - " << filename[1] << "] : " << percentage << "%" << std::endl;
             log.close();
         } else
             std::cout << "Unable to open log file: " << log_filename << std::endl;
