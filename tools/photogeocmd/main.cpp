@@ -330,7 +330,7 @@ int main(int argc, const char* argv[]) {
     }
 
     // Output test results to log.
-    if (log_filename != "") {
+    if (log_filename[0] != '\0') {
         std::ofstream log(log_filename);
         if (log.is_open()) {
             log << "Iteration count: " << iteration_count << std::endl;
