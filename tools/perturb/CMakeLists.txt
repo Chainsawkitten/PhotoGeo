@@ -24,7 +24,7 @@ add_custom_command(
 create_directory_groups(${SRCS} ${HEADERS})
 
 add_executable(perturb ${SRCS} ${HEADERS})
-target_link_libraries(perturb common opencv stb)
+target_link_libraries(perturb opencv stb)
 
 # Require C++11.
 set_property(TARGET perturb PROPERTY CXX_STANDARD 11)

@@ -1,6 +1,3 @@
-# Common functionality.
-add_subdirectory(common)
-
 # Commandline tool.
 add_subdirectory(photogeocmd)
 
