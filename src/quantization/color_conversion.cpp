@@ -39,13 +39,17 @@ cie_lab xyz_to_lab(const cie_xyz& color) {
     // Convert to L*a*b* using illuminant D65 with normalization Y=100.
     // https://en.wikipedia.org/wiki/Lab_color_space#CIELAB-CIEXYZ_conversions
     // Retrieved 2018-02-14
-    const double xn = 95.047;
-    const double yn = 100.0;
-    const double zn = 108.883;
+    const double xn = 1.0 / 95.047;
+    const double yn = 1.0 / 100.0;
+    const double zn = 1.0 / 108.883;
 
-    result.l = 116.0 * f(color.y / yn) - 16.0;
-    result.a = 500.0 * (f(color.x / xn) - f(color.y / yn));
-    result.b = 200.0 * (f(color.y / yn) - f(color.z / zn));
+    const double fx = f(color.x * xn);
+    const double fy = f(color.y * yn);
+    const double fz = f(color.z * zn);
+
+    result.l = 116.0 * fy - 16.0;
+    result.a = 500.0 * (fx - fy);
+    result.b = 200.0 * (fy - fz);
 
     return result;
 }
