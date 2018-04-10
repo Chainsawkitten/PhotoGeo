@@ -38,6 +38,12 @@ int main(int argc, const char* argv[]) {
     bool profile_time = false;
     bool profile_memory = false;
 
+    // Methods.
+    std::vector<ptg_image_processing_method> image_processing_methods;
+    ptg_quantization_method quantization_method = PTG_EUCLIDEAN_LINEAR;
+    ptg_tracing_method tracing_method = PTG_MARCHING_SQUARES;
+    ptg_vertex_reduction_method vertex_reduction_method = PTG_NO_VERTEX_REDUCTION;
+
     for (int argument = 1; argument < argc; ++argument) {
         // All arguments start with -.
         if (argv[argument][0] == '-') {
@@ -73,6 +79,14 @@ int main(int argc, const char* argv[]) {
             else if (argv[argument][1] == 't' && argv[argument][2] == 'v')
                 output_vertex_reduction = true;
 
+            // Profile time.
+            else if (argv[argument][1] == 'p' && argv[argument][2] == 't')
+                profile_time = true;
+
+            // Profile memory.
+            else if (argv[argument][1] == 'p' && argv[argument][2] == 'm')
+                profile_memory = true;
+
             // Log filename.
             else if (argv[argument][1] == 'l' && argv[argument][2] == 'o' && argc > argument + 1)
                 log_filename = argv[++argument];
@@ -81,13 +95,61 @@ int main(int argc, const char* argv[]) {
             else if (argv[argument][1] == 'l' && argv[argument][2] == 'i' && argc > argument + 1)
                 iteration_count = std::stoi(argv[++argument]);
 
-            // Profile time.
-            else if (argv[argument][1] == 'p' && argv[argument][2] == 't')
-                profile_time = true;
+            // Image processing methods.
+            // Gaussian blur.
+            else if (argv[argument][1] == 'p' && (argv[argument][2] - '0') == PTG_GAUSSIAN_BLUR && argc > argument + 1)
+                image_processing_methods.push_back(PTG_GAUSSIAN_BLUR);
 
-            // Profile memory.
-            else if (argv[argument][1] == 'p' && argv[argument][2] == 'm')
-                profile_memory = true;
+            // Bilateral filter.
+            else if (argv[argument][1] == 'p' && (argv[argument][2] - '0') == PTG_BILATERAL_FILTER && argc > argument + 1)
+                image_processing_methods.push_back(PTG_BILATERAL_FILTER);
+
+            // Median filter.
+            else if (argv[argument][1] == 'p' && (argv[argument][2] - '0') == PTG_MEDIAN_FILTER && argc > argument + 1)
+                image_processing_methods.push_back(PTG_MEDIAN_FILTER);
+
+            // Kuwahara filter.
+            else if (argv[argument][1] == 'p' && (argv[argument][2] - '0') == PTG_KUWAHARA_FILTER && argc > argument + 1)
+                image_processing_methods.push_back(PTG_KUWAHARA_FILTER);
+
+            // Quantization method.
+            // Euclidean distance in sRGB space.
+            else if (argv[argument][1] == 'q' && (argv[argument][2] - '0') == PTG_EUCLIDEAN_SRGB && argc > argument + 1)
+                quantization_method = PTG_EUCLIDEAN_SRGB;
+
+            // Euclidean distance in linear RGB space.
+            else if (argv[argument][1] == 'q' && (argv[argument][2] - '0') == PTG_EUCLIDEAN_LINEAR && argc > argument + 1)
+                quantization_method = PTG_EUCLIDEAN_LINEAR;
+
+            // CIE76.
+            else if (argv[argument][1] == 'q' && (argv[argument][2] - '0') == PTG_CIE76 && argc > argument + 1)
+                quantization_method = PTG_CIE76;
+
+            // CIE94.
+            else if (argv[argument][1] == 'q' && (argv[argument][2] - '0') == PTG_CIE94 && argc > argument + 1)
+                quantization_method = PTG_CIE94;
+
+            // CIEDE2000.
+            else if (argv[argument][1] == 'q' && (argv[argument][2] - '0') == PTG_CIEDE2000 && argc > argument + 1)
+                quantization_method = PTG_CIEDE2000;
+
+            // Tracing method.
+            // Marching squares.
+            else if (argv[argument][1] == 't' && (argv[argument][2] - '0') == PTG_MARCHING_SQUARES && argc > argument + 1)
+                tracing_method = PTG_MARCHING_SQUARES;
+
+            // Vertex reduction method.
+            // Don't perform any vertex reduction.
+            else if (argv[argument][1] == 'v' && (argv[argument][2] - '0') == PTG_NO_VERTEX_REDUCTION && argc > argument + 1)
+                vertex_reduction_method = PTG_NO_VERTEX_REDUCTION;
+
+            // Douglas-Peucker.
+            else if (argv[argument][1] == 'v' && (argv[argument][2] - '0') == PTG_DOUGLAS_PEUCKER && argc > argument + 1)
+                vertex_reduction_method = PTG_DOUGLAS_PEUCKER;
+
+            // Visvalingam-Whyatt.
+            else if (argv[argument][1] == 'v' && (argv[argument][2] - '0') == PTG_VISVALINGAM_WHYATT && argc > argument + 1)
+                vertex_reduction_method = PTG_VISVALINGAM_WHYATT;
         }
     }
 
@@ -115,6 +177,19 @@ int main(int argc, const char* argv[]) {
         std::cout << "  -lo Specify filename of log file." << std::endl;
         std::cout << "  -li Specify how many times to iterate test." << std::endl
                   << "      Integer values only." << std::endl;
+        std::cout << "  -p0 Gaussian blur. Image processing method." << std::endl;
+        std::cout << "  -p1 Bilateral filter. Image processing method." << std::endl;
+        std::cout << "  -p2 Median filter. Image processing method." << std::endl;
+        std::cout << "  -p3 Kuwahara filter. Image processing method." << std::endl;
+        std::cout << "  -q0 Euclidean distance in sRGB space. Quantization method." << std::endl;
+        std::cout << "  -q1 Euclidean distance in linear RGB space. Quantization method." << std::endl;
+        std::cout << "  -q2 CIE76. Quantization method." << std::endl;
+        std::cout << "  -q3 CIE94. Quantization method." << std::endl;
+        std::cout << "  -q4 CIE2000. Quantization method." << std::endl;
+        std::cout << "  -t0 Marching squares. Tracing method." << std::endl;
+        std::cout << "  -v0 Don't perform any vertex reduction. Vertex reduction method." << std::endl;
+        std::cout << "  -v1 Douglas-Peucker. Vertex reduction method." << std::endl;
+        std::cout << "  -v2 Visvalingam-Whyatt. Vertex reduction method." << std::endl;
 
         return 0;
     }
@@ -170,27 +245,22 @@ int main(int argc, const char* argv[]) {
         image_parameters.color_layer_count = foreground_colors.size();
         image_parameters.color_layer_colors = foreground_colors.data();
 
-        // Image processing methods.
-        std::vector<ptg_image_processing_method> methods;
-        methods.push_back(PTG_MEDIAN_FILTER);
-        methods.push_back(PTG_BILATERAL_FILTER);
-
         // Image processing parameters.
         ptg_image_processing_parameters image_processing_parameters;
-        image_processing_parameters.method_count = methods.size();
-        image_processing_parameters.methods = methods.data();
+        image_processing_parameters.method_count = image_processing_methods.size();
+        image_processing_parameters.methods = image_processing_methods.data();
 
         // Quantization parameters.
         ptg_quantization_parameters quantization_parameters;
-        quantization_parameters.quantization_method = PTG_EUCLIDEAN_LINEAR;
+        quantization_parameters.quantization_method = quantization_method;
 
         // Tracing parameters.
         ptg_tracing_parameters tracing_parameters;
-        tracing_parameters.tracing_method = PTG_MARCHING_SQUARES;
+        tracing_parameters.tracing_method = tracing_method;
 
         // Vertex reduction parameters.
         ptg_vertex_reduction_parameters vertex_reduction_parameters;
-        vertex_reduction_parameters.vertex_reduction_method = PTG_VISVALINGAM_WHYATT;
+        vertex_reduction_parameters.vertex_reduction_method = vertex_reduction_method;
 
         // Generation parameters.
         ptg_generation_parameters generation_parameters;
