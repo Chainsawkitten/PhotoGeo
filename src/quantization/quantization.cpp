@@ -4,24 +4,52 @@
 #include "color_conversion.hpp"
 #include <cmath>
 
-void quantize(const ptg_image_parameters* parameters, bool** layers, double (*distance_function)(const ptg_color&, const ptg_color&)) {
+// Convert from one color space to another.
+template<typename color_type>
+static inline color_type convert(const ptg_color& color);
+
+template<>
+inline ptg_color convert<ptg_color>(const ptg_color& color) {
+    return color;
+}
+
+template<>
+inline cie_lab convert<cie_lab>(const ptg_color& color) {
+    return xyz_to_lab(rgb_to_xyz(color));
+}
+
+template<typename color_type>
+static void quantize_helper(const ptg_image_parameters* parameters, bool** layers, double (*distance_function)(const color_type&, const color_type&)) {
+    // Get colors each pixel should be compared against (foreground and background colors).
+    const unsigned int comparison_color_count = parameters->background_color_count + parameters->color_layer_count;
+    ptg_color comparison_colors[comparison_color_count];
+    for (unsigned int i = 0; i < comparison_color_count; ++i) {
+        if (i < parameters->background_color_count)
+            comparison_colors[i] = parameters->background_colors[i];
+        else
+            comparison_colors[i] = parameters->color_layer_colors[i - parameters->background_color_count];
+    }
+
+    // Convert comparison colors to the color space the comparison is performed in.
+    color_type comparison_colors_conv[comparison_color_count];
+    for (unsigned int i = 0; i < comparison_color_count; ++i) {
+        comparison_colors_conv[i] = convert<color_type>(comparison_colors[i]);
+    }
+
+    // Loop through all pixels in image.
     for (unsigned int y = 0; y < parameters->height; ++y) {
         for (unsigned int x = 0; x < parameters->width; ++x) {
             ptg_color color = parameters->image[y * parameters->width + x];
 
+            // Convert color to color space the comparison is performed in.
+            color_type color_conv = convert<color_type>(color);
+
             // Find closest color.
             unsigned int layer = 0;
             double shortest = std::numeric_limits<double>::max();
-            for (unsigned int i = 0; i < parameters->background_color_count + parameters->color_layer_count; ++i) {
-                // Color to compare to.
-                ptg_color comparison_color;
-                if (i < parameters->background_color_count)
-                    comparison_color = parameters->background_colors[i];
-                else
-                    comparison_color = parameters->color_layer_colors[i - parameters->background_color_count];
-
+            for (unsigned int i = 0; i < comparison_color_count; ++i) {
                 // Calculate distance.
-                double distance = distance_function(comparison_color, color);
+                double distance = distance_function(comparison_colors_conv[i], color_conv);
                 if (distance < shortest) {
                     shortest = distance;
                     layer = i;
@@ -32,6 +60,26 @@ void quantize(const ptg_image_parameters* parameters, bool** layers, double (*di
             for (unsigned int i = 0; i < parameters->color_layer_count; ++i)
                 layers[i][y * parameters->width + x] = (i == layer - parameters->background_color_count);
         }
+    }
+}
+
+void quantize(const ptg_image_parameters* parameters, bool** layers, ptg_quantization_method quantization_method) {
+    switch (quantization_method) {
+        case PTG_EUCLIDEAN_SRGB:
+            quantize_helper<ptg_color>(parameters, layers, color_distance_euclidean_srgb_sqr);
+            break;
+        case PTG_EUCLIDEAN_LINEAR:
+            quantize_helper<ptg_color>(parameters, layers, color_distance_euclidean_linear_sqr);
+            break;
+        case PTG_CIE76:
+            quantize_helper<cie_lab>(parameters, layers, color_distance_cie76_sqr);
+            break;
+        case PTG_CIE94:
+            quantize_helper<cie_lab>(parameters, layers, color_distance_cie94_sqr);
+            break;
+        case PTG_CIEDE2000:
+            quantize_helper<cie_lab>(parameters, layers, color_distance_ciede2000_sqr);
+            break;
     }
 }
 
@@ -59,23 +107,15 @@ double color_distance_euclidean_linear_sqr(const ptg_color& a, const ptg_color& 
                     srgb_to_linear(b.r), srgb_to_linear(b.g), srgb_to_linear(b.b));
 }
 
-double color_distance_cie76_sqr(const ptg_color& a, const ptg_color& b) {
-    // Convert to CIE L*a*b*.
-    cie_lab a_lab = xyz_to_lab(rgb_to_xyz(a));
-    cie_lab b_lab = xyz_to_lab(rgb_to_xyz(b));
-
+double color_distance_cie76_sqr(const cie_lab& a, const cie_lab& b) {
     // Calculate delta-E.
     // https://en.wikipedia.org/wiki/Color_difference#CIE76
     // Retrieved 2018-02-14
-    return distance(a_lab.l, a_lab.a, a_lab.b,
-                    b_lab.l, b_lab.a, b_lab.b);
+    return distance(a.l, a.a, a.b,
+                    b.l, b.a, b.b);
 }
 
-double color_distance_cie94_sqr(const ptg_color& a, const ptg_color& b) {
-    // Convert to CIE L*a*b*.
-    cie_lab a_lab = xyz_to_lab(rgb_to_xyz(a));
-    cie_lab b_lab = xyz_to_lab(rgb_to_xyz(b));
-
+double color_distance_cie94_sqr(const cie_lab& a, const cie_lab& b) {
     // Calculate delta-E, using the k-values for graphic art.
     // https://en.wikipedia.org/wiki/Color_difference#CIE94
     // Retrieved 2018-02-14
@@ -85,12 +125,12 @@ double color_distance_cie94_sqr(const ptg_color& a, const ptg_color& b) {
     const double k_c = 1.0;
     const double k_h = 1.0;
 
-    const double delta_l = a_lab.l - b_lab.l;
-    const double c1 = sqrt(a_lab.a * a_lab.a + a_lab.b * a_lab.b);
-    const double c2 = sqrt(b_lab.a * b_lab.a + b_lab.b * b_lab.b);
+    const double delta_l = a.l - b.l;
+    const double c1 = sqrt(a.a * a.a + a.b * a.b);
+    const double c2 = sqrt(b.a * b.a + b.b * b.b);
     const double delta_c = c1 - c2;
-    const double delta_a = a_lab.a - b_lab.a;
-    const double delta_b = a_lab.b - b_lab.b;
+    const double delta_a = a.a - b.a;
+    const double delta_b = a.b - b.b;
     double delta_h = delta_a * delta_a + delta_b * delta_b - delta_c * delta_c;
     delta_h = (delta_h < 0.0) ? 0.0 : sqrt(delta_h);
 
@@ -130,11 +170,7 @@ static double angle(double b, double a_prime) {
     return rad2deg(h);
 }
 
-double color_distance_ciede2000_sqr(const ptg_color& a, const ptg_color& b) {
-    // Convert to CIE L*a*b*.
-    cie_lab a_lab = xyz_to_lab(rgb_to_xyz(a));
-    cie_lab b_lab = xyz_to_lab(rgb_to_xyz(b));
-
+double color_distance_ciede2000_sqr(const cie_lab& a, const cie_lab& b) {
     // Calculate delta-E.
     // https://en.wikipedia.org/wiki/Color_difference#CIEDE2000
     // Retrieved 2018-02-16
@@ -142,23 +178,23 @@ double color_distance_ciede2000_sqr(const ptg_color& a, const ptg_color& b) {
     const double k_c = 1.0;
     const double k_h = 1.0;
 
-    const double delta_l = b_lab.l - a_lab.l;
-    const double l_avg = (a_lab.l + b_lab.l) * 0.5;
-    const double c1 = sqrt(a_lab.a * a_lab.a + a_lab.b * a_lab.b);
-    const double c2 = sqrt(b_lab.a * b_lab.a + b_lab.b * b_lab.b);
+    const double delta_l = b.l - a.l;
+    const double l_avg = (a.l + b.l) * 0.5;
+    const double c1 = sqrt(a.a * a.a + a.b * a.b);
+    const double c2 = sqrt(b.a * b.a + b.b * b.b);
     const double c_avg = (c1 + c2) * 0.5;
 
     const double a_factor = 1.0 + 0.5 * (1.0 - sqrt(pow(c_avg, 7.0) / (pow(c_avg, 7.0) + pow(25.0, 7.0))));
-    const double a1_prime = a_lab.a * a_factor;
-    const double a2_prime = b_lab.a * a_factor;
+    const double a1_prime = a.a * a_factor;
+    const double a2_prime = b.a * a_factor;
 
-    const double c1_prime = sqrt(a1_prime * a1_prime + a_lab.b * a_lab.b);
-    const double c2_prime = sqrt(a2_prime * a2_prime + b_lab.b * b_lab.b);
+    const double c1_prime = sqrt(a1_prime * a1_prime + a.b * a.b);
+    const double c2_prime = sqrt(a2_prime * a2_prime + b.b * b.b);
     const double delta_c = c2_prime - c1_prime;
     const double c_prime_avg = (c1_prime + c2_prime) * 0.5;
 
-    const double h1 = angle(a_lab.b, a1_prime);
-    const double h2 = angle(b_lab.b, a2_prime);
+    const double h1 = angle(a.b, a1_prime);
+    const double h2 = angle(b.b, a2_prime);
 
     double h_diff = h2 - h1;
     double delta_h = h_diff;

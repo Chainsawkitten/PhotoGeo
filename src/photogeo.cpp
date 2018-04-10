@@ -50,23 +50,8 @@ void ptg_quantize(const ptg_image_parameters* image_parameters, const ptg_quanti
         quantization_results->layers[layer] = new bool[image_parameters->width * image_parameters->height];
 
     // Quantize image into layers.
-    switch (quantization_parameters->quantization_method) {
-        case PTG_EUCLIDEAN_SRGB:
-            quantize(image_parameters, quantization_results->layers, color_distance_euclidean_srgb_sqr);
-            break;
-        case PTG_EUCLIDEAN_LINEAR:
-            quantize(image_parameters, quantization_results->layers, color_distance_euclidean_linear_sqr);
-            break;
-        case PTG_CIE76:
-            quantize(image_parameters, quantization_results->layers, color_distance_cie76_sqr);
-            break;
-        case PTG_CIE94:
-            quantize(image_parameters, quantization_results->layers, color_distance_cie94_sqr);
-            break;
-        case PTG_CIEDE2000:
-            quantize(image_parameters, quantization_results->layers, color_distance_ciede2000_sqr);
-            break;
-    }
+    quantize(image_parameters, quantization_results->layers, quantization_parameters->quantization_method);
+
     quantization_results->layer_count = image_parameters->color_layer_count;
 }
 
