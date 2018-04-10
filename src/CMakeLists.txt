@@ -4,6 +4,7 @@
 set(SRCS
     photogeo.cpp
     quantization/color_conversion.cpp
+    quantization/color_difference.cpp
     quantization/quantization.cpp
     image_processing/image_processing.cpp
     image_processing/kuwahara.cpp
@@ -16,6 +17,7 @@ set(SRCS
 set(HEADERS
     ../include/photogeo.h
     quantization/color_conversion.hpp
+    quantization/color_difference.hpp
     quantization/quantization.hpp
     image_processing/image_processing.hpp
     image_processing/kuwahara.hpp
