@@ -97,58 +97,58 @@ int main(int argc, const char* argv[]) {
 
             // Image processing methods.
             // Gaussian blur.
-            else if (argv[argument][1] == 'p' && (argv[argument][2] - '0') == PTG_GAUSSIAN_BLUR && argc > argument + 1)
+            else if (argv[argument][1] == 'p' && (argv[argument][2] - '0') == PTG_GAUSSIAN_BLUR)
                 image_processing_methods.push_back(PTG_GAUSSIAN_BLUR);
 
             // Bilateral filter.
-            else if (argv[argument][1] == 'p' && (argv[argument][2] - '0') == PTG_BILATERAL_FILTER && argc > argument + 1)
+            else if (argv[argument][1] == 'p' && (argv[argument][2] - '0') == PTG_BILATERAL_FILTER)
                 image_processing_methods.push_back(PTG_BILATERAL_FILTER);
 
             // Median filter.
-            else if (argv[argument][1] == 'p' && (argv[argument][2] - '0') == PTG_MEDIAN_FILTER && argc > argument + 1)
+            else if (argv[argument][1] == 'p' && (argv[argument][2] - '0') == PTG_MEDIAN_FILTER)
                 image_processing_methods.push_back(PTG_MEDIAN_FILTER);
 
             // Kuwahara filter.
-            else if (argv[argument][1] == 'p' && (argv[argument][2] - '0') == PTG_KUWAHARA_FILTER && argc > argument + 1)
+            else if (argv[argument][1] == 'p' && (argv[argument][2] - '0') == PTG_KUWAHARA_FILTER)
                 image_processing_methods.push_back(PTG_KUWAHARA_FILTER);
 
             // Quantization method.
             // Euclidean distance in sRGB space.
-            else if (argv[argument][1] == 'q' && (argv[argument][2] - '0') == PTG_EUCLIDEAN_SRGB && argc > argument + 1)
+            else if (argv[argument][1] == 'q' && (argv[argument][2] - '0') == PTG_EUCLIDEAN_SRGB)
                 quantization_method = PTG_EUCLIDEAN_SRGB;
 
             // Euclidean distance in linear RGB space.
-            else if (argv[argument][1] == 'q' && (argv[argument][2] - '0') == PTG_EUCLIDEAN_LINEAR && argc > argument + 1)
+            else if (argv[argument][1] == 'q' && (argv[argument][2] - '0') == PTG_EUCLIDEAN_LINEAR)
                 quantization_method = PTG_EUCLIDEAN_LINEAR;
 
             // CIE76.
-            else if (argv[argument][1] == 'q' && (argv[argument][2] - '0') == PTG_CIE76 && argc > argument + 1)
+            else if (argv[argument][1] == 'q' && (argv[argument][2] - '0') == PTG_CIE76)
                 quantization_method = PTG_CIE76;
 
             // CIE94.
-            else if (argv[argument][1] == 'q' && (argv[argument][2] - '0') == PTG_CIE94 && argc > argument + 1)
+            else if (argv[argument][1] == 'q' && (argv[argument][2] - '0') == PTG_CIE94)
                 quantization_method = PTG_CIE94;
 
             // CIEDE2000.
-            else if (argv[argument][1] == 'q' && (argv[argument][2] - '0') == PTG_CIEDE2000 && argc > argument + 1)
+            else if (argv[argument][1] == 'q' && (argv[argument][2] - '0') == PTG_CIEDE2000)
                 quantization_method = PTG_CIEDE2000;
 
             // Tracing method.
             // Marching squares.
-            else if (argv[argument][1] == 't' && (argv[argument][2] - '0') == PTG_MARCHING_SQUARES && argc > argument + 1)
+            else if (argv[argument][1] == 't' && (argv[argument][2] - '0') == PTG_MARCHING_SQUARES)
                 tracing_method = PTG_MARCHING_SQUARES;
 
             // Vertex reduction method.
             // Don't perform any vertex reduction.
-            else if (argv[argument][1] == 'v' && (argv[argument][2] - '0') == PTG_NO_VERTEX_REDUCTION && argc > argument + 1)
+            else if (argv[argument][1] == 'v' && (argv[argument][2] - '0') == PTG_NO_VERTEX_REDUCTION)
                 vertex_reduction_method = PTG_NO_VERTEX_REDUCTION;
 
             // Douglas-Peucker.
-            else if (argv[argument][1] == 'v' && (argv[argument][2] - '0') == PTG_DOUGLAS_PEUCKER && argc > argument + 1)
+            else if (argv[argument][1] == 'v' && (argv[argument][2] - '0') == PTG_DOUGLAS_PEUCKER)
                 vertex_reduction_method = PTG_DOUGLAS_PEUCKER;
 
             // Visvalingam-Whyatt.
-            else if (argv[argument][1] == 'v' && (argv[argument][2] - '0') == PTG_VISVALINGAM_WHYATT && argc > argument + 1)
+            else if (argv[argument][1] == 'v' && (argv[argument][2] - '0') == PTG_VISVALINGAM_WHYATT)
                 vertex_reduction_method = PTG_VISVALINGAM_WHYATT;
         }
     }
