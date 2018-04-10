@@ -22,7 +22,7 @@ template<typename color_type>
 static void quantize_helper(const ptg_image_parameters* parameters, bool** layers, double (*distance_function)(const color_type&, const color_type&)) {
     // Get colors each pixel should be compared against (foreground and background colors).
     const unsigned int comparison_color_count = parameters->background_color_count + parameters->color_layer_count;
-    ptg_color comparison_colors[comparison_color_count];
+    ptg_color* comparison_colors = new ptg_color[comparison_color_count];
     for (unsigned int i = 0; i < comparison_color_count; ++i) {
         if (i < parameters->background_color_count)
             comparison_colors[i] = parameters->background_colors[i];
@@ -31,7 +31,7 @@ static void quantize_helper(const ptg_image_parameters* parameters, bool** layer
     }
 
     // Convert comparison colors to the color space the comparison is performed in.
-    color_type comparison_colors_conv[comparison_color_count];
+    color_type* comparison_colors_conv = new color_type[comparison_color_count];
     for (unsigned int i = 0; i < comparison_color_count; ++i) {
         comparison_colors_conv[i] = convert<color_type>(comparison_colors[i]);
     }
@@ -61,6 +61,10 @@ static void quantize_helper(const ptg_image_parameters* parameters, bool** layer
                 layers[i][y * parameters->width + x] = (i == layer - parameters->background_color_count);
         }
     }
+
+    // Cleanup.
+    delete[] comparison_colors;
+    delete[] comparison_colors_conv;
 }
 
 void quantize(const ptg_image_parameters* parameters, bool** layers, ptg_quantization_method quantization_method) {
