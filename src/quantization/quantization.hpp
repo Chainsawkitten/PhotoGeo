@@ -3,13 +3,15 @@
 
 #include <photogeo.h>
 
+struct cie_lab;
+
 /*
  * Quantize an image.
  * @param parameters Image input parameters.
  * @param layers Color layers to store results in.
- * @param distance_function Function to calculate the distance between two colors.
+ * @param quantization_method What method to use when quantizing the image.
  */
-void quantize(const ptg_image_parameters* parameters, bool** layers, double (*distance_function)(const ptg_color&, const ptg_color&));
+void quantize(const ptg_image_parameters* parameters, bool** layers, ptg_quantization_method quantization_method);
 
 /*
  * Calculate the squared euclidean distance between two colors in sRGB space.
@@ -34,7 +36,7 @@ double color_distance_euclidean_linear_sqr(const ptg_color& a, const ptg_color& 
  * @param b Second color.
  * @return The perceptual distance between the colors.
  */
-double color_distance_cie76_sqr(const ptg_color& a, const ptg_color& b);
+double color_distance_cie76_sqr(const cie_lab& a, const cie_lab& b);
 
 /*
  * Calculate the squared CIE94 delta-e between two colors.
@@ -43,7 +45,7 @@ double color_distance_cie76_sqr(const ptg_color& a, const ptg_color& b);
  * @param b Second color.
  * @return The perceptual distance between the colors.
  */
-double color_distance_cie94_sqr(const ptg_color& a, const ptg_color& b);
+double color_distance_cie94_sqr(const cie_lab& a, const cie_lab& b);
 
 /*
  * Calculate the squared CIEDE2000 delta-e between two colors.
@@ -52,6 +54,6 @@ double color_distance_cie94_sqr(const ptg_color& a, const ptg_color& b);
  * @param b Second color.
  * @return The perceptual distance between the colors.
  */
-double color_distance_ciede2000_sqr(const ptg_color& a, const ptg_color& b);
+double color_distance_ciede2000_sqr(const cie_lab& a, const cie_lab& b);
 
 #endif
