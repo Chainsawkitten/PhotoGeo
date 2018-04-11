@@ -2,6 +2,7 @@
 #include "read_svg.hpp"
 #include "rasterize.hpp"
 #include "scale.hpp"
+#include "vertex_count.hpp"
 #include <string>
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
@@ -12,6 +13,7 @@ int main(int argc, const char* argv[]) {
     const char* input_filename = "";
     const char* output_filename = "";
     unsigned int scale = 1;
+    const char* vertex_count_filename = "";
 
     for (int argument = 1; argument < argc; ++argument) {
         // All arguments start with -.
@@ -27,6 +29,10 @@ int main(int argc, const char* argv[]) {
             // Scale.
             else if (argv[argument][1] == 's' && argc > argument + 1)
                 scale = std::stoi(argv[++argument]);
+
+            // Vertex count filename.
+            else if (argv[argument][1] == 'v' && argc > argument + 1)
+                vertex_count_filename = argv[++argument];
         }
     }
 
@@ -39,6 +45,7 @@ int main(int argc, const char* argv[]) {
         std::cout << "  -o  Specify filename of result PNG." << std::endl;
         std::cout << "  -s  Specify how the image should be scaled." << std::endl
                   << "      Integer values only." << std::endl;
+        std::cout << "  -v  Specify filename of vertex count log file." << std::endl;
 
         return 0;
     }
@@ -49,6 +56,10 @@ int main(int argc, const char* argv[]) {
     ptg_color* colors;
     ptg_tracing_results svg;
     read_svg(input_filename, &svg, &colors, &width, &height);
+
+    // Log vertex count.
+    if (vertex_count_filename[0] != '\0')
+        log_vertex_count(vertex_count_filename, &svg);
 
     // Scale image.
     width *= scale;

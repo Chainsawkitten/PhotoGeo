@@ -6,6 +6,7 @@ set(SRCS
     rasterize.cpp
     read_svg.cpp
     scale.cpp
+    vertex_count.cpp
 )
 
 # Header files. Specified in order to get them listed in the IDE.
@@ -13,6 +14,7 @@ set(HEADERS
     rasterize.hpp
     read_svg.hpp
     scale.hpp
+    vertex_count.hpp
 )
 
 # Generate directory groups for IDE.
