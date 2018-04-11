@@ -16,9 +16,9 @@ struct svg_layer {
 /*
  * Parse number from string.
  * @param c The string to parse.
- * @return Rounded value.
+ * @return The number.
  */
-static long parse_number(const char*& c) {
+double parse_number(const char*& c) {
     // Check sign.
     int sign = 1;
     if (*c == '-') {
@@ -45,7 +45,7 @@ static long parse_number(const char*& c) {
     }
     
     // Return rounded value.
-    return lrint(sign * n);
+    return sign * n;
 }
 
 void read_svg(const char* filename, ptg_tracing_results* results, ptg_color** colors, unsigned int* width, unsigned int* height) {
@@ -107,8 +107,8 @@ void read_svg(const char* filename, ptg_tracing_results* results, ptg_color** co
             // Parse vertices.
             std::vector<ptg_vec2> vertices;
             const char* d = path->Attribute("d");
-            unsigned int x = 0;
-            unsigned int y = 0;
+            double x = 0.0;
+            double y = 0.0;
             char state;
             // Get all numbers in the string.
             for (; *d != '\0'; ++d) {
@@ -152,7 +152,7 @@ void read_svg(const char* filename, ptg_tracing_results* results, ptg_color** co
                             y = y + parse_number(d);
                             break;
                     }
-                    vertices.push_back({ x , y });
+                    vertices.push_back({ static_cast<unsigned int>(lrint(x)) , static_cast<unsigned int>(lrint(y)) });
                 }
             }
 
