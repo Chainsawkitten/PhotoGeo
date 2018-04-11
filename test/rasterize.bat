@@ -19,7 +19,7 @@ FOR /R %%i IN (%src%/*%src_ext%) DO (
     SET name=%%~ni
     SET input=%src%/!name!%src_ext%
     SET output=%dst%/!name!%dst_ext%
-    START /WAIT rasterize.exe -i !input! -o !output!
+    START /WAIT rasterize.exe -i !input! -o !output!  -s 2
 )
 
 ::Manual
@@ -37,5 +37,5 @@ FOR /R %%i IN (%src%/*%src_ext%) DO (
     SET name=%%~ni
     SET input=%src%/!name!%src_ext%
     SET output=%dst%/!name!%dst_ext%
-    START /WAIT rasterize.exe -i !input! -o !output! -s 2
+    START /WAIT rasterize.exe -i !input! -o !output! -s 4
 )
