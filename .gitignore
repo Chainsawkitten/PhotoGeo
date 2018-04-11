@@ -1,3 +1,11 @@
 *.user
 modules
 docs
+test/perturb
+test/perturb_data
+test/photogeo
+test/photogeo_profile
+test/photogeo_rasterized
+test/manual_rasterized
+test/compare
+test/*.exe
