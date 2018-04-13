@@ -9,3 +9,4 @@ test/photogeo_rasterized
 test/manual_rasterized
 test/compare
 test/*.exe
+test/*.dll
