@@ -20,5 +20,5 @@ FOR /R %%i IN (%src%/*%src_ext%) DO (
     SET name=%%~ni
     SET input=%src%/!name!%src_ext%
     SET output=%dst%/!name!%dst_ext%
-    START /WAIT PhotoGeoCmd.exe -i !input! -o !output! -b 162:152:155 -f 35:29:32 -f 167:34:44
+    START /WAIT PhotoGeoCmd.exe -i !input! -o !output! -b 162:152:155 -f 35:29:32 -f 167:34:44 %*
 )
