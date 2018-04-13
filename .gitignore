@@ -8,4 +8,5 @@ test/photogeo_profile
 test/photogeo_rasterized
 test/manual_rasterized
 test/compare
+test/results
 test/*.exe
