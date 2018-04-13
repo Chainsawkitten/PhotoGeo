@@ -4,6 +4,12 @@ SETLOCAL ENABLEDELAYEDEXPANSION
 SET src_ext=.svg
 SET dst_ext=.png
 
+:: Vertex count folder.
+SET vc_dir=vertex_count
+IF NOT EXIST %vc_dir% (
+    MKDIR %vc_dir%
+)
+
 ::PhotoGeo
 SET src=photogeo
 SET dst=photogeo_rasterized
@@ -19,7 +25,7 @@ FOR /R %%i IN (%src%/*%src_ext%) DO (
     SET name=%%~ni
     SET input=%src%/!name!%src_ext%
     SET output=%dst%/!name!%dst_ext%
-    START /WAIT rasterize.exe -i !input! -o !output!  -s 2
+    START /WAIT rasterize.exe -i !input! -o !output!  -s 2 -v %vc_dir%\!name!_photogeo.txt
 )
 
 ::Manual
@@ -37,5 +43,5 @@ FOR /R %%i IN (%src%/*%src_ext%) DO (
     SET name=%%~ni
     SET input=%src%/!name!%src_ext%
     SET output=%dst%/!name!%dst_ext%
-    START /WAIT rasterize.exe -i !input! -o !output! -s 4
+    START /WAIT rasterize.exe -i !input! -o !output! -s 4 -v %vc_dir%\!name!_manual.txt
 )
