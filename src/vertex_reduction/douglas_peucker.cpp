@@ -77,7 +77,7 @@ struct line {
  */
 static void reduce_line(const ptg_outline& outline, std::stack<line>& lines, bool* keep) {
     // TODO: Make threshold configurable.
-    const float threshold = 5.0f;
+    const float threshold = 1.8f;
     const float threshold_sqr = threshold * threshold;
 
     while (!lines.empty()) {
