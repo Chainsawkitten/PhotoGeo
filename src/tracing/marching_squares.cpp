@@ -34,7 +34,6 @@ enum  direction {
  * @return Which direction the contour is heading.
  */
 static direction calculate_node(unsigned int x, unsigned int y, direction direction, const node& node, ptg_vec2& out_v0, ptg_vec2& out_v1) {
-
     // Convert (x,y) from pixel space to mesh space.
     x = x * 2;
     y = y * 2;
@@ -168,14 +167,12 @@ static direction calculate_node(unsigned int x, unsigned int y, direction direct
 }
 
 void ptgi_trace_marching_squares(bool* layer, unsigned int layer_width, unsigned int layer_height, ptg_outline*& out_outlines, unsigned int& out_outline_count) {
-
     // Allocate nodes.
     node* nodes = new node[(layer_width + 1) * (layer_height + 1)];
     std::vector<unsigned int> root_indices;
 
     // Execute marching squares on layer.
     for (unsigned int it = 0; it < ((layer_width + 1) * (layer_height + 1)); ++it) {
-        
         unsigned int it_x = it % (layer_width + 1);
         unsigned int it_y = it / (layer_width + 1);
 
@@ -202,8 +199,8 @@ void ptgi_trace_marching_squares(bool* layer, unsigned int layer_width, unsigned
     std::vector<std::vector<ptg_vec2>> contours;
     for (int root_index : root_indices) {
         node* node_root = &nodes[root_index];
-        if (!node_root->assigned) {
 
+        if (!node_root->assigned) {
             // Create new contour.
             contours.push_back(std::vector<ptg_vec2>());
             std::vector<ptg_vec2>& contour = contours.back();

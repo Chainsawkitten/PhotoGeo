@@ -216,7 +216,6 @@ int main(int argc, const char* argv[]) {
 
     // Generate collision geometry.
     for (unsigned int iteration = 0; iteration < iteration_count; ++iteration) {
-
         if (iteration_count > 1)
             std::cout << "Iteration: " << iteration + 1 << std::endl;
 
