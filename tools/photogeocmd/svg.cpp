@@ -36,7 +36,7 @@ void write_svg(const char* filename, const ptg_image_parameters* image_parameter
             for (unsigned int vertex_index = 0; vertex_index < outline.vertex_count; ++vertex_index)
                 file << " " << outline.vertices[vertex_index].x << "," << outline.vertices[vertex_index].y;
             file << " Z\" />\n";
-        
+
             // Markers.
             if (markers) {
                 for (unsigned int vertex_index = 0; vertex_index < outline.vertex_count; ++vertex_index) {

@@ -51,7 +51,7 @@ static void kuwahara_kernel(const cv::Mat& src, int r, int c, int kernel_size, i
             const cv::Vec3i& px = src.at<cv::Vec3b>(clamp(r_start + r_offset, 0, src.rows - 1), clamp(c_start + c_offset, 0, src.cols - 1));
             sqr_variance += sqr_length(px - mean);
         }
-    }     
+    }
     sqr_variance = sqr_variance / ((kernel_size + 1) * (kernel_size + 1));
 
     out_mean = mean;
@@ -64,7 +64,7 @@ void kuwahara_filter(const cv::Mat& src, cv::Mat& dst, int kernel_size) {
             cv::Vec3i mean, in_mean;
             double in_sqr_variance;
             double sqr_variance = std::numeric_limits<double>::max();
-            // Execute kuwahara kernel for each quadrant surrounding pixel. 
+            // Execute kuwahara kernel for each quadrant surrounding pixel.
             for (int quadrant = 1; quadrant <= 4; ++quadrant) {
                 kuwahara_kernel(src, r, c, kernel_size, quadrant, in_mean, in_sqr_variance);
                 // Store mean with lowest variance.
