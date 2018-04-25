@@ -51,7 +51,7 @@ static direction calculate_node(unsigned int x, unsigned int y, direction direct
     const ptg_vec2 D = { x - 1, y };
 
     switch (node.configuration) {
-        // 0 points:    
+        // 0 points:
         case 0:
             return NONE;
 
@@ -86,7 +86,7 @@ static direction calculate_node(unsigned int x, unsigned int y, direction direct
             out_v0 = D;
             out_v1 = B;
             return RIGHT;
-        
+
         // C -> A
         case 6:
             out_v0 = C;
@@ -204,7 +204,7 @@ void ptgi_trace_marching_squares(bool* layer, unsigned int layer_width, unsigned
             // Create new contour.
             contours.push_back(std::vector<ptg_vec2>());
             std::vector<ptg_vec2>& contour = contours.back();
-    
+
             unsigned int it = root_index;
             unsigned int x = it % (layer_width + 1);
             unsigned int y = it / (layer_width + 1);

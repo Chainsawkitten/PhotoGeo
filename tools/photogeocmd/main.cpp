@@ -268,7 +268,7 @@ int main(int argc, const char* argv[]) {
         generation_parameters.quantization_parameters = &quantization_parameters;
         generation_parameters.tracing_parameters = &tracing_parameters;
         generation_parameters.vertex_reduction_parameters = &vertex_reduction_parameters;
-        
+
         // Image processing.
         {
             // Profile image processing.
@@ -309,7 +309,7 @@ int main(int argc, const char* argv[]) {
         {
             // Profile tracing.
             PROFILE(&profiling_results[iteration * STAGE_COUNT + TRACING], profile_time, profile_memory);
-            
+
             // Perform tracing.
             ptg_trace(generation_parameters.image_parameters, &quantization_results, generation_parameters.tracing_parameters, &tracing_results);
 
@@ -322,7 +322,7 @@ int main(int argc, const char* argv[]) {
 
         // Free quantization results.
         ptg_free_quantization_results(&quantization_results);
-        
+
         // Vertex reduction.
         {
             // Profile vertex reduction.
@@ -337,7 +337,7 @@ int main(int argc, const char* argv[]) {
             // Perform vertex reduction.
             ptg_reduce(&tracing_results, generation_parameters.vertex_reduction_parameters);
 
-            // Output after vertex reduction.            
+            // Output after vertex reduction.
             if (output_vertex_reduction) {
                 std::cout << "Writing to after_reduction.svg." << std::endl;
                 write_svg("after_reduction.svg", &image_parameters, tracing_results.outlines, tracing_results.outline_counts, false);

@@ -25,7 +25,7 @@ double parse_number(const char*& c) {
         sign = -1;
         ++c;
     }
-    
+
     // Numbers.
     double n = 0.0;
     for (; *c >= '0' && *c <= '9'; ++c) {
@@ -43,7 +43,7 @@ double parse_number(const char*& c) {
         d *= 10;
         n += (*c - '0') / d;
     }
-    
+
     // Return rounded value.
     return sign * n;
 }
@@ -115,7 +115,7 @@ void read_svg(const char* filename, ptg_tracing_results* results, ptg_color** co
                 // Discard spaces.
                 while (*d == ' ')
                     ++d;
- 
+
                 // Update state if not a number.
                 if (!((*d >= '0' && *d <= '9') || *d == '-'))
                     state = *d;
